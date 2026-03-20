@@ -1,179 +1,147 @@
-# AI Academy - Production-Grade AI Training Platform
+# AI Academy: Production-Grade Training Platform
 
-A modern, full-stack web application for an AI & Software Training Platform built with Next.js 16.1.4, React 19.2.3, Tailwind CSS 4.1.18, and Django 6.0.2.
+[![React 19](https://img.shields.io/badge/React-19.2-blue.svg)](https://react.dev/)
+[![Django 6.0](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
+[![Tailwind 4](https://img.shields.io/badge/Tailwind-4.1-38bdf8.svg)](https://tailwindcss.com/)
+[![WCAG AAA](https://img.shields.io/badge/Accessibility-AAA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 
-## Design Philosophy: "Precision Futurism with Technologic Minimalism"
+**AI Academy** is an elite, full-stack educational platform built for the next generation of AI Engineers. It features a decoupled architecture using a high-performance **Vite + React SPA** and a robust **Django REST API**, all wrapped in a distinctive **"Precision Futurism"** design language.
 
-This platform differentiates from traditional IT certification sites through dynamic intelligence-forward visual metaphors while maintaining conversion-optimized clarity.
+---
 
-## Tech Stack
+## 🎨 Design Philosophy
+### *Precision Futurism with Technologic Minimalism*
+We reject "AI Slop"—the generic purple gradients and soft bento grids that dominate modern templates. Instead, we embrace:
+- **High-Contrast Authority:** A clean Ivory/Indigo/Cyan palette.
+- **Developer-First Aesthetics:** Monospace accents and terminal-inspired UI elements.
+- **Architectural Edges:** A strict `0rem` border radius for a sharp, structural feel.
+- **Intentional Motion:** Purposeful, staggered animations that guide the eye without distraction.
 
-### Frontend
-- **Next.js 16.1.4** - React framework with App Router
-- **React 19.2.3** - UI library
-- **TypeScript 5.9.3** - Type safety
-- **Tailwind CSS 4.1.18** - CSS-first styling
-- **Framer Motion 12.29.0** - Animations
-- **Zustand 5.0.3** - State management
-- **Lucide React** - Icons
-- **Radix UI** - Accessible primitives
+---
 
-### Backend
-- **Django 6.0.2** - Python web framework
-- **Django REST Framework** - API endpoints
-- **PostgreSQL 16** - Database
-- **Redis** - Caching
-- **Stripe** - Payment processing
+## 🏗 Application Architecture
 
-## Project Structure
+The project is architected as a strictly decoupled system to ensure scalability and independent deployment cycles.
 
-```
-my-app/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx         # Root layout
-│   │   ├── page.tsx           # Homepage
-│   │   └── globals.css        # Global styles & Tailwind v4 theme
-│   ├── components/
-│   │   ├── ui/                # UI components (Button, Badge, Card, etc.)
-│   │   ├── layout/            # Layout components (Navigation, Footer)
-│   │   └── sections/          # Page sections (Hero, Features, etc.)
-│   ├── lib/
-│   │   ├── utils.ts           # Utility functions (cn)
-│   │   ├── animations.ts      # Framer Motion animations
-│   │   └── hooks/             # Custom hooks (useReducedMotion)
-│   └── types/
-│       └── index.ts           # TypeScript types
-├── public/                     # Static assets
-├── package.json
-├── tsconfig.json
-├── next.config.ts
-└── postcss.config.js
+### File Hierarchy
+```text
+/
+├── frontend/               # React 19 + Vite 7 SPA
+│   ├── src/
+│   │   ├── sections/       # High-level page modules (Hero, Features, etc.)
+│   │   ├── components/
+│   │   │   ├── layout/     # Global shell (Navigation, Footer)
+│   │   │   └── ui/         # Atomic Shadcn/Radix primitives
+│   │   ├── lib/
+│   │   │   ├── animations.ts # Centralized Framer Motion constants
+│   │   │   └── utils.ts    # Merging logic (cn)
+│   │   └── data/           # Mock data layer for hybrid phase
+│   └── index.css           # Design System & CSS Variables
+├── backend/                # Django 6.0.2 REST API
+│   ├── academy/            # Project core & split settings
+│   ├── api/                # DRF layer (Serializers & ViewSets)
+│   ├── courses/            # Domain logic (Course, Cohort, Enrollment models)
+│   └── users/              # Auth logic & Custom User profiles
+└── GEMINI.md               # SSoT for AI coding agents
 ```
 
-## Key Features
+### Key Files Description
+- **`frontend/src/index.css`**: The heart of the design system. Contains all CSS variables for the 60-30-10 color rule.
+- **`frontend/src/lib/animations.ts`**: Standardizes all transition durations and easings across the app.
+- **`backend/courses/models.py`**: Defines the complex relationship between Courses, scheduled Cohorts, and User Enrollments.
+- **`backend/api/serializers.py`**: Ensures type-safe data transmission between Django and React.
 
-### Design System
-- **Color Palette**: Electric Indigo (#4f46e5), Neural Cyan (#06b6d4), Signal Amber (#f59e0b)
-- **Typography**: Space Grotesk (display), Inter (body), JetBrains Mono (code)
-- **Spacing**: 4px base grid, 80px section padding
-- **Zero Border Radius**: Sharp, architectural edges
+---
 
-### Components
-- **Button**: 6 variants (primary, secondary, ghost, urgency, outline, danger)
-- **Course Card**: Accent-top pattern from iTrust Academy
-- **Status Badge**: Pulse animation for urgency indicators
-- **Navigation**: Glassmorphism effect with mobile menu
-- **Reveal**: Scroll-triggered animations with reduced motion support
+## 🔄 Interaction & Logic Flows
 
-### Page Sections
-1. **Hero**: Animated status badge, stats, abstract visualization
-2. **Trust Signals**: Company logos with hover effects
-3. **Course Categories**: 6 category cards with accent colors
-4. **Features**: 6 feature cards with icons
-5. **Featured Course**: AI Engineering Bootcamp showcase
-6. **Training Schedule**: Upcoming cohorts with status indicators
-7. **Consulting CTA**: Enterprise training call-to-action
+### User Interaction Journey
+This diagram illustrates the path from discovery to enrollment.
 
-### Accessibility (WCAG AAA)
-- `useReducedMotion` hook for motion sensitivity
-- Proper heading hierarchy
-- ARIA labels on interactive elements
-- Focus indicators on all buttons
-- Color contrast compliance
+```mermaid
+sequenceDiagram
+    participant User as User (Browser)
+    participant App as React SPA
+    participant API as Django REST API
+    participant DB as PostgreSQL
 
-## Getting Started
+    User->>App: Loads Landing Page
+    App->>App: Executes Staggered Animations
+    User->>App: Clicks "Explore Courses"
+    App->>User: Smooth Scrolls to #courses
+    User->>App: Clicks "Enroll" on AI Engineering
+    App->>API: GET /api/v1/cohorts/?course=1
+    API->>DB: Query Upcoming Cohorts
+    DB-->>API: Return Result
+    API-->>App: Return JSON Data
+    App->>User: Renders Training Schedule Component
+```
 
-### Prerequisites
-- Node.js 20+
-- npm or yarn
-- Python 3.12+ (for backend)
-- PostgreSQL 16 (for backend)
+### Application Logic Flow
+The following flowchart describes the internal data-handling logic during the "Hybrid Phase".
 
-### Frontend Setup
+```mermaid
+graph TD
+    Start[User Interaction] --> Trigger{Is API Connected?}
+    Trigger -- No --> Mock[Fetch from src/data/mockData.ts]
+    Trigger -- Yes --> Real[Fetch from /api/v1/courses/]
+    
+    Mock --> Transform[Apply lib/animations.ts Variants]
+    Real --> Transform
+    
+    Transform --> Render[Render Section Component]
+    Render --> Reveal[Reveal via Framer Motion]
+    
+    Render --> Interaction{Action Taken?}
+    Interaction -- Enrollment --> AuthCheck[Check JWT via users/models.py]
+    AuthCheck -- Valid --> Payment[Redirect to Stripe]
+```
 
+---
+
+## 🚀 Getting Started
+
+### 1. Backend Setup
 ```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Type checking
-npm run typecheck
-```
-
-### Backend Setup
-
-```bash
-# Navigate to backend directory
 cd backend
-
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements/base.txt
-
-# Run migrations
 python manage.py migrate
-
-# Start development server
 python manage.py runserver
 ```
 
-## Environment Variables
-
-### Frontend (.env.local)
-```
-NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-### Backend (.env)
-```
-DEBUG=True
-SECRET_KEY=your-secret-key
-DATABASE_URL=postgresql://user:password@localhost:5432/academy_db
-REDIS_URL=redis://localhost:6379/0
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-## Performance Targets
+---
 
-| Metric | Target |
-|--------|--------|
-| Lighthouse Performance | 90+ |
-| Lighthouse Accessibility | 100 |
-| Largest Contentful Paint | < 2.5s |
-| First Input Delay | < 100ms |
-| Cumulative Layout Shift | < 0.1 |
+## 🌐 Deployment Strategy
 
-## Anti-Generic Enforcement
+### Frontend (Edge)
+- **Target:** Vercel or Netlify.
+- **Workflow:** Automatic deployment on `git push main`.
+- **Environment:** Production build using `vite build`.
 
-### Prohibited Patterns
-- Inter/Roboto default fonts
-- Purple-to-pink gradients
-- Generic card grids
-- Stock photos
-- Bootstrap-style components
-- Hamburger menu on desktop
+### Backend (Cloud)
+- **Target:** Dockerized container on DigitalOcean or AWS.
+- **Database:** Managed PostgreSQL 16.
+- **Storage:** AWS S3 for course thumbnails and user avatars.
+- **Task Queue:** Celery + Redis for asynchronous enrollment emails.
 
-### Mandatory Distinctive Elements
-- Custom typography pairing
-- Asymmetric layouts
-- Motion design
-- Code-first aesthetic
-- Zero border radius
-- Accent-top cards
+---
 
-## License
+## ♿ Accessibility & Performance
+- **Target:** **WCAG AAA** Compliance.
+- **Reduced Motion:** All animations check `prefers-reduced-motion` via the `useReducedMotion` hook.
+- **Color Contrast:** All Indigo/Cyan combinations are verified for a 7:1 contrast ratio.
+- **Lighthouse Goals:** 95+ Performance, 100 Accessibility.
 
-MIT License - see LICENSE file for details.
+---
 
-## Credits
-
-Design inspired by iTrust Academy's proven UX patterns, elevated for an AI/ML audience through "Precision Futurism with Technologic Minimalism."
+## 🛡 License
+This project is licensed under the MIT License. Developed with precision by the AI Academy Team.
