@@ -4,7 +4,7 @@
 [![Django 6.0](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
 [![Tailwind 4](https://img.shields.io/badge/Tailwind-4.1-38bdf8.svg)](https://tailwindcss.com/)
 [![WCAG AAA](https://img.shields.io/badge/Accessibility-AAA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
-[![Tests](https://img.shields.io/badge/Tests-160-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-160_passing-brightgreen.svg)](#testing)
 
 **AI Academy** is an elite, full-stack educational platform built for the next generation of AI Engineers. It features a decoupled architecture using a high-performance **Vite + React SPA** and a robust **Django REST API**, all wrapped in a distinctive **"Precision Futurism"** design language.
 
@@ -137,7 +137,8 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 | Response Format | 17 | ✅ |
 | Throttling | 5 | ✅ |
 | Image Upload | 23 | ✅ |
-| **Total** | **160** | **143 passing** |
+| User Management | 24 | ✅ |
+| **Total** | **160** | **✅ All passing** |
 
 ---
 
@@ -157,7 +158,8 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 - ✅ **Image Upload:** Course thumbnails and user avatars with validation
 - ✅ **User Management:** Registration, profile, password reset endpoints
 - ✅ **Redis Caching:** High-traffic endpoints cached with automatic invalidation
-- ✅ **Comprehensive Testing:** 160 automated tests (143 passing)
+- ✅ **Comprehensive Testing:** 160 automated tests (ALL PASSING)
+- ✅ **Rate Limiting:** Throttling configured and verified with custom test classes
 
 #### Frontend
 - ✅ **Frontend:** React 19 + Vite SPA with 51 Shadcn components
@@ -221,12 +223,18 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 
 ## Known Issues
 
-### Pre-existing Test Failures
-- 17 failures in `test_user_management.py` (registration returning 500 instead of expected status)
-- These are unrelated to recent changes (Steps 8-9)
-- **Recommendation:** Investigate as a dedicated task
+### ✅ RESOLVED: User Management Test Failures (March 21, 2026)
+
+All 17 pre-existing test failures in `test_user_management.py` have been resolved. Root causes:
+1. **Throttle scope configuration mismatch** - Views with explicit `throttle_classes` required scope definitions
+2. **Password hash format mismatch** - Test expected `pbkdf2_sha256$` but test settings use MD5
+3. **Throttling test approach** - Created custom test throttle classes with low rates for proper testing
+4. **Request ID caching** - Added cache clearing between requests for uniqueness tests
+
+See `AUDIT_USER_MANAGEMENT.md` for detailed remediation documentation.
 
 ### Reserved Query Parameters
+
 - `format` is reserved by DRF and conflicts with filtering by cohort format
 - Use alternative parameter names or test without this filter
 
@@ -252,4 +260,5 @@ This project is licensed under the MIT License. Developed with precision by the 
 - [AGENTS.md](./AGENTS.md) - AI agent instructions and coding standards
 - [ACCOMPLISHMENTS.md](./ACCOMPLISHMENTS.md) - Detailed milestone achievements
 - [API_Usage_Guide.md](./API_Usage_Guide.md) - Complete API reference
+- [AUDIT_USER_MANAGEMENT.md](./AUDIT_USER_MANAGEMENT.md) - User management test remediation report
 - [REMEDIATION_PLAN.md](./REMEDIATION_PLAN.md) - Backend improvement roadmap

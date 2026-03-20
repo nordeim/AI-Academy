@@ -52,7 +52,7 @@ REST_FRAMEWORK = {
 **Implementation:**
 ```python
 # requirements/base.txt
-djangorestframework-simplejwt==5.4.0
+djangorestframework-simplejwt==5.5.1
 
 # academy/settings/base.py
 REST_FRAMEWORK = {
@@ -401,7 +401,7 @@ class EnrollmentAPITests(APITestCase):
 **Implementation:**
 ```python
 # requirements/base.txt
-drf-spectacular==0.28.0
+drf-spectacular==0.29.0
 
 # academy/settings/base.py
 INSTALLED_APPS = [

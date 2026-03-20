@@ -1,8 +1,8 @@
 # AI Academy - Backend API Usage Guide
 
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Last Updated:** March 21, 2026
-**Status:** Operational (Development Mode with Redis Caching)
+**Status:** Fully Operational (All 160 Tests Passing)
 
 ---
 
@@ -1148,6 +1148,8 @@ The backend includes 160 automated tests covering all API functionality:
 | Response Format | 17 | Standardized envelope |
 | Throttling | 5 | Rate limiting |
 | Image Upload | 23 | Validation, processing |
+| User Management | 24 | Registration, profile, password reset |
+| **Total** | **160** | **✅ All passing** |
 
 ### Running Tests
 
@@ -1166,25 +1168,42 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test -v 2
 ### Test Configuration
 
 Tests use a dedicated settings file (`academy/settings/test.py`) that:
-- Disables rate limiting for consistent test execution
+- Preserves throttle rates for views with explicit `throttle_classes`
 - Uses local filesystem storage instead of S3
 - Uses fast password hashing (MD5) for test speed
 - Uses in-memory email backend
+- Provides custom test throttle classes with low rates for rate limiting tests
 
-### Known Test Issues
+### Resolved Test Issues (March 21, 2026)
 
-**Pre-existing Failures:**
-- 17 tests in `test_user_management.py` have pre-existing failures
-- Registration endpoint returns 500 instead of expected status codes
-- These are unrelated to Steps 8-9 (caching and API tests)
+All test failures have been resolved. Key fixes applied:
 
-**Reserved Parameter:**
+**1. Throttle Scope Configuration:**
+- Views with explicit `throttle_classes` now have their scope defined in test settings
+- `RegisterView`, `PasswordResetRequestView`, `PasswordResetConfirmView` all have `AnonRateThrottle`
+- Test settings preserve `DEFAULT_THROTTLE_RATES` with high limits
+
+**2. Custom Test Throttle Classes:**
+- `TestAnonRateThrottle` - 3/minute rate for anonymous testing
+- `TestEnrollmentThrottle` - 5/minute rate for enrollment testing
+- Tests patch views directly with these classes for predictable behavior
+
+**3. Request ID Uniqueness:**
+- Cache cleared between requests to ensure unique request IDs
+- Tests verify `meta.request_id` differs between requests
+
+**4. Password Hash Format:**
+- Tests accept both `pbkdf2_sha256$` (production) and `md5$` (test) formats
+
+### Reserved Parameter Notes
+
+**`format` Query Parameter:**
 - `format` is a reserved DRF query parameter
 - Cannot be used for filtering by cohort format
 - Tests avoid this parameter to prevent 404 errors
 
 ---
 
-**Document Version:** 1.1.0
-**Next Review:** After API Documentation (drf-spectacular) implementation
-**Questions?** Check ACCOMPLISHMENTS.md for troubleshooting
+**Document Version:** 1.2.0
+**Status:** All 160 tests passing
+**Next Review:** After Frontend-Backend Integration

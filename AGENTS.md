@@ -15,7 +15,7 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
 
-As of March 21, 2026, the codebase has achieved **Backend API Enhanced** status with comprehensive improvements including caching and extensive test coverage. Agents must be aware of the following:
+As of March 21, 2026, the codebase has achieved **Backend API Fully Operational** status with all 160 tests passing. Agents must be aware of the following:
 
 ### Current State
 
@@ -55,7 +55,13 @@ As of March 21, 2026, the codebase has achieved **Backend API Enhanced** status 
 - ✅ **Category API Tests:** 10 tests covering list, detail, ordering, fields
 - ✅ **Cohort API Tests:** 16 tests covering list, filter, order, fields
 - ✅ **Caching Tests:** 16 tests covering all cache scenarios
-- ✅ **Test Configuration:** Dedicated test settings with disabled throttling
+- ✅ **Test Configuration:** Dedicated test settings with high throttle limits
+
+**Test Remediation (March 21, 2026):**
+- ✅ **All 160 Tests Passing:** Zero test failures
+- ✅ **Throttle Configuration Fixed:** Test settings preserve throttle rates for explicit classes
+- ✅ **Custom Test Throttles:** Created `TestAnonRateThrottle` and `TestEnrollmentThrottle` for rate limiting tests
+- ✅ **Request ID Uniqueness:** Fixed by clearing cache between requests
 
 #### Test Coverage Summary
 
@@ -71,8 +77,8 @@ As of March 21, 2026, the codebase has achieved **Backend API Enhanced** status 
 | Response Standardization | 17 | ✅ Passing |
 | Throttling | 5 | ✅ Passing |
 | Image Upload | 23 | ✅ Passing |
-| User Management | 23 | ⚠️ 17 pre-existing failures |
-| **Total** | **160** | **143 passing** |
+| User Management | 24 | ✅ Passing |
+| **Total** | **160** | **✅ All passing** |
 
 #### In Progress
 
@@ -95,6 +101,9 @@ As of March 21, 2026, the codebase has achieved **Backend API Enhanced** status 
 - **Sample Data:** Populated via Django shell with realistic course data
 - **Caching:** Implemented Redis caching with automatic invalidation
 - **Testing:** Added 56 new comprehensive API tests
+- **Test Settings:** Fixed throttle rates configuration for views with explicit throttle_classes
+- **Throttling Tests:** Created custom test throttle classes with low rates
+- **Request ID Tests:** Added cache clearing to ensure unique IDs per request
 
 ---
 
@@ -179,7 +188,9 @@ As of March 21, 2026, the codebase has achieved **Backend API Enhanced** status 
 ### Testing Standards
 - Use TDD methodology: RED → GREEN → REFACTOR
 - Run tests with: `DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test`
-- Test settings disable throttling and use local file storage
+- Test settings preserve throttle rates for views with explicit throttle_classes
+- Custom test throttle classes available: `TestAnonRateThrottle`, `TestEnrollmentThrottle`
+- Clear cache in tests that verify uniqueness: `cache.clear()`
 - All new features require comprehensive tests
 
 ---
@@ -241,6 +252,9 @@ course:intro-to-ai:cohorts     # Course cohorts
 | Ordering fails | String comparison | Convert to float: `float(c["price"])` |
 | Filter returns 400 | Invalid choice value | Use valid values or expect 400 |
 | Redis connection error | Redis not running | `docker compose up -d redis` |
+| Throttle tests fail | Rate too high | Use custom test throttle classes |
+| Request IDs identical | Cache not cleared | Call `cache.clear()` between requests |
+| ImproperlyConfigured: No default throttle rate | Missing scope in settings | Add scope to `DEFAULT_THROTTLE_RATES` |
 
 ### Test Commands
 ```bash
