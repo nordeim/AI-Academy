@@ -2,10 +2,15 @@ from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from django.db.models import Count
 from django.db import transaction
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
+import uuid
 from courses.models import Category, Course, Cohort, Enrollment
 from .serializers import (
     CategorySerializer,
@@ -17,6 +22,7 @@ from .serializers import (
 )
 from .throttles import EnrollmentThrottle
 from .responses import ResponseFormatterMixin, SuccessResponse
+from .utils.images import ImageUploadHandler
 
 
 class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
@@ -171,3 +177,151 @@ class EnrollmentViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
             message="Enrollment cancelled successfully",
             request=request,
         )
+
+
+class CourseThumbnailUploadView(APIView):
+    """Handle course thumbnail uploads"""
+
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, slug):
+        """Upload thumbnail for a course"""
+        # Get course
+        course = get_object_or_404(Course, slug=slug)
+
+        # Check if file provided
+        if "thumbnail" not in request.FILES:
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="No thumbnail file provided",
+                errors={"thumbnail": ["This field is required"]},
+                request=request,
+            )
+
+        thumbnail_file = request.FILES["thumbnail"]
+
+        try:
+            # Generate unique filename
+            unique_filename = f"{course.slug}_{uuid.uuid4().hex[:8]}.jpg"
+
+            # Validate and process image
+            processed_file = ImageUploadHandler.handle_thumbnail_upload(
+                thumbnail_file, thumbnail_file.name
+            )
+
+            # Delete old thumbnail if exists
+            if course.thumbnail:
+                try:
+                    course.thumbnail.delete(save=False)
+                except Exception:
+                    pass
+
+            # Save new thumbnail
+            course.thumbnail.save(
+                f"thumbnails/{unique_filename}",
+                processed_file,
+                save=True,
+            )
+
+            # Return standardized response
+            return SuccessResponse(
+                data={
+                    "thumbnail_url": request.build_absolute_uri(course.thumbnail.url)
+                },
+                status=201,
+                message="Thumbnail uploaded successfully",
+                request=request,
+            )
+
+        except ValidationError as e:
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message=str(e),
+                errors={"thumbnail": [str(e)]},
+                request=request,
+            )
+
+
+class UserAvatarUploadView(APIView):
+    """Handle user avatar uploads"""
+
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        """Upload avatar for current user"""
+        # Check if user is authenticated
+        if not request.user or not request.user.is_authenticated:
+            return SuccessResponse(
+                data=None,
+                status=401,
+                message="Authentication required",
+                request=request,
+            )
+
+        # Check if file provided
+        if "avatar" not in request.FILES:
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="No avatar file provided",
+                errors={"avatar": ["This field is required"]},
+                request=request,
+            )
+
+        avatar_file = request.FILES["avatar"]
+
+        try:
+            # Generate unique filename
+            unique_filename = f"{request.user.username}_{uuid.uuid4().hex[:8]}.jpg"
+
+            # Validate and process image
+            processed_file = ImageUploadHandler.handle_avatar_upload(
+                avatar_file, avatar_file.name
+            )
+
+            # Delete old avatar if exists
+            if hasattr(request.user, "avatar") and request.user.avatar:
+                try:
+                    request.user.avatar.delete(save=False)
+                except Exception:
+                    pass
+
+            # Save new avatar
+            request.user.avatar.save(
+                f"avatars/{unique_filename}", processed_file, save=True
+            )
+
+            # Delete old avatar if exists
+            if hasattr(request.user, "avatar") and request.user.avatar:
+                try:
+                    request.user.avatar.delete(save=False)
+                except Exception:
+                    pass
+
+            # Save new avatar
+            request.user.avatar.save(
+                f"avatars/{request.user.username}_{processed_file.name}",
+                processed_file,
+                save=True,
+            )
+
+            # Return standardized response
+            return SuccessResponse(
+                data={
+                    "avatar_url": request.build_absolute_uri(request.user.avatar.url)
+                },
+                status=201,
+                message="Avatar uploaded successfully",
+                request=request,
+            )
+
+        except ValidationError as e:
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message=str(e),
+                errors={"avatar": [str(e)]},
+                request=request,
+            )

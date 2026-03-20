@@ -112,6 +112,26 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Django Storages Configuration (MinIO/S3 compatible)
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "access_key": os.environ.get("MINIO_ACCESS_KEY", "minioadmin"),
+            "secret_key": os.environ.get("MINIO_SECRET_KEY", "minioadmin"),
+            "bucket_name": os.environ.get("MINIO_BUCKET_NAME", "academy-media"),
+            "endpoint_url": os.environ.get("MINIO_ENDPOINT", "http://localhost:9000"),
+            "region_name": os.environ.get("MINIO_REGION", "us-east-1"),
+            "default_acl": "public-read",
+            "querystring_auth": False,
+            "signature_version": "s3v4",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

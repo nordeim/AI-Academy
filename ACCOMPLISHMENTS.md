@@ -623,4 +623,143 @@ All existing tests continue to pass with standardized responses.
 
 ---
 
+### ✅ Milestone 8: Image Upload Support (Step 6)
+**Date:** March 20, 2026  
+**Priority:** P1 - High  
+**TDD Status:** ✅ RED-GREEN-REFACTOR Complete
+
+#### Summary
+Implemented secure image upload functionality for course thumbnails and user avatars using TDD methodology. Features include image validation, resizing, security checks, and MinIO/S3 storage backend integration.
+
+#### Features Implemented
+
+**Image Validation:**
+- Format validation (JPEG, PNG, WebP only)
+- Size validation (max 10MB)
+- Dimension validation (min 300x200 for thumbnails)
+- Content type verification (magic number checking)
+- Path traversal protection
+
+**Image Processing:**
+- Automatic resizing to max dimensions (1920x1080 for thumbnails, 400x400 for avatars)
+- Aspect ratio preservation
+- Format conversion to optimized JPEG
+- Quality optimization (85-90%)
+
+**Security Features:**
+- CSRF protection via Django
+- File extension validation
+- Content-type verification
+- Path traversal sanitization (Django + custom validation)
+- Unique filename generation with UUID
+
+**Storage Backend:**
+- MinIO/S3-compatible storage via django-storages
+- Configurable via environment variables
+- Local filesystem fallback for development
+- Organized file structure (thumbnails/, avatars/)
+
+#### API Endpoints
+
+**Course Thumbnail Upload:**
+```
+POST /api/v1/courses/{slug}/thumbnail/
+Content-Type: multipart/form-data
+
+Request:
+  thumbnail: [image file]
+
+Response (201):
+{
+  "success": true,
+  "data": {
+    "thumbnail_url": "https://.../thumbnails/intro-to-ai_a1b2c3d4.jpg"
+  },
+  "message": "Thumbnail uploaded successfully"
+}
+```
+
+**User Avatar Upload:**
+```
+POST /api/v1/users/me/avatar/
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+
+Request:
+  avatar: [image file]
+
+Response (201):
+{
+  "success": true,
+  "data": {
+    "avatar_url": "https://.../avatars/john_doe_e5f6g7h8.jpg"
+  },
+  "message": "Avatar uploaded successfully"
+}
+```
+
+#### Files Created
+
+1. **`/backend/api/utils/images.py`** - Image validation and processing utilities
+   - `ImageValidator` - Validation for format, size, dimensions
+   - `ImageProcessor` - Resize, optimize, convert images
+   - `ImageUploadHandler` - Complete upload workflow handler
+
+2. **`/backend/api/tests/test_image_upload.py`** - Comprehensive test suite
+   - 23 test cases covering all scenarios
+   - Test for validation, processing, security, storage
+   - All tests passing ✅
+
+#### Files Modified
+
+1. **`/backend/requirements/base.txt`**
+   - Added `django-storages==1.14.2`
+   - Added `boto3==1.42.18`
+
+2. **`/backend/academy/settings/base.py`**
+   - Added STORAGES configuration for S3/MinIO
+   - Configured with environment variables
+
+3. **`/backend/api/views.py`**
+   - Added `CourseThumbnailUploadView` class
+   - Added `UserAvatarUploadView` class
+
+4. **`/backend/api/urls.py`**
+   - Added `POST /courses/<slug>/thumbnail/` endpoint
+   - Added `POST /users/me/avatar/` endpoint
+
+#### Test Results
+
+```
+Ran 23 tests in 6.251s
+OK
+
+Test Coverage:
+✅ Valid image upload (JPEG, PNG, WebP)
+✅ Invalid format rejection (GIF, text, PDF, executables)
+✅ Size validation (10MB limit)
+✅ Dimension validation (min 300x200)
+✅ Authentication required for uploads
+✅ 404 for non-existent course
+✅ Thumbnail field update
+✅ Path traversal sanitization
+✅ Unique filename generation
+✅ Image resizing (large images)
+✅ Aspect ratio preservation
+✅ Standardized response format
+✅ Avatar upload functionality
+✅ Missing file field validation
+```
+
+#### Full Test Suite Verification
+
+```
+Ran 64 tests in 38.928s
+OK
+```
+
+All existing tests continue to pass with new functionality.
+
+---
+
 **End of Accomplishments Document**

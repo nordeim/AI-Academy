@@ -749,3 +749,350 @@ Ran 41 tests in 31.293s
 OK
 All tests passing with no regressions.
 
+---
+
+→ Read API_Usage_Guide.md [offset=443, limit=10]
+Thinking: ```json
+{
+  "success": true,
+  "data": {
+    "thumbnail_url": "http://localhost:8000/media/thumbnails/intro-to-ai_a1b2c3d4.jpg"
+  },
+  "message": "Thumbnail uploaded successfully",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid"
+  }
+}
+This is a standardized API response showing successful image upload with URL returned.
+---
+### 6. Admin Interface
+Access the Django admin panel for backend management.
+```http
+GET /admin/
+Authentication: Session-based (requires superuser credentials)
+Features:
+- Manage courses, categories, and cohorts
+- View and manage user accounts
+- Monitor enrollments and payments
+- Configure site settings
+---
+Request/Response Examples
+Search and Filter Examples
+Example 1: Search Courses
+Search for courses containing "AI" in title, subtitle, or description, ordered by rating descending:
+curl -X GET "http://localhost:8000/api/v1/courses/?search=AI&ordering=-rating" \
+  -H "Content-Type: application/json"
+Example 2: Filter by Level and Category
+Get intermediate-level courses in the AI Engineering category:
+curl -X GET "http://localhost:8000/api/v1/courses/?level=intermediate&categories__slug=ai-engineering" \
+  -H "Content-Type: application/json"
+Example 3: Get Course Cohorts
+Retrieve upcoming cohorts for a specific course:
+curl -X GET "http://localhost:8000/api/v1/courses/ai-engineering-bootcamp/cohorts/" \
+  -H "Content-Type: application/json"
+---
+File Upload Examples
+Upload Course Thumbnail
+Upload an image file as a course thumbnail using multipart/form-data:
+curl -X POST "http://localhost:8000/api/v1/courses/intro-to-ai/thumbnail/" \
+  -H "Authorization: Bearer <access_token>" \
+  -F "thumbnail=@/path/to/thumbnail.jpg"
+Requirements:
+- Image formats: JPEG, PNG, or WebP
+- Maximum file size: 10MB
+- Minimum dimensions: 300x200 pixels
+Response:
+{
+  success: true,
+  data: {
+    thumbnail_url: https://cdn.example.com/thumbnails/intro-to-ai_abc123.jpg
+  },
+  message: Thumbnail uploaded successfully,
+  errors: {},
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: 550e8400-e29b-41d4-a716-446655440000
+  }
+}
+---
+Upload User Avatar
+Upload a profile avatar image for the authenticated user:
+curl -X POST "http://localhost:8000/api/v1/users/me/avatar/" \
+  -H "Authorization: Bearer <access_token>" \
+  -F "avatar=@/path/to/avatar.png"
+Requirements:
+- Image formats: JPEG, PNG, or WebP
+- Maximum file size: 10MB
+- Auto-cropped to square and resized to 400x400 pixels
+Response:
+{
+  success: true,
+  data: {
+    avatar_url: https://cdn.example.com/avatars/johndoe_xyz789.jpg
+  },
+  message: Avatar uploaded successfully,
+  errors: {},
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: 550e8400-e29b-41d4-a716-446655440000
+  }
+}
+---
+Filtering & Search
+Available Filters by Endpoint
+The API provides flexible filtering capabilities across different resources:
+| Endpoint | Available Filters | Example |
+|----------|------------------|---------|
+| /courses/ | level, categories__slug | ?level=intermediate&categories__slug=ai-engineering |
+| /courses/ | ?featured=true | Filter for featured courses only |
+| /cohorts/ | course, format, status | ?course=uuid&format=live |
+| All List Endpoints | ?search=<term> | Full-text search across relevant fields |
+| All List Endpoints | ?ordering=<field> | Sort results by specified field |
+---
+Ordering Fields
+Courses:
+- Price: price (ascending), -price (descending)
+- Rating: rating, -rating
+- Creation date: created_at, -created_at
+- Popularity: enrolled_count, -enrolled_count
+Cohorts:
+- Schedule: start_date, -start_date
+---
+Search Scope
+The ?search= parameter performs full-text search across these fields:
+- Courses: title, subtitle, description
+Example:
+curl "http://localhost:8000/api/v1/courses/?search=machine learning"
+---
+Pagination
+All list endpoints support pagination for efficient data retrieval.
+Default Configuration
+- Pagination Style: Page-based (PageNumberPagination)
+- Default Page Size: 20 items per page
+- Maximum Page Size: Configurable via max_page_size
+---
+Response Format
+Paginated responses include metadata for navigation:
+{
+  success: true,
+  data: [...],
+  message: Records retrieved successfully,
+  errors: {},
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    pagination: {
+      count: 100,
+      page: 1,
+      pages: 5,
+      page_size: 20,
+      has_next: true,
+      has_previous: false
+    }
+  }
+}
+---
+Query Parameters
+| Parameter | Type | Description | Example |
+|-----------|------|-------------|---------|
+| page | integer | Page number to retrieve | ?page=2 |
+| page_size | integer | Items per page (if allowed) | ?page_size=50 |
+---
+Error Handling
+HTTP Status Codes
+The API uses standard HTTP status codes:
+| Code | Status | Typical Causes |
+|------|--------|--------------|
+| 200 | OK | Successful GET, PUT, or PATCH operation |
+| 201 | Created | Successful POST operation (new resource created) |
+| 400 | Bad Request | Invalid input data or validation errors |
+| 401 | Unauthorized | Missing or invalid authentication credentials |
+| 403 | Forbidden | Insufficient permissions for the requested action |
+| 404 | Not Found | Requested resource does not exist |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Server Error | Unexpected server error |
+---
+Error Response Format
+Validation Errors (400):
+{
+  success: false,
+  data: null,
+  message: Validation failed,
+  errors: {
+    field_name: [
+      Error message for this field
+    ],
+    non_field_errors: [
+      General error message
+    ]
+  },
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    error_code: VALIDATION_ERROR
+  }
+}
+Authentication Errors (401/403):
+{
+  success: false,
+  data: null,
+  message: Authentication credentials were not provided.,
+  errors: {
+    non_field_errors: [Authentication required]
+  },
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    error_code: AUTHENTICATION_ERROR
+  }
+}
+Not Found (404):
+{
+  success: false,
+  data: null,
+  message: Resource not found,
+  errors: {
+    non_field_errors: [The requested resource does not exist]
+  },
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    error_code: NOT_FOUND
+  }
+}
+---
+Known Issues & Limitations
+Critical Issues (All Resolved)
+| Issue | Status | Description |
+|-------|--------|-------------|
+| JWT Authentication | ✅ FIXED | SimpleJWT configured with 30min/7day token lifetimes |
+| N+1 Query Problem | ✅ FIXED | 82% query reduction with prefetch_related/select_related |
+| No Throttling | ✅ FIXED | Rate limiting configured for anon/user/enrollment operations |
+---
+API Design Issues
+| Issue | Status | Description | Priority |
+|-------|--------|-------------|----------|
+| Inconsistent Response Format | ✅ FIXED | All endpoints now return standardized envelope | High |
+| Inconsistent Pagination | ✅ FIXED | /cohorts/ action now returns wrapped response | High |
+| Missing Error Format | ✅ FIXED | Standardized error responses with error codes | Medium |
+| No API Versioning | ⏳ PENDING | Only URL path versioning implemented | Low |
+| Missing Endpoints | ⏳ PENDING | User registration, password reset, profile endpoints | High |
+---
+Security Concerns
+| Issue | Status | Description | Priority |
+|-------|--------|-------------|----------|
+| No Rate Limiting | ✅ FIXED | Throttling configured for all operation types | High |
+| CORS Wide Open | ✅ ACCEPTABLE | Dev settings allow all origins (expected in development) | Medium |
+| No Request Logging | ✅ FIXED | Request ID middleware logs all requests | Low |
+| Missing Permissions | ✅ FIXED | Enrollment create now has business logic | High |
+| Image Upload Security | ✅ FIXED | File validation, size limits, path sanitization | High |
+---
+Performance Issues
+| Issue | Status | Before | After | Solution |
+|-------|--------|--------|-------|----------|
+| N+1 Queries | ✅ FIXED | 17 queries | 3 queries | Added prefetch_related('categories') to CourseViewSet |
+| Cohort N+1 | ✅ FIXED | 12 queries | 2 queries | Added select_related('course', 'instructor') |
+| Image Processing | ✅ FIXED | Raw uploads | Resized/optimized | Pillow processing pipeline |
+| Storage Backend | ✅ FIXED | Local only | MinIO/S3 | django-storages with S3 backend |
+| No Caching | ⏳ PENDING | - | - | Redis caching implementation planned |
+| Large Payloads | ⏳ PENDING | - | - | Field filtering (?fields=) planned |
+---
+Best Practices
+For Frontend Developers
+1. Cache Category Data - Categories change infrequently, cache them locally
+2. Use Pagination - Always handle next and previous URLs
+3. Handle Errors Gracefully - Implement retry logic for 500 errors
+4. Debounce Search - Wait 300ms before sending search requests
+5. Optimistic Updates - Update UI before API confirmation for better UX
+For Image Uploads
+1. Validate Before Upload - Check file size client-side (max 10MB)
+2. Show Preview - Display image preview before uploading
+3. Handle Errors - Show specific validation errors to users
+4. Use Multipart - Always use multipart/form-data for file uploads
+5. Include Auth Token - Include Bearer token in Authorization header
+For API Consumers
+1. Use Query Parameters - Filter on server, not client
+2. Request Only Needed Fields - Consider implementing ?fields= parameter
+3. Respect Rate Limits - Implement exponential backoff
+4. Handle Partial Failures - Some endpoints may succeed while others fail
+Authentication
+// Store tokens securely (not localStorage for production)
+const tokens = {
+  access: sessionStorage.getItem('access_token'),
+  refresh: sessionStorage.getItem('refresh_token')
+};
+// Add to request headers
+fetch('/api/v1/enrollments/', {
+  headers: {
+    'Authorization': `Bearer ${tokens.access}`,
+    'Content-Type': 'application/json'
+  }
+});
+---
+Appendix: Data Models
+Course Model
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| slug | Slug | URL-friendly identifier |
+| title | Char(200) | Course title |
+| subtitle | Char(300) | Short description |
+| description | Text | Full description |
+| level | Choice | beginner/intermediate/advanced |
+| status | Choice | draft/published/archived |
+| price | Decimal | Current price |
+| original_price | Decimal | Strikethrough price |
+| rating | Decimal(2,1) | Average rating |
+| enrolled_count | Integer | Total enrollments |
+| is_featured | Boolean | Featured on homepage |
+| thumbnail | ImageField | Course thumbnail image |
+| thumbnail_alt | Char(200) | Alt text for thumbnail |
+| created_at | DateTime | Creation timestamp |
+| updated_at | DateTime | Last modified |
+Cohort Model
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| course | FK | Related course |
+| start_date | Date | Cohort start |
+| end_date | Date | Cohort end |
+| format | Choice | online/in_person/hybrid |
+| instructor | FK | Teaching user |
+| spots_total | Integer | Maximum capacity |
+| spots_reserved | Integer | Currently enrolled |
+| status | Choice | upcoming/enrolling/etc. |
+Enrollment Model
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user | FK | Enrolled student |
+| course | FK | Enrolled course |
+| cohort | FK | Specific cohort |
+| amount_paid | Decimal | Payment amount |
+| status | Choice | pending/confirmed/etc. |
+| created_at | DateTime | Enrollment time |
+User Model
+| Field | Type | Description |
+|-------|------|-------------|
+| id | Integer | Primary key |
+| email | Email | Unique identifier |
+| username | Char(150) | Username |
+| first_name | Char(150) | First name |
+| last_name | Char(150) | Last name |
+| avatar | ImageField | Profile avatar |
+| phone | Char(20) | Phone number |
+| bio | Text | User biography |
+| company | Char(100) | Company name |
+| title | Char(100) | Job title |
+| is_student | Boolean | Student flag |
+| is_instructor | Boolean | Instructor flag |
+| created_at | DateTime | Account creation |
+| updated_at | DateTime | Last modified |
+---
+Document Version: 1.1.0  
+Last Updated: March 20, 2026  
+Next Review: After image upload implementation  
+Questions? Check ACCOMPLISHMENTS.md for implementation details
+

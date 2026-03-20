@@ -17,6 +17,17 @@ router.register(r"enrollments", views.EnrollmentViewSet, basename="enrollment")
 
 urlpatterns = [
     path("", include(router.urls)),
+    # Image upload endpoints
+    path(
+        "courses/<slug:slug>/thumbnail/",
+        views.CourseThumbnailUploadView.as_view(),
+        name="course-upload-thumbnail",
+    ),
+    path(
+        "users/me/avatar/",
+        views.UserAvatarUploadView.as_view(),
+        name="user-upload-avatar",
+    ),
     # JWT Authentication endpoints
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
