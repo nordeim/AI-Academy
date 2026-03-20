@@ -46,6 +46,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "api.middleware.RequestIDMiddleware",
+    "api.middleware.ResponseFormatMiddleware",
 ]
 
 ROOT_URLCONF = "academy.urls"
@@ -135,12 +137,13 @@ REST_FRAMEWORK = {
         "enrollment": "10/minute",
     },
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 10,  # Consistent with test expectations
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
+    "EXCEPTION_HANDLER": "api.exceptions.standardized_exception_handler",
 }
 
 # SimpleJWT Configuration

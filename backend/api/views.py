@@ -16,15 +16,20 @@ from .serializers import (
     EnrollmentCreateSerializer,
 )
 from .throttles import EnrollmentThrottle
+from .responses import ResponseFormatterMixin, SuccessResponse
 
 
-class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all().annotate(course_count=Count("courses"))
+class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = (
+        Category.objects.all()
+        .annotate(course_count=Count("courses"))
+        .order_by("order", "name")
+    )
     serializer_class = CategorySerializer
     lookup_field = "slug"
 
 
-class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Course.objects.filter(status="published").prefetch_related("categories")
     serializer_class = CourseListSerializer
     lookup_field = "slug"
@@ -60,10 +65,14 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
             status__in=["upcoming", "enrolling"], start_date__gte=timezone.now().date()
         ).select_related("instructor")
         serializer = CohortSerializer(cohorts, many=True)
-        return Response(serializer.data)
+        return SuccessResponse(
+            data=serializer.data,
+            message="Cohorts retrieved successfully",
+            request=request,
+        )
 
 
-class CohortViewSet(viewsets.ReadOnlyModelViewSet):
+class CohortViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Cohort.objects.filter(
         status__in=["upcoming", "enrolling"]
     ).select_related("course", "instructor")
@@ -82,7 +91,7 @@ class CohortViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class EnrollmentViewSet(viewsets.ModelViewSet):
+class EnrollmentViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
     throttle_classes = [EnrollmentThrottle]
@@ -119,7 +128,12 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 
         # Return with full serializer
         read_serializer = EnrollmentSerializer(enrollment)
-        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+        return SuccessResponse(
+            data=read_serializer.data,
+            status=201,
+            message="Enrollment created successfully",
+            request=request,
+        )
 
     @action(detail=True, methods=["post"])
     @transaction.atomic
@@ -128,15 +142,19 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
         enrollment = self.get_object()
 
         if enrollment.status == "cancelled":
-            return Response(
-                {"error": "Enrollment is already cancelled"},
-                status=status.HTTP_400_BAD_REQUEST,
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Enrollment is already cancelled",
+                request=request,
             )
 
         if enrollment.status not in ["pending", "confirmed"]:
-            return Response(
-                {"error": f"Cannot cancel enrollment with status: {enrollment.status}"},
-                status=status.HTTP_400_BAD_REQUEST,
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message=f"Cannot cancel enrollment with status: {enrollment.status}",
+                request=request,
             )
 
         # Release spot
@@ -148,4 +166,8 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
         enrollment.status = "cancelled"
         enrollment.save()
 
-        return Response({"status": "enrollment cancelled"})
+        return SuccessResponse(
+            data={"status": "enrollment cancelled"},
+            message="Enrollment cancelled successfully",
+            request=request,
+        )

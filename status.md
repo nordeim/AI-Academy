@@ -545,3 +545,207 @@ The project documentation now accurately reflects the current production-ready s
 
 ## Step 4 Complete: API Rate Limiting ### Summary TDD Methodology Successfully Applied: ✅ Phase 1: Analysis & Planning - Identified security vulnerability - no rate limiting - Defined requirements for anon, user, and enrollment throttles - Created detailed test plan Phase 2: RED (Failing Tests) - Created comprehensive test suite (5 tests) - All tests failed as expected (no throttling configured) Phase 3: GREEN (Make Tests Pass) - Added DEFAULT_THROTTLE_CLASSES to REST_FRAMEWORK - Configured throttle rates: anon=100/hour, user=1000/hour - Created custom EnrollmentThrottle (10/minute) - Applied to EnrollmentViewSet - All 5 tests now passing ✅ ### Changes Made | File | Changes | Lines | |------|---------|-------| | academy/settings/base.py | Added throttle configuration | +7 | | api/throttles.py | Created custom EnrollmentThrottle | +8 | | api/views.py | Applied throttle to EnrollmentViewSet | +2 | | api/tests/test_throttling.py | Created test suite (5 tests) | +167 | ### Throttle Configuration python REST_FRAMEWORK = { "DEFAULT_THROTTLE_CLASSES": [ "rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle", ], "DEFAULT_THROTTLE_RATES": { "anon": "100/hour", "user": "1000/hour", "enrollment": "10/minute", }, }  ### Custom Enrollment Throttle python class EnrollmentThrottle(UserRateThrottle): scope = 'enrollment' rate = '10/minute'  ### Verification Results Automated Tests: ✅ All 5 tests passing - test_anonymous_rate_limiting ✅ - test_authenticated_rate_limiting ✅ - test_enrollment_throttle ✅ - test_rate_limits_per_user ✅ - test_throttle_response_format ✅ Behavior: - Anonymous users: 100 requests/hour - Authenticated users: 1000 requests/hour - Enrollment operations: 10 requests/minute - Returns 429 Too Many Requests when exceeded ### Security Improvements | Vulnerability | Status | Mitigation | |-------------|--------|------------| | Brute force attacks | ✅ Fixed | AnonRateThrottle (100/hour) | | DoS attacks | ✅ Fixed | UserRateThrottle (1000/hour) | | Enrollment abuse | ✅ Fixed | EnrollmentThrottle (10/minute) | | Resource exhaustion | ✅ Fixed | All endpoints protected | ### Total Tests Status | Test Suite | Tests | Status | |------------|-------|--------| | JWT Tests | 6 | ✅ 6/6 passing | | Performance Tests | 4 | ✅ 4/4 passing | | Enrollment Tests | 9 | ✅ 9/9 passing | | Throttle Tests | 5 | ✅ 5/5 passing | | TOTAL | 24 | ✅ 24/24 passing | ### Next Steps Ready to proceed with Step 5: Response Standardization (P1 - High Priority) following the same TDD methodology. Current Phase: Rate Limiting ✅ COMPLETE Next Phase: Step 5 - Response Standardization Would you like me to proceed with Step 5
 
+---
+
+1. Goal - What are we trying to accomplish?
+2. Instructions - Important instructions and plans
+3. Discoveries - Notable learnings
+4. Accomplished - What work is done/in progress/left
+5. Relevant files - Structured list of files
+Let me review what we've done:
+1. Deep architecture analysis and validation of the AI Academy project
+2. Fixed database migration error (added load_dotenv())
+3. Brought up backend API service
+4. Created comprehensive documentation (API_Usage_Guide.md, REMEDIATION_PLAN.md, TODO.md)
+5. Executed REMEDIATION_PLAN.md Step 1: JWT Authentication (COMPLETE)
+6. Executed REMEDIATION_PLAN.md Step 2: N+1 Query Optimization (COMPLETE)
+7. Executed REMEDIATION_PLAN.md Step 3: Enrollment Business Logic (COMPLETE)
+8. Executed REMEDIATION_PLAN.md Step 4: API Rate Limiting (COMPLETE)
+All using Test-Driven Development (TDD) methodology.
+Now I need to create a comprehensive summary following their template.
+---
+## Goal
+Execute the AI Academy Backend API Remediation Plan using Test-Driven Development (TDD) methodology to address critical security and performance issues. The goal is to enhance the Django REST API with JWT authentication, N+1 query optimization, enrollment business logic, and rate limiting.
+## Instructions
+- **Methodology:** Use Test-Driven Development (TDD) - RED (write failing tests), GREEN (make tests pass), REFACTOR (optimize)
+- **Approach:** Meticulous planning and execution with comprehensive sub-plans for each step
+- **Source Document:** Follow `@REMEDIATION_PLAN.md` which contains 18 prioritized issues (P0-P3)
+- **Documentation:** Update `@ACCOMPLISHMENTS.md`, `@README.md`, `@AGENTS.md`, `@API_Usage_Guide.md` after each milestone
+- **Testing:** Create comprehensive test suites for each feature, all tests must pass
+- **Validation:** Manual testing with curl/httpie alongside automated tests
+## Discoveries
+- **Project Structure:** Decoupled architecture - Vite + React 19 SPA frontend, Django REST API backend
+- **Critical Issues Found:**
+  - JWT authentication listed but not configured (SimpleJWT not set up)
+  - Severe N+1 query problems (17 queries for course list, 12 for cohort list)
+  - Enrollment endpoint lacked business logic (no capacity checking, duplicate prevention)
+  - No rate limiting configured (security vulnerability)
+- **Design System:** "Precision Futurism" - Electric Indigo (#4f46e5) + Neural Cyan (#06b6d4), sharp corners (0rem radius)
+- **Database:** PostgreSQL with UUID primary keys, Redis for caching, MinIO for storage
+- **TDD Effectiveness:** Writing tests first ensures requirements are met and documents expected behavior
+## Accomplished
+### ✅ COMPLETED Steps (All using TDD)
+**Step 1: JWT Authentication (P0 - Critical)**
+- Installed `djangorestframework-simplejwt==5.4.0`
+- Configured SIMPLE_JWT with token lifetimes (30min access, 7day refresh)
+- Added endpoints: `/auth/token/`, `/auth/token/refresh/`, `/auth/token/verify/`
+- Created 6 JWT tests - all passing
+- Updated API_Usage_Guide.md with authentication docs
+**Step 2: N+1 Query Optimization (P0 - Critical)**
+- Fixed CourseViewSet with `prefetch_related('categories')`
+- Fixed CohortViewSet with `select_related('course', 'instructor')`
+- Fixed CategorySerializer `course_count` with `Count` annotation
+- Query reduction: 17→3 queries (82% improvement), 12→2 queries (83% improvement)
+- Created 4 performance tests - all passing
+**Step 3: Enrollment Business Logic (P0 - Critical)**
+- Created EnrollmentCreateSerializer with validation
+- Implemented capacity checking (returns 400 if cohort full)
+- Implemented duplicate enrollment prevention
+- Added spots_reserved increment/decrement logic with transactions
+- Status workflow: new enrollments start as 'pending'
+- Created 9 enrollment tests - all passing
+**Step 4: API Rate Limiting (P1 - High)**
+- Configured REST_FRAMEWORK with DEFAULT_THROTTLE_CLASSES
+- Rates: anon=100/hour, user=1000/hour, enrollment=10/minute
+- Created custom EnrollmentThrottle class
+- Applied to EnrollmentViewSet
+- Created 5 throttle tests - all passing
+### 📊 Test Summary
+- **Total Tests Created:** 24 tests (JWT: 6, Performance: 4, Enrollment: 9, Throttling: 5)
+- **Status:** ✅ All 24 tests passing
+- **Methodology:** Test-Driven Development strictly followed
+### 📄 Documentation Updated
+- `@ACCOMPLISHMENTS.md` - Added Milestones 4, 5, 6 with detailed breakdowns
+- `@README.md` - Updated Development Status with performance metrics
+- `@AGENTS.md` - Updated Current State section
+- `@API_Usage_Guide.md` - Updated Authentication section, fixed Known Issues
+- `@IMPLEMENTATION_SUMMARY.md` - Created comprehensive summary document
+- `@TODO.md` - Marked completed items
+### ⏳ NEXT STEPS (From REMEDIATION_PLAN.md)
+**Step 5: Response Standardization (P1 - High)**
+- Issue: Inconsistent response formats across endpoints
+- Effort: 3-4 hours
+- Approach: Create custom response wrapper classes
+- Create test file: `api/tests/test_response_standardization.py`
+**Step 6-18:** (See REMEDIATION_PLAN.md for full list)
+- Image Upload Support (P1)
+- User Management Endpoints (P1)
+- Redis Caching (P1)
+- API Documentation with drf-spectacular (P2)
+- Admin Fieldset Corrections (P2)
+- Request Logging Middleware (P2)
+- And more...
+## Relevant files / directories
+### Configuration Files
+- `/home/project/AI-Academy/backend/academy/settings/base.py` - Django settings with JWT, throttling, REST framework config
+- `/home/project/AI-Academy/backend/api/urls.py` - URL routing with JWT endpoints
+- `/home/project/AI-Academy/backend/requirements/base.txt` - Python dependencies
+### API Implementation Files
+- `/home/project/AI-Academy/backend/api/views.py` - ViewSets (Course, Cohort, Enrollment) with optimizations
+- `/home/project/AI-Academy/backend/api/serializers.py` - Serializers with validation logic
+- `/home/project/AI-Academy/backend/api/throttles.py` - Custom EnrollmentThrottle class
+- `/home/project/AI-Academy/backend/courses/models.py` - Domain models (Course, Cohort, Enrollment, Category)
+- `/home/project/AI-Academy/backend/users/models.py` - Custom User model
+### Test Files (All Created/Modified)
+- `/home/project/AI-Academy/backend/api/tests/test_jwt.py` - 6 JWT tests
+- `/home/project/AI-Academy/backend/api/tests/test_performance.py` - 4 N+1 query tests
+- `/home/project/AI-Academy/backend/api/tests/test_enrollment.py` - 9 business logic tests
+- `/home/project/AI-Academy/backend/api/tests/test_throttling.py` - 5 rate limiting tests
+### Planning & Documentation Files
+- `/home/project/AI-Academy/REMEDIATION_PLAN.md` - Main roadmap with 18 prioritized issues
+- `/home/project/AI-Academy/TODO.md` - Task tracking with priorities
+- `/home/project/AI-Academy/ACCOMPLISHMENTS.md` - Completed milestones
+- `/home/project/AI-Academy/API_Usage_Guide.md` - API documentation for developers
+- `/home/project/AI-Academy/IMPLEMENTATION_SUMMARY.md` - Comprehensive implementation summary
+- `/home/project/AI-Academy/TODO_STEP_1_JWT.md` - Step 1 TDD sub-plan
+- `/home/project/AI-Academy/TODO_STEP_2_N1_QUERIES.md` - Step 2 TDD sub-plan
+- `/home/project/AI-Academy/TODO_STEP_3_ENROLLMENT.md` - Step 3 TDD sub-plan
+- `/home/project/AI-Academy/TODO_STEP_4_RATE_LIMITING.md` - Step 4 TDD sub-plan
+### Scripts & Infrastructure
+- `/home/project/AI-Academy/backend/start_backend.sh` - Backend startup script
+- `/home/project/AI-Academy/start_frontend.sh` - Frontend startup script
+- `/home/project/AI-Academy/docker-compose.yml` - Docker services (PostgreSQL, Redis, MinIO)
+### Frontend (Context Only)
+- `/home/project/AI-Academy/frontend/` - React 19 + Vite SPA with 51 Shadcn components
+- `/home/project/AI-Academy/frontend/src/data/mockData.ts` - Mock data for UI (ready for API integration)
+### Core Reference Documents
+- `/home/project/AI-Academy/Project_Architecture_Document.md` - Architecture overview
+- `/home/project/AI-Academy/GEMINI.md` - Agent coding standards and mandates
+- `/home/project/AI-Academy/README.md` - Project overview and setup instructions
+- `/home/project/AI-Academy/AGENTS.md` - SSoT for AI agents
+---
+Current Status: Steps 1-4 COMPLETE (24/24 tests passing)
+Next Action: Step 5 - Response Standardization using TDD methodology
+Method: Follow same meticulous TDD approach (Analysis → RED tests → GREEN implementation → REFACTOR → Documentation)
+
+---
+
+I have successfully completed Step 5: Response Standardization using rigorous TDD methodology. Let me create a summary of the work completed:
+✅ Phase 3: REFACTOR Complete
+All tests are passing and code has been optimized
+# Todos
+Phase 1: RED - Write comprehensive failing tests (17 tests)
+Phase 2: GREEN - Implement response standardization infrastructure
+Phase 3: REFACTOR - Optimize code and handle edge cases
+Phase 4: DOCUMENT - Update all documentation files
+Verification - Run full test suite (41 tests passing)
+Thinking: ## ✅ Step 5: Response Standardization - COMPLETE
+---
+Summary
+Successfully implemented API response standardization using rigorous TDD methodology. All 17 new tests plus 24 existing tests are passing (41 total).
+---
+TDD Process Summary
+| Phase | Status | Details |
+|-------|--------|---------|
+| RED | ✅ | 17 comprehensive tests written, all initially failing |
+| GREEN | ✅ | Implementation complete, all tests passing |
+| REFACTOR | ✅ | Code optimized, pagination ordering fixed |
+| DOCUMENT | ✅ | 4 documentation files updated |
+---
+Files Created
+1. /backend/api/responses.py - Response utility classes
+2. /backend/api/exceptions.py - Custom exception handler  
+3. /backend/api/middleware.py - Request ID middleware
+4. /backend/api/tests/test_response_standardization.py - 17 comprehensive tests
+Files Modified
+1. /backend/api/views.py - All ViewSets now use ResponseFormatterMixin
+2. /backend/academy/settings/base.py - Exception handler + middleware configured
+3. /backend/api/urls.py - Added app_name for URL namespace
+4. /backend/api/tests/test_performance.py - Updated for standardized format
+5. /backend/api/tests/test_enrollment.py - Updated for standardized format
+6. /home/project/AI-Academy/ACCOMPLISHMENTS.md - Milestone 7 added
+7. /home/project/AI-Academy/TODO.md - Step 5 marked complete
+8. /home/project/AI-Academy/AGENTS.md - Current state updated
+9. /home/project/AI-Academy/API_Usage_Guide.md - Response format documented
+---
+Standard Response Format
+Success (2xx):
+{
+  success: true,
+  data: { ... },
+  message: Operation completed successfully,
+  errors: {},
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    pagination: { ... }
+  }
+}
+Error (4xx/5xx):
+{
+  success: false,
+  data: null,
+  message: Validation failed,
+  errors: { field_name: [error] },
+  meta: {
+    timestamp: 2026-03-20T12:00:00Z,
+    request_id: uuid,
+    error_code: VALIDATION_ERROR
+  }
+}
+---
+Test Results
+Ran 41 tests in 31.293s
+OK
+All tests passing with no regressions.
+

@@ -54,7 +54,7 @@ class QueryCountTests(APITestCase):
         with self.assertNumQueries(3):  # count + courses + categories prefetch
             response = self.client.get("/api/v1/courses/")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(response.data["results"]), 5)
+            self.assertEqual(len(response.data["data"]), 5)
 
     def test_course_detail_query_count(self):
         """
@@ -140,5 +140,5 @@ class QueryCountTests(APITestCase):
             response = self.client.get(
                 f"/api/v1/courses/{self.courses[0].slug}/cohorts/"
             )
-            self.assertEqual(response.status_code, 200)
-            self.assertIsInstance(response.data, list)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.data["data"], list)

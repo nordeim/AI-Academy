@@ -159,7 +159,7 @@ class EnrollmentBusinessLogicTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["status"], "pending")
+        self.assertEqual(response.data["data"]["status"], "pending")
 
     def test_cancel_enrollment_decrements_spots_reserved(self):
         """
@@ -281,4 +281,4 @@ class EnrollmentBusinessLogicTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Should only see 1 enrollment (current user's)
-        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(len(response.data["data"]), 1)

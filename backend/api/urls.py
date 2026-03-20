@@ -7,6 +7,8 @@ from rest_framework_simplejwt.views import (
 )
 from . import views
 
+app_name = "api"
+
 router = DefaultRouter()
 router.register(r"courses", views.CourseViewSet, basename="course")
 router.register(r"cohorts", views.CohortViewSet, basename="cohort")
