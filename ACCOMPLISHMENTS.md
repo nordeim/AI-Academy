@@ -1,7 +1,7 @@
 # AI Academy - Accomplishments & Milestones
 
 **Last Updated:** March 20, 2026
-**Status:** Backend API Operational, Database Migrated, Ready for Frontend Integration
+**Status:** Backend API Enhanced with JWT Authentication, N+1 Query Optimization, and Enrollment Business Logic
 
 ---
 
@@ -108,6 +108,110 @@ load_dotenv(BASE_DIR / '.env')
   }]
 }
 ```
+
+---
+
+### ✅ Milestone 4: JWT Authentication Implementation
+**Date:** March 20, 2026
+
+**Critical Issue Resolved:** JWT authentication was listed but not configured, blocking frontend API integration.
+
+#### Solution Implemented
+**Files Modified:**
+- `backend/academy/settings/base.py` - Added SIMPLE_JWT configuration
+- `backend/api/urls.py` - Added JWT endpoints
+- `backend/api/serializers.py` - Added custom token serializer
+- `backend/requirements/base.txt` - Added SimpleJWT dependency
+
+#### JWT Configuration
+```python
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+```
+
+#### Endpoints Added
+- `POST /api/v1/auth/token/` - Obtain token pair
+- `POST /api/v1/auth/token/refresh/` - Refresh access token
+- `POST /api/v1/auth/token/verify/` - Verify token validity
+
+#### Testing
+- Created comprehensive JWT test suite (6 tests)
+- All tests passing: token generation, refresh, verification, protected access
+- Manual verification successful with curl
+
+---
+
+### ✅ Milestone 5: N+1 Query Optimization
+**Date:** March 20, 2026
+
+**Critical Issue Resolved:** API was executing N+1 queries, causing severe performance degradation.
+
+#### Problem Identified
+- Course list: **17 queries** (1 + N for categories)
+- Cohort list: **12 queries** (1 + 2N for course/instructor)
+- Course detail: **4 queries** (N+1 from course_count)
+
+#### Solution Implemented
+**Files Modified:**
+- `backend/api/views.py` - Added prefetch_related and select_related
+- `backend/api/serializers.py` - Fixed CategorySerializer course_count
+- `backend/api/tests/test_performance.py` - Created performance test suite
+
+#### Optimizations Applied
+| Endpoint | Before | After | Improvement |
+|----------|--------|-------|-------------|
+| `/courses/` | 17 queries | 3 queries | **82%** reduction |
+| `/cohorts/` | 12 queries | 2 queries | **83%** reduction |
+| `/courses/{slug}/` | 4 queries | 2 queries | **50%** reduction |
+| `/courses/{slug}/cohorts/` | 5 queries | 3 queries | **40%** reduction |
+
+#### Testing
+- Created 4 performance tests using TDD
+- All tests passing with strict query count assertions
+- Verified with Django assertNumQueries
+
+---
+
+### ✅ Milestone 6: Enrollment Business Logic
+**Date:** March 20, 2026
+
+**Critical Issue Resolved:** Enrollment endpoint lacked business logic validation and capacity management.
+
+#### Problems Identified
+1. No capacity checking - could over-enroll cohorts
+2. No duplicate enrollment prevention
+3. spots_reserved not incremented on enrollment
+4. No proper cancellation workflow
+5. No transaction safety
+
+#### Solution Implemented
+**Files Modified:**
+- `backend/api/serializers.py` - Added EnrollmentCreateSerializer with validation
+- `backend/api/views.py` - Rewrote EnrollmentViewSet with business logic
+- `backend/api/tests/test_enrollment.py` - Created comprehensive test suite (9 tests)
+
+#### Business Rules Implemented
+1. **Capacity Validation:** Cannot enroll when cohort is full (400 error)
+2. **Duplicate Prevention:** Cannot enroll twice in same cohort (400 error)
+3. **Spot Reservation:** spots_reserved increments on enrollment
+4. **Spot Release:** spots_reserved decrements on cancellation
+5. **Status Workflow:** New enrollments start as 'pending'
+6. **Transaction Safety:** All operations wrapped in @transaction.atomic
+
+#### Testing
+- Created 9 business logic tests using TDD
+- All tests passing:
+  - ✅ Capacity validation
+  - ✅ Duplicate prevention
+  - ✅ Spot increment/decrement
+  - ✅ Status workflow
+  - ✅ Transaction safety
+  - ✅ Authentication requirements
 
 ---
 

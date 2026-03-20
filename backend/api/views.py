@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from django.db.models import Count
+from django.db import transaction
 from courses.models import Category, Course, Cohort, Enrollment
 from .serializers import (
     CategorySerializer,
@@ -12,6 +13,7 @@ from .serializers import (
     CourseDetailSerializer,
     CohortSerializer,
     EnrollmentSerializer,
+    EnrollmentCreateSerializer,
 )
 
 
@@ -83,20 +85,65 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return EnrollmentCreateSerializer
+        return EnrollmentSerializer
+
     def get_queryset(self):
         return Enrollment.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        """Create enrollment with validation and spot reservation"""
+        # Use create serializer for validation
+        create_serializer = self.get_serializer(data=request.data)
+        create_serializer.is_valid(raise_exception=True)
+
+        cohort = create_serializer.validated_data["cohort"]
+
+        # Increment spots_reserved
+        cohort.spots_reserved += 1
+        cohort.save()
+
+        # Create enrollment
+        enrollment = Enrollment.objects.create(
+            user=request.user,
+            course=create_serializer.validated_data["course"],
+            cohort=cohort,
+            amount_paid=create_serializer.validated_data["amount_paid"],
+            status="pending",
+        )
+
+        # Return with full serializer
+        read_serializer = EnrollmentSerializer(enrollment)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["post"])
+    @transaction.atomic
     def cancel(self, request, pk=None):
+        """Cancel enrollment and release spot"""
         enrollment = self.get_object()
-        if enrollment.status in ["confirmed", "pending"]:
-            enrollment.status = "cancelled"
-            enrollment.save()
-            return Response({"status": "enrollment cancelled"})
-        return Response(
-            {"error": "Cannot cancel this enrollment"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+
+        if enrollment.status == "cancelled":
+            return Response(
+                {"error": "Enrollment is already cancelled"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if enrollment.status not in ["pending", "confirmed"]:
+            return Response(
+                {"error": f"Cannot cancel enrollment with status: {enrollment.status}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Release spot
+        cohort = enrollment.cohort
+        cohort.spots_reserved = max(0, cohort.spots_reserved - 1)
+        cohort.save()
+
+        # Update enrollment
+        enrollment.status = "cancelled"
+        enrollment.save()
+
+        return Response({"status": "enrollment cancelled"})

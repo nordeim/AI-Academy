@@ -118,3 +118,34 @@ class EnrollmentSerializer(serializers.ModelSerializer):
             "confirmed_at",
         ]
         read_only_fields = ["status", "confirmed_at"]
+
+
+class EnrollmentCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating enrollments with validation"""
+
+    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+    cohort = serializers.PrimaryKeyRelatedField(queryset=Cohort.objects.all())
+
+    class Meta:
+        model = Enrollment
+        fields = ["course", "cohort", "amount_paid"]
+
+    def validate_cohort(self, cohort):
+        """Validate cohort has available spots"""
+        if cohort.spots_remaining <= 0:
+            raise serializers.ValidationError(
+                "This cohort is full. Please join the waitlist."
+            )
+        return cohort
+
+    def validate(self, data):
+        """Validate user not already enrolled"""
+        user = self.context["request"].user
+        cohort = data["cohort"]
+
+        if Enrollment.objects.filter(user=user, cohort=cohort).exists():
+            raise serializers.ValidationError(
+                "You are already enrolled in this cohort."
+            )
+
+        return data

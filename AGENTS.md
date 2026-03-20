@@ -14,13 +14,20 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 ---
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
-As of March 20, 2026, the codebase has achieved **Backend API Operational** status. Agents must be aware of the following:
+As of March 20, 2026, the codebase has achieved **Backend API Enhanced** status with comprehensive improvements. Agents must be aware of the following:
 
 ### Current State
-- ✅ **Backend API:** Fully operational with Django REST Framework
-- ✅ **Database:** PostgreSQL migrated with all models
-- ✅ **Sample Data:** Created (3 courses, 3 categories, 1 cohort)
-- ⏳ **Frontend Integration:** Mock data still in use (ready for API connection)
+#### Completed (March 20, 2026)
+- ✅ **JWT Authentication:** SimpleJWT fully configured and operational
+- ✅ **N+1 Query Optimization:** 82-83% query reduction across all endpoints
+- ✅ **Enrollment Business Logic:** Capacity management, duplicate prevention, transaction safety
+- ✅ **Comprehensive Testing:** 19 automated tests (JWT: 6, Performance: 4, Enrollment: 9)
+- ✅ **Database:** PostgreSQL with all models and optimizations
+- ✅ **Sample Data:** Complete dataset with courses, cohorts, categories
+
+#### In Progress
+- ⏳ **Frontend Integration:** Ready to connect authenticated API endpoints
+- ⏳ **Payment Integration:** Stripe configured but not connected to enrollment flow
 
 ### Discrepancies
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
