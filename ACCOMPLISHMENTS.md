@@ -1,7 +1,7 @@
 # AI Academy - Accomplishments & Milestones
 
 **Last Updated:** March 21, 2026
-**Status:** Backend API Fully Operational - All 160 Tests Passing
+**Status:** Backend API Fully Operational - All 175 Tests Passing with Interactive API Documentation
 
 ---
 
@@ -520,7 +520,8 @@ Created comprehensive audit report: `/home/project/AI-Academy/AUDIT_USER_MANAGEM
 | test_throttling.py | 5 | ✅ Passing |
 | test_image_upload.py | 23 | ✅ Passing |
 | test_user_management.py | 24 | ✅ Passing |
-| **Total** | **160** | **✅ All passing** |
+| test_api_documentation.py | 15 | ✅ Passing |
+| **Total** | **175** | **✅ All passing** |
 
 ### Resolution Summary
 
@@ -534,9 +535,163 @@ See Milestone 12 and `AUDIT_USER_MANAGEMENT.md` for detailed documentation.
 
 ---
 
+### ✅ Milestone 13: API Documentation with drf-spectacular (Step 10)
+**Date:** March 21, 2026
+**Priority:** P2 - Medium
+**Status:** ✅ COMPLETE
+
+#### Summary
+
+Implemented comprehensive API documentation using drf-spectacular, providing interactive Swagger UI and ReDoc documentation for all API endpoints.
+
+#### Implementation Details
+
+**1. Package Installation:**
+```python
+# requirements/base.txt
+drf-spectacular==0.29.0
+```
+
+**2. Settings Configuration:**
+```python
+# academy/settings/base.py
+INSTALLED_APPS = [
+    # ...
+    "drf_spectacular",
+]
+
+REST_FRAMEWORK = {
+    # ...
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AI Academy API",
+    "DESCRIPTION": "Production-grade training platform API...",
+    "VERSION": "1.0.0",
+    "SECURITY": [{"bearerAuth": []}],
+    "TAGS": [
+        {"name": "Courses", "description": "Course catalog operations"},
+        {"name": "Categories", "description": "Course category operations"},
+        # ... more tags
+    ],
+}
+```
+
+**3. URL Configuration:**
+```python
+# academy/urls.py
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
+urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+]
+```
+
+**4. View Schema Decorators:**
+```python
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Courses"],
+        summary="List all courses",
+        parameters=[
+            OpenApiParameter(name="level", description="Filter by level", type=str),
+            OpenApiParameter(name="search", description="Search courses", type=str),
+        ],
+    ),
+    retrieve=extend_schema(
+        tags=["Courses"],
+        summary="Get course details",
+    ),
+)
+class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
+    # ...
+```
+
+#### Files Created
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `/backend/api/tests/test_api_documentation.py` | 130 | Documentation endpoint tests |
+
+#### Files Modified
+
+| File | Changes |
+|------|---------|
+| `/backend/requirements/base.txt` | Added drf-spectacular==0.29.0 |
+| `/backend/academy/settings/base.py` | Added drf_spectacular to INSTALLED_APPS, SPECTACULAR_SETTINGS |
+| `/backend/academy/urls.py` | Added schema, docs, redoc URLs |
+| `/backend/api/views.py` | Added @extend_schema decorators to all views |
+
+#### Test Results
+
+```
+Ran 175 tests in 5.431s
+OK
+
+New tests: 15 API documentation tests
+```
+
+#### Documentation Endpoints
+
+| Endpoint | Description | Format |
+|----------|-------------|--------|
+| `/api/schema/` | OpenAPI 3.0 schema | YAML |
+| `/api/docs/` | Swagger UI | HTML |
+| `/api/redoc/` | ReDoc documentation | HTML |
+
+#### Features
+
+- ✅ Interactive Swagger UI for testing endpoints
+- ✅ ReDoc for clean documentation browsing
+- ✅ OpenAPI 3.0 schema generation
+- ✅ JWT authentication documentation
+- ✅ Comprehensive endpoint descriptions
+- ✅ Query parameter documentation
+- ✅ Request/response schema definitions
+- ✅ Organized by tags (Courses, Categories, Cohorts, etc.)
+
+#### Lessons Learned
+
+1. **YAML vs JSON:** drf-spectacular outputs YAML by default. Tests must account for this format (e.g., `openapi:` instead of `"openapi":`).
+
+2. **Swagger Fake View:** ViewSets with `get_queryset()` that access `request.user` must handle `swagger_fake_view` attribute:
+   ```python
+   def get_queryset(self):
+       if getattr(self, "swagger_fake_view", False):
+           return Model.objects.none()
+       return Model.objects.filter(user=self.request.user)
+   ```
+
+3. **APIView Serialization:** APIViews without `serializer_class` need explicit `@extend_schema` decorators with request/response types.
+
+4. **Schema Decorators:** Use `@extend_schema_view` for ViewSets to document each action separately.
+
+#### Troubleshooting Guide
+
+**Issue: "unable to guess serializer" warning**
+- **Cause:** APIView without serializer_class
+- **Solution:** Add explicit `@extend_schema` decorator with `request` and `responses` parameters
+
+**Issue: Schema generation fails with AttributeError**
+- **Cause:** get_queryset() accessing request.user during schema generation
+- **Solution:** Check for `swagger_fake_view` attribute and return empty queryset
+
+**Issue: Tests fail finding content in schema**
+- **Cause:** Schema is YAML format, tests looking for JSON format
+- **Solution:** Update assertions to use YAML format (e.g., `openapi:` not `"openapi":`)
+
+---
+
 ## Code Changes Summary
 
-### Files Created (Steps 8-12)
+### Files Created (Steps 8-13)
 
 | File | Lines | Purpose |
 |------|-------|---------|
@@ -546,20 +701,22 @@ See Milestone 12 and `AUDIT_USER_MANAGEMENT.md` for detailed documentation.
 | `/backend/api/tests/test_courses.py` | 417 | Course API tests |
 | `/backend/api/tests/test_categories.py` | 196 | Category API tests |
 | `/backend/api/tests/test_cohorts.py` | 303 | Cohort API tests |
+| `/backend/api/tests/test_api_documentation.py` | 130 | API documentation tests |
 | `/AUDIT_USER_MANAGEMENT.md` | 150+ | User management audit report |
 
-### Files Modified (Steps 8-12)
+### Files Modified (Steps 8-13)
 
 | File | Changes |
 |------|---------|
-| `/backend/requirements/base.txt` | Added django-redis==5.4.0 |
-| `/backend/academy/settings/base.py` | Added CACHES and CACHE_TTL config |
+| `/backend/requirements/base.txt` | Added django-redis, drf-spectacular |
+| `/backend/academy/settings/base.py` | Added CACHES, CACHE_TTL, SPECTACULAR_SETTINGS config |
 | `/backend/academy/settings/test.py` | Preserved throttle rates for explicit classes |
-| `/backend/api/views.py` | Added caching to CategoryViewSet, CourseViewSet |
+| `/backend/api/views.py` | Added caching, schema decorators to all views |
 | `/backend/courses/apps.py` | Registered signals in ready() |
 | `/backend/api/tests/test_user_management.py` | Fixed password hash assertion |
 | `/backend/api/tests/test_throttling.py` | Rewrote with custom throttle classes |
 | `/backend/api/tests/test_response_standardization.py` | Added cache clearing for request ID test |
+| `/backend/academy/urls.py` | Added schema, docs, redoc URLs |
 
 ---
 
@@ -567,13 +724,14 @@ See Milestone 12 and `AUDIT_USER_MANAGEMENT.md` for detailed documentation.
 
 | Metric | Count | Status |
 |--------|-------|--------|
-| Total Tests | 160 | ✅ All Passing |
-| New Tests (Steps 8-12) | 72+ | ✅ Passing |
+| Total Tests | 175 | ✅ All Passing |
+| New Tests (Steps 8-13) | 87+ | ✅ Passing |
 | Backend Models | 5 | ✅ Complete |
 | API Endpoints | 15+ | ✅ Operational |
 | Cache Strategy | 4 endpoints | ✅ Implemented |
 | Query Reduction | 82-83% | ✅ Achieved |
 | Test Pass Rate | 100% | ✅ Achieved |
+| API Documentation | 3 interfaces | ✅ Implemented |
 
 ---
 
@@ -583,28 +741,30 @@ See Milestone 12 and `AUDIT_USER_MANAGEMENT.md` for detailed documentation.
 
 1. ✅ **COMPLETED: Investigate User Management Test Failures** - All 17 failures resolved
 
-2. **Frontend-Backend Integration**
+2. ✅ **COMPLETED: API Documentation** - drf-spectacular implemented
+
+3. **Frontend-Backend Integration**
    - Replace mock data with API calls
    - Implement JWT token handling
    - Connect to cached endpoints
 
-3. **Cache Monitoring** - Add cache hit/miss metrics and monitoring
+4. **Cache Monitoring** - Add cache hit/miss metrics and monitoring
 
 ### Short-term (Priority: Medium)
 
-4. **API Documentation** - Implement drf-spectacular (Step 10 in remediation plan)
-
 5. **Admin Fieldset Corrections** - Fix type errors in admin.py (Step 11)
 
-6. **Cache Warming** - Pre-populate cache for hot endpoints on deployment
+6. **Request Logging Middleware** - Implement audit trail (Step 12)
+
+7. **Cache Warming** - Pre-populate cache for hot endpoints on deployment
 
 ### Long-term (Priority: Low)
 
-7. **Production Deployment** - Configure production settings with caching
+8. **Production Deployment** - Configure production settings with caching
 
-8. **Load Testing** - Verify caching under load
+9. **Load Testing** - Verify caching under load
 
-9. **Advanced Caching** - Add cache stampede protection, stale-while-revalidate
+10. **Advanced Caching** - Add cache stampede protection, stale-while-revalidate
 
 ---
 

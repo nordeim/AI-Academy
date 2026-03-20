@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",
+    "drf_spectacular",
     # Local
     "courses",
     "users",
@@ -164,6 +165,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
     ],
     "EXCEPTION_HANDLER": "api.exceptions.standardized_exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # SimpleJWT Configuration
@@ -230,3 +232,71 @@ REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 # Celery
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
+
+# drf-spectacular API documentation
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AI Academy API",
+    "DESCRIPTION": """
+Production-grade training platform API for AI and Software Engineering education.
+
+## Authentication
+
+The API uses JWT (JSON Web Token) authentication. To authenticate:
+
+1. Obtain tokens via `POST /api/v1/auth/token/`
+2. Include the access token in the Authorization header: `Bearer <token>`
+3. Refresh tokens via `POST /api/v1/auth/token/refresh/`
+
+## Rate Limiting
+
+- Anonymous users: 100 requests/hour
+- Authenticated users: 1000 requests/hour
+- Enrollment operations: 10 requests/minute
+
+## Response Format
+
+All responses follow a standardized envelope format:
+
+```json
+{
+    "success": true,
+    "data": {...},
+    "message": "Operation successful",
+    "errors": {},
+    "meta": {
+        "timestamp": "2026-03-21T12:00:00Z",
+        "request_id": "uuid"
+    }
+}
+```
+""",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
+    "SECURITY": [{"bearerAuth": []}],
+    "COMPONENTS": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+            }
+        }
+    },
+    "TAGS": [
+        {"name": "Courses", "description": "Course catalog operations"},
+        {"name": "Categories", "description": "Course category operations"},
+        {"name": "Cohorts", "description": "Course cohort operations"},
+        {"name": "Enrollments", "description": "Enrollment management (authenticated)"},
+        {
+            "name": "Authentication",
+            "description": "User authentication and registration",
+        },
+        {
+            "name": "User Profile",
+            "description": "User profile management (authenticated)",
+        },
+        {"name": "Image Upload", "description": "Image upload operations"},
+    ],
+}

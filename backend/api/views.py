@@ -19,6 +19,12 @@ from django.core.cache import cache
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+)
 import json
 import uuid
 from courses.models import Category, Course, Cohort, Enrollment
@@ -47,6 +53,18 @@ from .utils.cache import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Categories"],
+        summary="List all categories",
+        description="Retrieve a list of all course categories with course counts.",
+    ),
+    retrieve=extend_schema(
+        tags=["Categories"],
+        summary="Get category details",
+        description="Retrieve details for a specific category by slug.",
+    ),
+)
 class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = (
         Category.objects.all()
@@ -68,6 +86,55 @@ class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
         return response
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Courses"],
+        summary="List all courses",
+        description="Retrieve a paginated list of published courses with filtering, search, and ordering support.",
+        parameters=[
+            OpenApiParameter(
+                name="level",
+                description="Filter by course level (beginner, intermediate, advanced)",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="categories__slug",
+                description="Filter by category slug",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="search",
+                description="Search in title, subtitle, and description",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="ordering",
+                description="Order results (price, -price, rating, -rating, created_at, -created_at)",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="featured",
+                description="Filter to featured courses only",
+                type=bool,
+                required=False,
+            ),
+        ],
+    ),
+    retrieve=extend_schema(
+        tags=["Courses"],
+        summary="Get course details",
+        description="Retrieve detailed information about a specific course by slug.",
+    ),
+    cohorts=extend_schema(
+        tags=["Courses"],
+        summary="Get course cohorts",
+        description="Retrieve upcoming and enrolling cohorts for a specific course.",
+    ),
+)
 class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Course.objects.filter(status="published").prefetch_related("categories")
     serializer_class = CourseListSerializer
@@ -141,6 +208,38 @@ class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
         return response
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Cohorts"],
+        summary="List all cohorts",
+        description="Retrieve upcoming cohorts with filtering support.",
+        parameters=[
+            OpenApiParameter(
+                name="course",
+                description="Filter by course UUID",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="status",
+                description="Filter by cohort status (upcoming, enrolling)",
+                type=str,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="ordering",
+                description="Order results (start_date, -start_date)",
+                type=str,
+                required=False,
+            ),
+        ],
+    ),
+    retrieve=extend_schema(
+        tags=["Cohorts"],
+        summary="Get cohort details",
+        description="Retrieve details for a specific cohort by ID.",
+    ),
+)
 class CohortViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Cohort.objects.filter(
         status__in=["upcoming", "enrolling"]
@@ -160,6 +259,28 @@ class CohortViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Enrollments"],
+        summary="List user enrollments",
+        description="Retrieve the authenticated user's enrollments.",
+    ),
+    retrieve=extend_schema(
+        tags=["Enrollments"],
+        summary="Get enrollment details",
+        description="Retrieve details for a specific enrollment.",
+    ),
+    create=extend_schema(
+        tags=["Enrollments"],
+        summary="Create enrollment",
+        description="Enroll the authenticated user in a course cohort.",
+        request=EnrollmentCreateSerializer,
+        responses={
+            201: OpenApiResponse(description="Enrollment created successfully"),
+            400: OpenApiResponse(description="Validation error"),
+        },
+    ),
+)
 class EnrollmentViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
@@ -171,6 +292,9 @@ class EnrollmentViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
         return EnrollmentSerializer
 
     def get_queryset(self):
+        # Handle swagger schema generation
+        if getattr(self, "swagger_fake_view", False):
+            return Enrollment.objects.none()
         return Enrollment.objects.filter(user=self.request.user)
 
     @transaction.atomic
@@ -247,6 +371,29 @@ class CourseThumbnailUploadView(APIView):
 
     parser_classes = [MultiPartParser, FormParser]
 
+    @extend_schema(
+        tags=["Image Upload"],
+        summary="Upload course thumbnail",
+        description="Upload a thumbnail image for a specific course.",
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "thumbnail": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Thumbnail image file (JPEG, PNG, WebP, max 10MB)",
+                    }
+                },
+                "required": ["thumbnail"],
+            }
+        },
+        responses={
+            201: OpenApiResponse(description="Thumbnail uploaded successfully"),
+            400: OpenApiResponse(description="Invalid file or validation error"),
+            404: OpenApiResponse(description="Course not found"),
+        },
+    )
     def post(self, request, slug):
         """Upload thumbnail for a course"""
         # Get course
@@ -312,6 +459,29 @@ class UserAvatarUploadView(APIView):
 
     parser_classes = [MultiPartParser, FormParser]
 
+    @extend_schema(
+        tags=["Image Upload"],
+        summary="Upload user avatar",
+        description="Upload an avatar image for the authenticated user.",
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Avatar image file (JPEG, PNG, WebP, max 10MB)",
+                    }
+                },
+                "required": ["avatar"],
+            }
+        },
+        responses={
+            201: OpenApiResponse(description="Avatar uploaded successfully"),
+            400: OpenApiResponse(description="Invalid file or validation error"),
+            401: OpenApiResponse(description="Authentication required"),
+        },
+    )
     def post(self, request):
         """Upload avatar for current user"""
         # Check if user is authenticated
@@ -376,6 +546,16 @@ class UserAvatarUploadView(APIView):
             )
 
 
+@extend_schema(
+    tags=["Authentication"],
+    summary="Register new user",
+    description="Create a new user account with email and password.",
+    request=UserCreateSerializer,
+    responses={
+        201: OpenApiResponse(description="User registered successfully"),
+        400: OpenApiResponse(description="Validation error"),
+    },
+)
 class RegisterView(APIView):
     """Handle user registration"""
 
@@ -420,6 +600,18 @@ class RegisterView(APIView):
             )
 
 
+@extend_schema(
+    tags=["User Profile"],
+    summary="Get/Update current user profile",
+    description="Retrieve or update the authenticated user's profile information.",
+    methods=["GET", "PATCH"],
+    responses={
+        200: UserProfileSerializer,
+        400: OpenApiResponse(description="Validation error"),
+        401: OpenApiResponse(description="Authentication required"),
+    },
+)
+@extend_schema(methods=["PATCH"], request=UserProfileSerializer)
 class UserMeView(APIView):
     """Handle current user profile operations"""
 
@@ -472,6 +664,18 @@ class UserMeView(APIView):
             )
 
 
+@extend_schema(
+    tags=["Authentication"],
+    summary="Request password reset",
+    description="Request a password reset email for a given email address.",
+    request=PasswordResetRequestSerializer,
+    responses={
+        200: OpenApiResponse(
+            description="Password reset email sent (if account exists)"
+        ),
+        400: OpenApiResponse(description="Invalid email format"),
+    },
+)
 class PasswordResetRequestView(APIView):
     """Handle password reset requests"""
 
@@ -519,6 +723,16 @@ class PasswordResetRequestView(APIView):
         )
 
 
+@extend_schema(
+    tags=["Authentication"],
+    summary="Confirm password reset",
+    description="Confirm a password reset with token and UID from email.",
+    request=PasswordResetConfirmSerializer,
+    responses={
+        200: OpenApiResponse(description="Password reset successful"),
+        400: OpenApiResponse(description="Invalid or expired token"),
+    },
+)
 class PasswordResetConfirmView(APIView):
     """Handle password reset confirmation"""
 
