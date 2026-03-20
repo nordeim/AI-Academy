@@ -200,6 +200,25 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
+# Django Cache Framework
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Cache TTL Configuration (in seconds)
+CACHE_TTL = {
+    "course_list": 300,  # 5 minutes
+    "course_detail": 3600,  # 1 hour
+    "category_list": 1800,  # 30 minutes
+    "cohorts": 600,  # 10 minutes
+}
+
 # Stripe
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")

@@ -15,9 +15,11 @@ from django.db.models import Count
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+import json
 import uuid
 from courses.models import Category, Course, Cohort, Enrollment
 from users.models import User
@@ -36,6 +38,13 @@ from .serializers import (
 from .throttles import EnrollmentThrottle
 from .responses import ResponseFormatterMixin, SuccessResponse
 from .utils.images import ImageUploadHandler
+from .utils.cache import (
+    get_course_list_cache_key,
+    get_course_detail_cache_key,
+    get_category_list_cache_key,
+    get_cohorts_cache_key,
+    get_cache_ttl,
+)
 
 
 class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
@@ -46,6 +55,17 @@ class CategoryViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     )
     serializer_class = CategorySerializer
     lookup_field = "slug"
+
+    def list(self, request, *args, **kwargs):
+        cache_key = get_category_list_cache_key()
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            return Response(cached_data)
+
+        response = super().list(request, *args, **kwargs)
+        cache.set(cache_key, response.data, get_cache_ttl("category_list"))
+        return response
 
 
 class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
@@ -70,25 +90,55 @@ class CourseViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Filter by featured
         featured = self.request.query_params.get("featured")
         if featured:
             queryset = queryset.filter(is_featured=True)
 
         return queryset
 
+    def list(self, request, *args, **kwargs):
+        cache_key = get_course_list_cache_key(request)
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            return Response(cached_data)
+
+        response = super().list(request, *args, **kwargs)
+        cache.set(cache_key, response.data, get_cache_ttl("course_list"))
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        slug = kwargs.get("slug")
+        cache_key = get_course_detail_cache_key(slug)
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            return Response(cached_data)
+
+        response = super().retrieve(request, *args, **kwargs)
+        cache.set(cache_key, response.data, get_cache_ttl("course_detail"))
+        return response
+
     @action(detail=True, methods=["get"])
     def cohorts(self, request, slug=None):
+        cache_key = get_cohorts_cache_key(slug)
+        cached_data = cache.get(cache_key)
+
+        if cached_data is not None:
+            return Response(cached_data)
+
         course = self.get_object()
         cohorts = course.cohorts.filter(
             status__in=["upcoming", "enrolling"], start_date__gte=timezone.now().date()
         ).select_related("instructor")
         serializer = CohortSerializer(cohorts, many=True)
-        return SuccessResponse(
+        response = SuccessResponse(
             data=serializer.data,
             message="Cohorts retrieved successfully",
             request=request,
         )
+        cache.set(cache_key, response.data, get_cache_ttl("cohorts"))
+        return response
 
 
 class CohortViewSet(ResponseFormatterMixin, viewsets.ReadOnlyModelViewSet):
