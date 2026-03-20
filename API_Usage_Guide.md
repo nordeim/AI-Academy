@@ -445,7 +445,298 @@ Authorization: Bearer <token>
 
 ---
 
-### 5. Admin Interface
+### 5. User Management
+
+#### Register New User
+```http
+POST /api/v1/auth/register/
+Content-Type: application/json
+
+Request:
+{
+  "email": "user@example.com",
+  "username": "username",
+  "password": "SecurePass123!",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+
+Response (201 Created):
+{
+  "success": true,
+  "data": {
+    "user_id": "uuid"
+  },
+  "message": "User registered successfully",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid"
+  }
+}
+
+Response (400 Bad Request - Validation Error):
+{
+  "success": false,
+  "data": null,
+  "message": "Registration failed. Please check your input.",
+  "errors": {
+    "email": ["user with this email already exists."],
+    "username": ["A user with that username already exists."],
+    "password": ["Password must be at least 8 characters long."]
+  },
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid",
+    "error_code": "VALIDATION_ERROR"
+  }
+}
+```
+
+**Validation Rules:**
+- **Email:** Required, unique, normalized to lowercase
+- **Username:** Required, unique
+- **Password:** Required, minimum 8 characters
+- **First/Last Name:** Required
+
+**cURL Example:**
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/register/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "username": "username",
+    "password": "SecurePass123!",
+    "first_name": "John",
+    "last_name": "Doe"
+  }'
+```
+
+---
+
+#### Get Current User Profile
+```http
+GET /api/v1/users/me/
+Authorization: Bearer <token>
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "username",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "Software developer",
+    "phone": "123-456-7890",
+    "avatar_url": "http://localhost:8000/media/avatars/...",
+    "company": "Tech Corp",
+    "title": "Senior Developer",
+    "linkedin_url": "https://linkedin.com/in/...",
+    "github_url": "https://github.com/...",
+    "is_student": false,
+    "is_instructor": false,
+    "created_at": "2026-03-20T12:00:00Z",
+    "updated_at": "2026-03-20T12:00:00Z"
+  },
+  "message": "Profile retrieved successfully",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid"
+  }
+}
+
+Response (401 Unauthorized):
+{
+  "success": false,
+  "data": null,
+  "message": "Authentication required",
+  "errors": {
+    "detail": "Authentication credentials were not provided."
+  },
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid",
+    "error_code": "AUTHENTICATION_ERROR"
+  }
+}
+```
+
+**cURL Example:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/users/me/" \
+  -H "Authorization: Bearer <token>"
+```
+
+---
+
+#### Update User Profile
+```http
+PATCH /api/v1/users/me/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+Request:
+{
+  "first_name": "Jane",
+  "bio": "Senior software engineer",
+  "company": "New Company"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "username",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "bio": "Senior software engineer",
+    "phone": "123-456-7890",
+    "avatar_url": "http://localhost:8000/media/avatars/...",
+    "company": "New Company",
+    "title": "Senior Developer",
+    "linkedin_url": "https://linkedin.com/in/...",
+    "github_url": "https://github.com/...",
+    "is_student": false,
+    "is_instructor": false,
+    "created_at": "2026-03-20T12:00:00Z",
+    "updated_at": "2026-03-20T12:01:00Z"
+  },
+  "message": "Profile updated successfully",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:01:00Z",
+    "request_id": "uuid"
+  }
+}
+```
+
+**Updatable Fields:**
+- `first_name`
+- `last_name`
+- `bio`
+- `phone`
+- `company`
+- `title`
+- `linkedin_url`
+- `github_url`
+
+**Read-Only Fields:** (Cannot be updated)
+- `id`, `email`, `username`
+- `is_student`, `is_instructor`
+- `created_at`, `updated_at`
+
+**cURL Example:**
+```bash
+curl -X PATCH "http://localhost:8000/api/v1/users/me/" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Jane",
+    "bio": "Updated bio"
+  }'
+```
+
+---
+
+#### Request Password Reset
+```http
+POST /api/v1/auth/password-reset/
+Content-Type: application/json
+
+Request:
+{
+  "email": "user@example.com"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "message": "Password reset email sent."
+  },
+  "message": "Password reset email sent if account exists.",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid"
+  }
+}
+```
+
+**Security Note:** Returns 200 even if email doesn't exist to prevent user enumeration.
+
+**cURL Example:**
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/password-reset/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com"
+  }'
+```
+
+---
+
+#### Confirm Password Reset
+```http
+POST /api/v1/auth/password-reset/confirm/
+Content-Type: application/json
+
+Request:
+{
+  "token": "reset-token-from-email",
+  "uid": "user-uid-from-email",
+  "new_password": "NewSecurePass123!"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "message": "Password reset successful."
+  },
+  "message": "Password has been reset successfully.",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid"
+  }
+}
+
+Response (400 Bad Request - Invalid Token):
+{
+  "success": false,
+  "data": null,
+  "message": "Invalid reset token.",
+  "errors": {
+    "token": ["Invalid or expired token."]
+  },
+  "meta": {
+    "timestamp": "2026-03-20T12:00:00Z",
+    "request_id": "uuid",
+    "error_code": "VALIDATION_ERROR"
+  }
+}
+```
+
+**cURL Example:**
+```bash
+curl -X POST "http://localhost:8000/api/v1/auth/password-reset/confirm/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "reset-token",
+    "uid": "user-uid",
+    "new_password": "NewSecurePass123!"
+  }'
+```
+
+---
+
+### 6. Admin Interface
 
 ```http
 GET /admin/

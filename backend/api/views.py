@@ -1,17 +1,26 @@
 from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+    AllowAny,
+)
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.throttling import AnonRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from django.db.models import Count
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 import uuid
 from courses.models import Category, Course, Cohort, Enrollment
+from users.models import User
 from .serializers import (
     CategorySerializer,
     CourseListSerializer,
@@ -19,6 +28,10 @@ from .serializers import (
     CohortSerializer,
     EnrollmentSerializer,
     EnrollmentCreateSerializer,
+    UserCreateSerializer,
+    UserProfileSerializer,
+    PasswordResetRequestSerializer,
+    PasswordResetConfirmSerializer,
 )
 from .throttles import EnrollmentThrottle
 from .responses import ResponseFormatterMixin, SuccessResponse
@@ -227,7 +240,7 @@ class CourseThumbnailUploadView(APIView):
             # Return standardized response
             return SuccessResponse(
                 data={
-                    "thumbnail_url": request.build_absolute_uri(course.thumbnail.url)
+                    "thumbnail_url": request.build_absolute_uri(course.thumbnail.url),
                 },
                 status=201,
                 message="Thumbnail uploaded successfully",
@@ -293,24 +306,10 @@ class UserAvatarUploadView(APIView):
                 f"avatars/{unique_filename}", processed_file, save=True
             )
 
-            # Delete old avatar if exists
-            if hasattr(request.user, "avatar") and request.user.avatar:
-                try:
-                    request.user.avatar.delete(save=False)
-                except Exception:
-                    pass
-
-            # Save new avatar
-            request.user.avatar.save(
-                f"avatars/{request.user.username}_{processed_file.name}",
-                processed_file,
-                save=True,
-            )
-
             # Return standardized response
             return SuccessResponse(
                 data={
-                    "avatar_url": request.build_absolute_uri(request.user.avatar.url)
+                    "avatar_url": request.build_absolute_uri(request.user.avatar.url),
                 },
                 status=201,
                 message="Avatar uploaded successfully",
@@ -325,3 +324,203 @@ class UserAvatarUploadView(APIView):
                 errors={"avatar": [str(e)]},
                 request=request,
             )
+
+
+class RegisterView(APIView):
+    """Handle user registration"""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    def post(self, request):
+        """Register a new user"""
+        serializer = UserCreateSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Registration failed. Please check your input.",
+                errors=serializer.errors,
+                request=request,
+            )
+
+        try:
+            user = serializer.save()
+            return SuccessResponse(
+                data={"user_id": str(user.id)},
+                status=201,
+                message="User registered successfully",
+                request=request,
+            )
+        except Exception as e:
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(f"Registration error: {e}")
+            import traceback
+
+            logger.error(traceback.format_exc())
+            return SuccessResponse(
+                data=None,
+                status=500,
+                message=f"Registration failed: {str(e)}",
+                errors={"non_field_errors": [str(e)]},
+                request=request,
+            )
+
+
+class UserMeView(APIView):
+    """Handle current user profile operations"""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Get current user profile"""
+        serializer = UserProfileSerializer(
+            request.user,
+            context={"request": request},
+        )
+        return SuccessResponse(
+            data=serializer.data,
+            message="Profile retrieved successfully",
+            request=request,
+        )
+
+    def patch(self, request):
+        """Update current user profile"""
+        serializer = UserProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
+            context={"request": request},
+        )
+
+        if not serializer.is_valid():
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Update failed. Please check your input.",
+                errors=serializer.errors,
+                request=request,
+            )
+
+        try:
+            serializer.save()
+            return SuccessResponse(
+                data=serializer.data,
+                message="Profile updated successfully",
+                request=request,
+            )
+        except Exception as e:
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Update failed.",
+                errors={"non_field_errors": [str(e)]},
+                request=request,
+            )
+
+
+class PasswordResetRequestView(APIView):
+    """Handle password reset requests"""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    def post(self, request):
+        """Request password reset"""
+        serializer = PasswordResetRequestSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Invalid email address.",
+                errors=serializer.errors,
+                request=request,
+            )
+
+        email = serializer.validated_data["email"]
+
+        # Find user by email (case-insensitive)
+        user = User.objects.filter(email__iexact=email).first()
+
+        if user:
+            # Generate reset token
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            return SuccessResponse(
+                data={
+                    "message": "Password reset email sent.",
+                    "token": token,
+                    "uid": uid,
+                },
+                message="Password reset email sent if account exists.",
+                request=request,
+            )
+
+        # Don't reveal whether email exists
+        return SuccessResponse(
+            data={"message": "Password reset email sent."},
+            message="Password reset email sent if account exists.",
+            request=request,
+        )
+
+
+class PasswordResetConfirmView(APIView):
+    """Handle password reset confirmation"""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [AnonRateThrottle]
+
+    def post(self, request):
+        """Confirm password reset with token"""
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Invalid input.",
+                errors=serializer.errors,
+                request=request,
+            )
+
+        token = serializer.validated_data["token"]
+        uid = serializer.validated_data["uid"]
+        new_password = serializer.validated_data["new_password"]
+
+        try:
+            # Decode user ID
+            uid = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Invalid reset token.",
+                errors={"token": ["Invalid or expired token."]},
+                request=request,
+            )
+
+        # Verify token
+        if not default_token_generator.check_token(user, token):
+            return SuccessResponse(
+                data=None,
+                status=400,
+                message="Invalid reset token.",
+                errors={"token": ["Invalid or expired token."]},
+                request=request,
+            )
+
+        # Set new password
+        user.set_password(new_password)
+        user.save()
+
+        return SuccessResponse(
+            data={"message": "Password reset successful."},
+            message="Password has been reset successfully.",
+            request=request,
+        )

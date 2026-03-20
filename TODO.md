@@ -162,21 +162,75 @@ Coverage:
 
 ---
 
-### Issue #7: User Management Endpoints
-**Priority:** P1 | **Effort:** 4 hours | **Risk:** Medium
+### Issue #7: User Management Endpoints ✅ COMPLETED
+**Priority:** P1 | **Effort:** 4 hours | **Status:** COMPLETED with TDD
 
-- [ ] Create User registration endpoint
-  - [ ] Create UserCreateSerializer
-  - [ ] Add validation for unique email
-  - [ ] Implement password hashing
-- [ ] Create `/api/v1/users/me/` endpoint
-  - [ ] GET - Retrieve current user profile
-  - [ ] PATCH - Update user profile
-- [ ] Create password reset flow
-  - [ ] Request password reset endpoint
-  - [ ] Password reset confirmation endpoint
-- [ ] Add email sending functionality
-- [ ] Test all endpoints
+- [x] Create User registration endpoint (`POST /api/v1/auth/register/`)
+- [x] Create UserCreateSerializer with validation
+- [x] Add validation for unique email (case-insensitive)
+- [x] Add validation for unique username
+- [x] Implement password hashing (pbkdf2_sha256)
+- [x] Add password strength validation (min 8 chars)
+- [x] Create `/api/v1/users/me/` endpoint
+- [x] GET - Retrieve current user profile
+- [x] PATCH - Update user profile
+- [x] Create password reset flow
+- [x] Request password reset endpoint (`POST /api/v1/auth/password-reset/`)
+- [x] Password reset confirmation endpoint (`POST /api/v1/auth/password-reset/confirm/`)
+- [x] Add token generation and validation
+- [x] Add rate limiting (AnonRateThrottle)
+- [x] Add standardized response format
+- [x] Write comprehensive test suite (23 tests, all passing)
+- [ ] Add email sending functionality (for production)
+
+**Test Results:**
+```
+Ran 23 tests in 13.917s
+OK
+
+Coverage:
+✅ Valid user registration
+✅ Duplicate email/username detection
+✅ Weak password rejection
+✅ Missing required fields validation
+✅ Invalid email format rejection
+✅ Get current user profile
+✅ Profile update functionality
+✅ Read-only field protection
+✅ Password reset request
+✅ Password reset token validation
+✅ Password reset confirmation
+✅ Rate limiting application
+✅ Security (no user enumeration)
+```
+
+**API Endpoints:**
+- `POST /api/v1/auth/register/` - User registration
+- `GET /api/v1/users/me/` - Get current user profile
+- `PATCH /api/v1/users/me/` - Update user profile
+- `POST /api/v1/auth/password-reset/` - Request password reset
+- `POST /api/v1/auth/password-reset/confirm/` - Confirm password reset
+
+**Files Created:**
+- `/backend/api/tests/test_user_management.py` - Test suite (23 tests)
+- `/backend/academy/settings/test.py` - Test settings (no throttling)
+
+**Files Modified:**
+- `/backend/api/serializers.py` - Added UserCreateSerializer, UserProfileSerializer, PasswordReset serializers
+- `/backend/api/views.py` - Added RegisterView, UserMeView, PasswordResetRequestView, PasswordResetConfirmView
+- `/backend/api/urls.py` - Added user management routes
+
+**Security Features:**
+- ✅ Email normalization (lowercase)
+- ✅ Password strength validation
+- ✅ Rate limiting on sensitive endpoints
+- ✅ No user enumeration on password reset
+- ✅ Read-only field protection
+- ✅ Token-based password reset with expiration
+- ✅ Secure password hashing (pbkdf2_sha256)
+
+**Dependencies:** JWT implementation (completed)
+**Blockers:** None
 
 **Dependencies:** Issue #1 (JWT)  
 **Blockers:** None

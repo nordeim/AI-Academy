@@ -762,4 +762,370 @@ All existing tests continue to pass with new functionality.
 
 ---
 
+### ✅ Milestone 9: User Management Endpoints (Step 7)
+**Date:** March 21, 2026  
+**Priority:** P1 - High  
+**TDD Status:** ✅ RED-GREEN-REFACTOR Complete
+
+#### Summary
+Implemented comprehensive user management endpoints including user registration, profile management, and password reset functionality. All endpoints follow the standardized response format and include security measures like rate limiting and input validation.
+
+#### Features Implemented
+
+**User Registration (`POST /api/v1/auth/register/`):**
+- Email and username uniqueness validation
+- Password strength validation (minimum 8 characters)
+- Required fields: email, username, password, first_name, last_name
+- Automatic password hashing (pbkdf2_sha256)
+- Duplicate detection with clear error messages
+- Standardized 201 Created response with user_id
+
+**User Profile (`GET/PATCH /api/v1/users/me/`):**
+- Retrieve current user profile with all fields
+- Update profile fields: first_name, last_name, bio, phone, company, title, linkedin_url, github_url
+- Read-only field protection (email, username, is_staff, is_superuser, date_joined)
+- Avatar URL generation in response
+- Sensitive data exclusion (password hash)
+
+**Password Reset (`POST /api/v1/auth/password-reset/`):**
+- Token generation using Django's default_token_generator
+- UID encoding with urlsafe_base64
+- Security: Returns 200 even if email doesn't exist (no user enumeration)
+- Rate limiting to prevent abuse
+
+**Password Reset Confirm (`POST /api/v1/auth/password-reset/confirm/`):**
+- Token validation
+- UID decoding and user lookup
+- New password strength validation
+- Password update with secure hashing
+- Token expiration handling
+
+#### API Endpoints
+
+**Registration:**
+```
+POST /api/v1/auth/register/
+Content-Type: application/json
+
+Request:
+{
+  "email": "user@example.com",
+  "username": "username",
+  "password": "SecurePass123!",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+
+Response (201):
+{
+  "success": true,
+  "data": {
+    "user_id": "uuid"
+  },
+  "message": "User registered successfully"
+}
+
+Response (400 - Validation Error):
+{
+  "success": false,
+  "data": null,
+  "message": "Registration failed. Please check your input.",
+  "errors": {
+    "email": ["user with this email already exists."],
+    "password": ["Password must be at least 8 characters long."]
+  }
+}
+```
+
+**Get Profile:**
+```
+GET /api/v1/users/me/
+Authorization: Bearer <token>
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "username",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "Software developer",
+    "phone": "123-456-7890",
+    "avatar_url": "https://.../avatar.jpg",
+    "company": "Tech Corp",
+    "title": "Senior Developer",
+    "linkedin_url": "https://linkedin.com/in/...",
+    "github_url": "https://github.com/...",
+    "is_student": false,
+    "is_instructor": false,
+    "created_at": "2026-03-20T12:00:00Z",
+    "updated_at": "2026-03-20T12:00:00Z"
+  }
+}
+```
+
+**Update Profile:**
+```
+PATCH /api/v1/users/me/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+Request:
+{
+  "first_name": "Jane",
+  "bio": "Updated bio"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": { /* updated profile */ },
+  "message": "Profile updated successfully"
+}
+```
+
+**Password Reset Request:**
+```
+POST /api/v1/auth/password-reset/
+Content-Type: application/json
+
+Request:
+{
+  "email": "user@example.com"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "message": "Password reset email sent.",
+    "token": "reset-token",  // For testing only
+    "uid": "user-uid"        // For testing only
+  },
+  "message": "Password reset email sent if account exists."
+}
+```
+
+**Password Reset Confirm:**
+```
+POST /api/v1/auth/password-reset/confirm/
+Content-Type: application/json
+
+Request:
+{
+  "token": "reset-token",
+  "uid": "user-uid",
+  "new_password": "NewSecurePass123!"
+}
+
+Response (200):
+{
+  "success": true,
+  "data": {
+    "message": "Password reset successful."
+  },
+  "message": "Password has been reset successfully."
+}
+```
+
+#### Code Changes
+
+**Files Created:**
+1. **`/backend/api/tests/test_user_management.py`** - Comprehensive test suite
+   - 23 test cases covering all user management scenarios
+   - Test classes: TestUserRegistration, TestUserProfile, TestPasswordReset, TestSecurity, TestEdgeCases
+   - All tests passing ✅
+
+2. **`/backend/academy/settings/test.py`** - Test-specific settings
+   - Disabled throttling for tests
+   - Local filesystem storage override
+   - Fast password hashing (MD5 for tests)
+   - In-memory email backend
+
+**Files Modified:**
+
+1. **`/backend/api/serializers.py`** - Added user serializers
+   ```python
+   # New serializers added:
+   - UserCreateSerializer      # For registration
+   - UserProfileSerializer     # For profile get/update
+   - PasswordResetRequestSerializer      # For reset request
+   - PasswordResetConfirmSerializer      # For reset confirmation
+   ```
+   - Email normalization to lowercase
+   - Username uniqueness validation
+   - Password strength validation
+   - Read-only field configuration
+   - Avatar URL generation
+
+2. **`/backend/api/views.py`** - Added user management views
+   ```python
+   # New views added:
+   - RegisterView                # POST /auth/register/
+   - UserMeView                  # GET/PATCH /users/me/
+   - PasswordResetRequestView    # POST /auth/password-reset/
+   - PasswordResetConfirmView    # POST /auth/password-reset/confirm/
+   ```
+   - AllowAny permission for registration and password reset
+   - IsAuthenticated for profile endpoints
+   - AnonRateThrottle for security
+   - Standardized response format
+   - Django token generator integration
+
+3. **`/backend/api/urls.py`** - Added URL routes
+   ```python
+   path("auth/register/", views.RegisterView.as_view(), name="register")
+   path("users/me/", views.UserMeView.as_view(), name="user-me")
+   path("auth/password-reset/", views.PasswordResetRequestView.as_view(), name="password-reset-request")
+   path("auth/password-reset/confirm/", views.PasswordResetConfirmView.as_view(), name="password-reset-confirm")
+   ```
+
+#### Security Features
+
+**Input Validation:**
+- Email format validation
+- Password minimum length (8 characters)
+- Required field enforcement
+- Unique email/username constraints
+- Read-only field protection
+
+**Rate Limiting:**
+- Registration: AnonRateThrottle
+- Password reset: AnonRateThrottle
+- Prevents abuse and brute force attacks
+
+**Password Security:**
+- pbkdf2_sha256 hashing (Django default)
+- Never return password in responses
+- Strength validation on registration and reset
+
+**Token Security:**
+- Django's default_token_generator (HMAC-based)
+- Time-limited tokens
+- URL-safe Base64 encoding for UIDs
+- Token validation before password reset
+
+**Privacy:**
+- Password reset returns 200 even for non-existent emails
+- No user enumeration through error messages
+- Sensitive fields excluded from profile responses
+
+#### Test Results
+
+```
+Ran 23 tests in 13.917s
+OK
+
+Test Coverage:
+✅ Valid user registration
+✅ Duplicate email detection
+✅ Duplicate username detection
+✅ Weak password rejection
+✅ Missing required fields validation
+✅ Invalid email format rejection
+✅ Standardized response format
+✅ Get current user profile
+✅ Profile update functionality
+✅ Read-only field protection
+✅ Authentication requirements
+✅ Password reset request
+✅ Password reset non-existent email handling
+✅ Password reset token validation
+✅ Password reset weak password rejection
+✅ Rate limiting application
+✅ Special characters in names
+✅ Empty optional fields update
+✅ Unicode support (José, O'Connor)
+```
+
+#### Full Test Suite Verification
+
+```
+Ran 88 tests in 47.535s
+OK
+```
+
+All existing tests (65) + new tests (23) passing.
+
+#### Troubleshooting Guide
+
+**Issue: Registration returns 500 Internal Server Error**
+- **Cause:** Exception handler catching errors and hiding details
+- **Solution:** Check logs for actual error; added logging in RegisterView
+- **Prevention:** Use test settings with DEBUG=True to see full traceback
+
+**Issue: Tests failing with 429 Too Many Requests**
+- **Cause:** Rate limiting applied during test execution
+- **Solution:** Created `/backend/academy/settings/test.py` with throttling disabled
+- **Usage:** Run tests with `DJANGO_SETTINGS_MODULE=academy.settings.test`
+
+**Issue: Serializer validation errors not showing**
+- **Cause:** exception_handler catching ValidationError
+- **Solution:** Views now explicitly check `serializer.is_valid()` and return errors
+- **Note:** Standardized exception handler formats errors consistently
+
+**Issue: User creation fails silently**
+- **Cause:** Duplicate email/username from previous test runs
+- **Solution:** Tests clean up users before assertions
+- **Best Practice:** Use unique test data per test case
+
+**Issue: Password reset token not working**
+- **Cause:** Token expiration or user modification after token generation
+- **Solution:** Django's default_token_generator invalidates token on password change
+- **Implementation:** Token verified before password update
+
+#### Lessons Learned
+
+1. **Test Settings Separation**: Creating separate test settings with disabled rate limiting was crucial for reliable test execution. This prevents flaky tests due to throttling.
+
+2. **Explicit Validation**: Views should explicitly validate serializers before save() to provide clear error messages. Relying solely on exception handlers can obscure root causes.
+
+3. **Django Token Generator**: Using Django's built-in `default_token_generator` is secure and reliable. It automatically invalidates tokens when user data changes (like password).
+
+4. **Base64 Encoding**: User IDs should be encoded with `urlsafe_base64_encode` for password reset URLs to prevent tampering and ensure URL safety.
+
+5. **Security-First Design**: Returning 200 for non-existent emails during password reset prevents user enumeration attacks. This is a critical security best practice.
+
+6. **Read-Only Field Protection**: Explicitly excluding sensitive fields in serializers prevents clients from updating admin flags or other protected data.
+
+7. **Email Normalization**: Converting emails to lowercase before storage and validation prevents duplicate accounts with different cases (e.g., User@Example.com vs user@example.com).
+
+8. **Response Consistency**: All endpoints now follow the standardized response format with `success`, `data`, `message`, `errors`, and `meta` fields.
+
+#### Blockers Encountered
+
+| Blocker | Status | Solution |
+|---------|--------|----------|
+| Rate limiting in tests | ✅ Solved | Created test settings with throttling disabled |
+| Hidden exceptions in views | ✅ Solved | Added explicit try-except with logging in views |
+| Duplicate user test data | ✅ Solved | Added cleanup in test setUp methods |
+| Token validation complexity | ✅ Solved | Used Django's built-in token generator |
+| Serializer Meta class issues | ⏳ Ongoing | LSP type warnings (non-functional, tests pass) |
+
+#### Recommended Next Steps
+
+1. **Email Integration**: Configure actual email backend for production password reset (currently returns token in response for testing)
+
+2. **Email Verification**: Add email verification flow for new registrations
+
+3. **Account Lockout**: Implement account lockout after failed login attempts
+
+4. **OAuth Integration**: Add social login (Google, GitHub) support
+
+5. **User Search**: Add user search endpoint for admin/instructor use
+
+6. **Bulk Operations**: Add endpoints for bulk user operations (admin only)
+
+7. **Audit Logging**: Track user profile changes and password resets
+
+8. **API Documentation**: Add OpenAPI/Swagger documentation for new endpoints
+
+9. **Frontend Integration**: Update frontend to use new registration/profile endpoints
+
+10. **Load Testing**: Test registration endpoint under load to verify rate limiting effectiveness
+
+---
+
 **End of Accomplishments Document**

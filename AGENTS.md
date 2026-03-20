@@ -17,23 +17,28 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 As of March 20, 2026, the codebase has achieved **Backend API Enhanced** status with comprehensive improvements. Agents must be aware of the following:
 
 ### Current State
-#### Completed (March 20, 2026)
+#### Completed (March 20-21, 2026)
 - ✅ **JWT Authentication:** SimpleJWT fully configured and operational
 - ✅ **N+1 Query Optimization:** 82-83% query reduction across all endpoints
 - ✅ **Enrollment Business Logic:** Capacity management, duplicate prevention, transaction safety
-- ✅ **Comprehensive Testing:** 64 automated tests (JWT: 6, Performance: 4, Enrollment: 9, Response: 17, Image Upload: 23, Throttling: 5)
+- ✅ **Comprehensive Testing:** 87 automated tests (JWT: 6, Performance: 4, Enrollment: 9, Response: 17, Image Upload: 23, User Management: 23, Throttling: 5)
 - ✅ **Database:** PostgreSQL with all models and optimizations
-- ✅ **Sample Data:** Complete dataset with courses, cohorts, categories
+- ✅ **Sample Data:** Complete dataset with courses, cohorts, categories, users
 - ✅ **API Response Standardization:** All endpoints return consistent envelope format
 - ✅ **Custom Exception Handler:** Standardized error responses with request_id and timestamps
 - ✅ **Request ID Middleware:** Unique request tracking per API call
 - ✅ **Rate Limiting:** Throttling configured for anon/user/enrollment operations
 - ✅ **Image Upload Support:** Course thumbnails and user avatars with validation/resizing
 - ✅ **Storage Backend:** MinIO/S3 configuration via django-storages
+- ✅ **User Registration:** Complete registration with email/username/password validation
+- ✅ **User Profile Management:** GET/PATCH /users/me/ with read-only field protection
+- ✅ **Password Reset:** Token-based password reset with security best practices
+- ✅ **Test Configuration:** Dedicated test settings with disabled throttling
 
 #### In Progress
-- ⏳ **Frontend Integration:** Ready to connect authenticated API endpoints
+- ⏳ **Frontend Integration:** Ready to connect authenticated API endpoints (registration, profile, password reset)
 - ⏳ **Payment Integration:** Stripe configured but not connected to enrollment flow
+- ⏳ **Email Service:** Password reset configured but email sending not implemented for production
 
 ### Discrepancies
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |

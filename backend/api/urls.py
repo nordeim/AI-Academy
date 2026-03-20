@@ -28,6 +28,19 @@ urlpatterns = [
         views.UserAvatarUploadView.as_view(),
         name="user-upload-avatar",
     ),
+    # User management endpoints
+    path("auth/register/", views.RegisterView.as_view(), name="register"),
+    path("users/me/", views.UserMeView.as_view(), name="user-me"),
+    path(
+        "auth/password-reset/",
+        views.PasswordResetRequestView.as_view(),
+        name="password-reset-request",
+    ),
+    path(
+        "auth/password-reset/confirm/",
+        views.PasswordResetConfirmView.as_view(),
+        name="password-reset-confirm",
+    ),
     # JWT Authentication endpoints
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
