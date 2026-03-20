@@ -15,6 +15,7 @@ from .serializers import (
     EnrollmentSerializer,
     EnrollmentCreateSerializer,
 )
+from .throttles import EnrollmentThrottle
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -84,6 +85,7 @@ class CohortViewSet(viewsets.ReadOnlyModelViewSet):
 class EnrollmentViewSet(viewsets.ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [EnrollmentThrottle]
 
     def get_serializer_class(self):
         if self.action == "create":
