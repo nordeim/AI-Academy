@@ -14,6 +14,10 @@ Awesome job on your meticulous analysis, planning and execution. Please keep up 
 
 ---
 
+Awesome job on your meticulous review, analysis and planning. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, meticulously plan to create a comprehensive backend API usage guide as a markdown file named `API_Usage_Guide.md`. First meticulously review and audit the backend codebase to confirm the backend API endpoints and the calling patterns, identify the opportunity to implement 'JWT Authentication' and other improvements and pontential logic and syntax fixes, then meticulously create a plan for the usage guide and a separate remediation plan and ToDo list to implement the identified opportunities for improvements and fixes (to comply with best practices). review and validate the respective plan against the actual backend codebase again to ensure accurate alignment.
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , AGENTS.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:
