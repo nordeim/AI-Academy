@@ -1329,3 +1329,31 @@ API_Usage_Guide.md:
 - Cache performance impact table
 - Known test issues documented
 
+## Goal Audit and fix the user management implementation to resolve 17 pre-existing test failures in test_user_management.py. The user requested a meticulous approach: identify root cause, evaluate for gaps/issues, validate findings against codebase, and create a remediation plan. ## Instructions - Meticulously audit the backend codebase on user management implementation - Identify root cause of outstanding test failures - Evaluate for gaps/issues and areas for improvement - Validate findings against actual codebase - Create and implement remediation plan ## Discoveries ### Root Cause Identified The 17 test failures were caused by a configuration mismatch: - RegisterView and PasswordResetRequestView have throttle_classes = [AnonRateThrottle] - AnonRateThrottle requires 'anon' scope in DEFAULT_THROTTLE_RATES - Test settings set DEFAULT_THROTTLE_RATES = {} (empty dict) - This caused ImproperlyConfigured: No default throttle rate set for 'anon' scope - Exception handler hid the real error, returning generic 500 ### Secondary Issue Password hashing test expected pbkdf2_sha256$ but test settings use MD5 for speed ### Tertiary Issue Throttling tests fail because: - Test settings disable DEFAULT_THROTTLE_CLASSES - Throttling tests need throttling enabled with override_settings - Caching bypasses throttle counting (cache needs to be cleared) ## Accomplished ### Completed 1. Created comprehensive audit report: /home/project/AI-Academy/AUDIT_USER_MANAGEMENT.md 2. Fixed test settings to preserve throttle rates: python REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = { "anon": "1000/minute", "user": "10000/minute", "enrollment": "100/minute", }  3. Fixed password test to accept both hash formats: python self.assertTrue( user.password.startswith("pbkdf2_sha256$") or user.password.startswith("md5$") )  4. All 24 user management tests now pass ### In Progress Fixing throttling tests to use method-level override_settings with cache clearing. Updated 2 of 5 test methods so far. ### Remaining - Complete updating remaining throttling test methods (test_enrollment_throttle, test_rate_limits_per_user, test_throttle_response_format) - Run full test suite to verify all 160 tests pass ## Relevant Files ### Modified Files 1. /backend/academy/settings/test.py - Added throttle rates for explicit throttle classes 2. /backend/api/tests/test_user_management.py - Fixed password hash assertion 3. /backend/api/tests/test_throttling.py - Updated to use method-level override_settings (partially complete) ### Created Files 1. /home/project/AI-Academy/AUDIT_USER_MANAGEMENT.md - Comprehensive audit report ### Key Code Changes test.py (current state): python TESTING = True REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = [] REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = { "anon": "1000/minute", "user": "10000/minute", "enrollment": "100/minute", }  test_throttling.py (partial - needs completion): python from django.core.cache import cache # Added import class RateLimitingTests(APITestCase): def test_anonymous_rate_limiting(self): cache.clear() with override_settings(REST_FRAMEWORK={...}): # test code def test_authenticated_rate_limiting(self): cache.clear() with override_settings(REST_FRAMEWORK={...}): # test code # Still need to update: # - test_enrollment_throttle # - test_rate_limits_per_user # - test_throttle_response_format  ### Next Steps 1. Update remaining 3 throttling test methods with cache.clear() and override_settings 2. Run full test suite: DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test --no-input 3. Verify all 160 tests pass 4. Update documentation with fixes
+
+---
+
+# Todos
+[✓] Analyze why override_settings doesn't work for throttling
+[✓] Fix throttling tests - need different approach
+[✓] Fix request_id uniqueness test (caching issue)
+[✓] Run full test suite to verify all tests pass
+[✓] Update audit report with final status
+---
+Summary
+All 160 tests now pass. Here's what was accomplished:
+Issues Fixed
+1. Throttle Scope Configuration - Updated test settings to preserve throttle rates for views with explicit throttle_classes
+2. Password Hash Assertion - Updated test to accept both production (pbkdf2_sha256) and test (md5) hash formats
+3. Throttling Tests - Rewrote tests using custom throttle classes with low hardcoded rates, patched directly onto views
+4. Request ID Uniqueness - Added cache clearing between requests to ensure unique request IDs
+Key Files Modified
+- /backend/academy/settings/test.py - Preserved throttle rates
+- /backend/api/tests/test_user_management.py - Fixed password assertion
+- /backend/api/tests/test_throttling.py - Complete rewrite with custom throttle classes
+- /backend/api/tests/test_response_standardization.py - Added cache clearing
+Test Results
+Ran 160 tests in 4.575s
+OK
+The audit report has been updated at /home/project/AI-Academy/AUDIT_USER_MANAGEMENT.md.
+

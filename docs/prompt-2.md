@@ -30,6 +30,16 @@ Awesome job on your meticulous review, analysis and planning. Please keep up the
 
 ---
 
+Awesome job on your meticulous review, analysis and planning. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, meticulously plan to audit the backend codebase on the user management implementation to identify the root cause of outstanding test failures. also carefully evaluate the backend implementation for user management to identify any gaps/issues or any areas for improvement. then carefully validate any findings against the actual codebase again to ensure architectural alignment before meticulously create a remediation plan to fix any validated issues and to implement any validated suggestions for improvements. 
+
+1. Audit the backend user management implementation
+2. Identify root causes of outstanding test failures (17 failures in test_user_management.py)
+3. Evaluate for gaps/issues/areas for improvement
+4. Validate findings against actual codebase
+5. Create a remediation plan
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:

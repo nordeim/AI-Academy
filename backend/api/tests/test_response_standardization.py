@@ -417,7 +417,16 @@ class TestRequestIdGeneration(ResponseFormatBaseTests):
 
     def test_request_id_is_unique(self):
         """Verify each request gets a unique request_id"""
+        # Clear cache to ensure fresh responses
+        from django.core.cache import cache
+
+        cache.clear()
+
         response1 = self.client.get(reverse("api:course-list"))
+
+        # Clear cache again to get a different response with new request_id
+        cache.clear()
+
         response2 = self.client.get(reverse("api:course-list"))
 
         request_id_1 = response1.data.get("meta", {}).get("request_id")

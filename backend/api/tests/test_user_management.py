@@ -82,7 +82,11 @@ class TestUserRegistration(UserManagementBaseTests):
         self.assertEqual(user.last_name, "User")
 
         # Verify password is hashed (not plain text)
-        self.assertTrue(user.password.startswith("pbkdf2_sha256$"))
+        # Test settings may use different hasher (MD5 for speed)
+        self.assertTrue(
+            user.password.startswith("pbkdf2_sha256$")
+            or user.password.startswith("md5$")
+        )
 
     def test_duplicate_email(self):
         """Verify registration fails with duplicate email"""
@@ -519,6 +523,7 @@ class TestEdgeCases(UserManagementBaseTests):
         self.assertEqual(user.bio, "")
         self.assertEqual(user.phone, "")
 
+
 class TestAccessControl(UserManagementBaseTests):
     """Test access control and permissions"""
 
@@ -543,7 +548,7 @@ class TestAccessControl(UserManagementBaseTests):
         # The /users/me/ endpoint should only return the authenticated user
         # There's no endpoint to access specific user profiles
         response = self.client.get(reverse("api:user-me"))
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Should return user1's data, not user2's
         self.assertEqual(response.data["data"]["email"], "user1@example.com")
