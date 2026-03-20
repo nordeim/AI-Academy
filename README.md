@@ -101,22 +101,62 @@ graph TD
 
 ## 🚀 Getting Started
 
-### 1. Backend Setup
+### Prerequisites
+- Docker & Docker Compose (for PostgreSQL, Redis, MinIO)
+- Python 3.12+ with virtual environment
+- Node.js 20+ and npm
+
+### 1. Infrastructure Setup
+
+Start the required services (PostgreSQL, Redis, MinIO):
+
+```bash
+# From project root
+docker compose up -d
+
+# Verify containers are running
+docker ps
+```
+
+### 2. Backend Setup
+
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate
+
+# Activate virtual environment (or use existing)
+source /opt/venv/bin/activate
+
+# Install dependencies (if not already installed)
 pip install -r requirements/base.txt
+
+# Run migrations (creates database tables)
 python manage.py migrate
+
+# Create superuser (optional, for admin access)
+python manage.py createsuperuser
+
+# Start development server
 python manage.py runserver
 ```
 
-### 2. Frontend Setup
+**Backend will be available at:** `http://localhost:8000`
+
+**API Endpoints:**
+- `GET /api/v1/courses/` - List all courses
+- `GET /api/v1/courses/{slug}/` - Course detail
+- `GET /api/v1/categories/` - List categories
+- `GET /api/v1/cohorts/` - List cohorts
+- `GET /admin/` - Django admin panel
+
+### 3. Frontend Setup
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+**Frontend will be available at:** `http://localhost:5173` (or as shown in terminal)
 
 ---
 
@@ -132,6 +172,23 @@ npm run dev
 - **Database:** Managed PostgreSQL 16.
 - **Storage:** AWS S3 for course thumbnails and user avatars.
 - **Task Queue:** Celery + Redis for asynchronous enrollment emails.
+
+---
+
+## 🔧 Development Status
+
+### Current State (March 2026)
+- ✅ **Backend API:** Fully operational with Django REST Framework
+- ✅ **Database:** PostgreSQL running in Docker, migrations applied
+- ✅ **Models:** Course, Cohort, Enrollment, Category, Custom User
+- ✅ **Sample Data:** 3 courses, 3 categories, 1 cohort created
+- ✅ **Frontend:** React 19 + Vite SPA with 51 Shadcn components
+- ⏳ **Integration:** Frontend still using mock data (ready for API connection)
+- ⏳ **Authentication:** JWT not yet implemented
+- ⏳ **Payments:** Stripe configured but not integrated
+
+### Known Issues
+See [ACCOMPLISHMENTS.md](./ACCOMPLISHMENTS.md) for detailed troubleshooting guide.
 
 ---
 

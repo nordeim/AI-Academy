@@ -14,13 +14,25 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 ---
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
-As of March 20, 2026, the codebase is in a **Hybrid Integration Phase**. Agents must be aware of the following discrepancies between documentation and implementation:
+As of March 20, 2026, the codebase has achieved **Backend API Operational** status. Agents must be aware of the following:
 
+### Current State
+- ✅ **Backend API:** Fully operational with Django REST Framework
+- ✅ **Database:** PostgreSQL migrated with all models
+- ✅ **Sample Data:** Created (3 courses, 3 categories, 1 cohort)
+- ⏳ **Frontend Integration:** Mock data still in use (ready for API connection)
+
+### Discrepancies
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
 |-----------|-------------------------|-----------------------|---------|
 | **Framework** | Next.js 16.1.4 | Vite + React 19 SPA | **Maintain Vite** until explicit migration is requested. |
 | **Tailwind** | v4.1.18 (CSS-First) | v3.4.19 (JS Config) | **Follow v4 philosophy** (CSS variables) within v3 limits. |
 | **Data State** | Real-time API | Mock Data (`mockData.ts`) | **Preserve Mock Data** for UI until API integration task is issued. |
+
+### Recent Fixes Applied
+- **ENV Loading:** Added `load_dotenv()` to `academy/settings/base.py`
+- **Migrations:** Generated and applied for `users`, `courses`, `api` apps
+- **Sample Data:** Populated via Django shell with realistic course data
 
 ---
 

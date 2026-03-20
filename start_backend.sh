@@ -241,7 +241,90 @@ WARNINGS:
 ?: (security.W016) You have 'django.middleware.csrf.CsrfViewMiddleware' in your MIDDLEWARE, but you have not set CSRF_COOKIE_SECURE to True. Using a secure-only CSRF cookie makes it more difficult for network traffic sniffers to steal the CSRF token.
 ?: (security.W018) You should not have DEBUG set to True in deployment.
 
+# Create Django superuser properly in /home/project/AI-Academy/backend
+$ python manage.py shell -c "
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(email='admin@example.com').exists():
+    User.objects.create_superuser(
+        username='admin',
+        email='admin@example.com',
+        password='adminpass123',
+        first_name='Admin',
+        last_name='User'
+    )
+    print('Superuser created')
+else:
+    print('Superuser already exists')
+"
+16 objects imported automatically (use -v 2 for details).
+Superuser created
+Thinking: Now let me create some sample data to test the API
+# Create sample data for API testing in /home/project/AI-Academy/backend
+$ python manage.py shell -c "
+from courses.models import Category, Course
+from django.utils import timezone
+import datetime
+# Create categories if they don't exist
+categories_data = [
+    {'name': 'AI Engineering', 'slug': 'ai-engineering', 'color': '#4f46e5', 'icon': 'Cpu'},
+    {'name': 'Machine Learning', 'slug': 'machine-learning', 'color': '#06b6d4', 'icon': 'Brain'},
+    {'name': 'Data Science', 'slug': 'data-science', 'color': '#f59e0b', 'icon': 'Database'},
+]
+for data in categories_data:
+    Category.objects.get_or_create(slug=data['slug'], defaults=data)
+print(f'Categories: {Category.objects.count()}')
+# Create a featured course if none exist
+if not Course.objects.filter(slug='ai-engineering-bootcamp').exists():
+    category = Category.objects.get(slug='ai-engineering')
+    course = Course.objects.create(
+        title='AI Engineering Bootcamp',
+        slug='ai-engineering-bootcamp',
+        subtitle='Master production-grade AI development',
+        description='A comprehensive bootcamp covering transformer architectures, LLM deployment, and RAG systems.',
+        level='intermediate',
+        modules_count=12,
+        duration_weeks=8,
+        duration_hours=40,
+        price=2499.00,
+        currency='USD',
+        status='published',
+        is_featured=True,
+        rating=4.8,
+        review_count=127,
+        enrolled_count=89,
+        published_at=timezone.now()
+    )
+    course.categories.add(category)
+    print(f'Course created: {course.title}')
+else:
+    print('Course already exists')
+print(f'Total courses: {Course.objects.count()}')
+"
+16 objects imported automatically (use -v 2 for details).
+Categories: 3
+Course created: AI Engineering Bootcamp
+Total courses: 1
+Thinking: Now let me start the Django development server and test the
+# Start Django development server in /home/project/AI-Academy/backend
+$ timeout 5 python manage.py runserver 0.0.0.0:8000 2>&1 &
+sleep 2
+echo "---"
+echo "Server started, testing endpoints..."
+Watching for file changes with StatReloader
+---
+Server started, testing endpoints...
+Thinking: ...
+# Test API root endpoint
+$ curl -s http://localhost:8000/api/v1/ 2>&1 | head -30
+# Test courses API endpoint
+$ curl -s http://localhost:8000/api/v1/courses/ 2>&1 | python -m json.tool 2>&1 | head -50
+Expecting value: line 1 column 1 (char 0)
+# Test categories API endpoint
+$ curl -s http://localhost:8000/api/v1/categories/ 2>&1 | python -m json.tool 2>&1 | head -30
+Expecting value: line 1 column 1 (char 0)
 
+---
 
 $ source /opt/venv/bin/activate && cd /home/project/AI-Academy/backend && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py check
 Traceback (most recent call last):
