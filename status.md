@@ -202,3 +202,25 @@ Django settings
 ---
 Conclusion: The migration fails because Django's settings module reads environment variables that were never populated from the .env file. Adding load_dotenv() to base.py will resolve this.
 
+---
+
+# Verify tables created in PostgreSQL
+$ docker exec ai-academy-postgres psql -U academy_user -d academy_db -c "\dt"
+List of relations
+ Schema |            Name             | Type  |    Owner     
+--------+-----------------------------+-------+--------------
+ public | auth_group                  | table | academy_user
+ public | auth_group_permissions      | table | academy_user
+ public | auth_permission             | table | academy_user
+ public | courses_category            | table | academy_user
+ public | courses_cohort              | table | academy_user
+ public | courses_course              | table | academy_user
+ public | courses_course_categories   | table | academy_user
+…
+Click to expand
+--- # Migration Fix Complete ## Summary Root Cause: The .env file was not being loaded by Django's settings module. Fix Applied: Added python-dotenv loading to backend/academy/settings/base.py:
+from dotenv import load_dotenv
+...
+load_dotenv(BASE_DIR / '.env')
+Additional Issue Found: Initial migrations didn't exist. Created them with makemigrations. ## Verification Results | Check | Status | |-------|--------| | Environment variables loaded | ✅ DB_PASSWORD: academy_secret | | Database connection | ✅ Connected to PostgreSQL | | Migrations applied | ✅ 15 tables created | | Django check | ✅ System check passed (warnings for dev-only) | ## Tables Created  courses_category courses_course courses_course_categories courses_cohort courses_enrollment users_user users_user_groups users_user_user_permissions auth_group, auth_permission, etc. django_admin_log, django_session, etc. 
+

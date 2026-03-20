@@ -197,6 +197,52 @@ Running migrations:
     raise ex.with_traceback(None)
 …
 
+# Create initial Django migrations in /home/project/AI-Academy/backend
+$ python manage.py makemigrations 2>&1
+No changes detected
+# Create migrations for specific apps in /home/project/AI-Academy/backend
+$ python manage.py makemigrations users courses api 2>&1
+Migrations for 'courses':
+  courses/migrations/0001_initial.py
+    + Create model Category
+    + Create model Cohort
+    + Create model Course
+    + Create model Enrollment
+  courses/migrations/0002_initial.py
+    + Add field instructor to cohort
+    + Add field categories to course
+    + Add field course to cohort
+…
+Click to expand
+Now run migrations again:
+# Apply all Django migrations in /home/project/AI-Academy/backend
+$ python manage.py migrate 2>&1
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, courses, sessions, users
+Running migrations:
+  Applying courses.0001_initial... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0001_initial... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+…
+Click to expand
+Let me run a final verification:
+# Verify Django deployment and migrations in /home/project/AI-Academy/backend
+$ python manage.py check --deploy 2>&1 && echo "---" && python manage.py showmigrations 2>&1 | head -30
+System check identified some issues:
+WARNINGS:
+?: (security.W004) You have not set a value for the SECURE_HSTS_SECONDS setting. If your entire site is served only over SSL, you may want to consider setting a value and enabling HTTP Strict Transport Security. Be sure to read the documentation first; enabling HSTS carelessly can cause serious, irreversible problems.
+?: (security.W008) Your SECURE_SSL_REDIRECT setting is not set to True. Unless your site should be available over both SSL and non-SSL connections, you may want to either set this setting True or configure a load balancer or reverse-proxy server to redirect all connections to HTTPS.
+?: (security.W009) Your SECRET_KEY has less than 50 characters, less than 5 unique characters, or it's prefixed with 'django-insecure-' indicating that it was generated automatically by Django. Please generate a long and random value, otherwise many of Django's security-critical features will be vulnerable to attack.
+?: (security.W012) SESSION_COOKIE_SECURE is not set to True. Using a secure-only session cookie makes it more difficult for network traffic sniffers to hijack user sessions.
+?: (security.W016) You have 'django.middleware.csrf.CsrfViewMiddleware' in your MIDDLEWARE, but you have not set CSRF_COOKIE_SECURE to True. Using a secure-only CSRF cookie makes it more difficult for network traffic sniffers to steal the CSRF token.
+?: (security.W018) You should not have DEBUG set to True in deployment.
+
+
+
 $ source /opt/venv/bin/activate && cd /home/project/AI-Academy/backend && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py check
 Traceback (most recent call last):
   File "/opt/venv/lib/python3.12/site-packages/django/db/backends/base/base.py", line 279, in ensure_connection
