@@ -4,7 +4,7 @@
 [![Django 6.0](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
 [![Tailwind 4](https://img.shields.io/badge/Tailwind-4.1-38bdf8.svg)](https://tailwindcss.com/)
 [![WCAG AAA](https://img.shields.io/badge/Accessibility-AAA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
-[![Tests](https://img.shields.io/badge/Tests-188_passing-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-210_passing-brightgreen.svg)](#testing)
 
 **AI Academy** is an elite, full-stack educational platform built for the next generation of AI Engineers. It features a decoupled architecture using a high-performance **Vite + React SPA** and a robust **Django REST API**, all wrapped in a distinctive **"Precision Futurism"** design language.
 
@@ -140,7 +140,8 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 | User Management | 24 | ✅ |
 | API Documentation | 15 | ✅ |
 | Admin Fieldset Corrections | 13 | ✅ |
-| **Total** | **188** | **✅ All passing** |
+| Request Logging | 22 | ✅ |
+| **Total** | **210** | **✅ All passing** |
 
 ---
 
@@ -160,7 +161,7 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 - ✅ **Image Upload:** Course thumbnails and user avatars with validation
 - ✅ **User Management:** Registration, profile, password reset endpoints
 - ✅ **Redis Caching:** High-traffic endpoints cached with automatic invalidation
-- ✅ **Comprehensive Testing:** 188 automated tests (ALL PASSING)
+- ✅ **Comprehensive Testing:** 210 automated tests (ALL PASSING)
 - ✅ **Rate Limiting:** Throttling configured and verified with custom test classes
 - ✅ **API Documentation:** Interactive Swagger UI and ReDoc documentation
 

@@ -1589,3 +1589,109 @@ Test Status: 188/188 passing ✅
 Next Step
 Step 12: Request Logging Middleware - Implement audit trail for API usage tracking.
 
+---
+
+The current implementation has basic logging, but we need:
+1. More comprehensive API usage logging (audit trail)
+2. Separate logger for API audit logs
+3. Additional metadata (user info, IP, etc.)
+4. Test coverage for the middleware
+Phase 1: PLANNING
+Goals:
+1. Create a dedicated APILoggingMiddleware for comprehensive audit logging
+2. Configure a separate logger for API audit trails
+3. Include user identification, IP address, user agent
+4. Handle exceptions gracefully
+5. Support configurable log levels
+Test-Driven Development Approach:
+Step 1: Write RED tests (before implementation)
+- Test middleware instantiation
+- Test request logging with all metadata
+- Test user identification (authenticated vs anonymous)
+- Test duration calculation
+- Test exception handling
+- Test log level configuration
+Step 2: Write middleware implementation (GREEN)
+- Create APILoggingMiddleware class
+- Add comprehensive logging with user info, IP, user-agent
+- Handle exceptions gracefully
+- Configure logging in settings
+Step 3: Refactor
+- Optimize logging format
+- Add configuration options
+- Ensure thread safety
+Let me create
+Step 12: Request Logging Middleware - Meticulous Plan
+Phase 1: Analysis & Planning
+Current State: Basic logging exists in RequestIDMiddleware, but Step 12 requires a dedicated audit trail with comprehensive metadata.
+Requirements from REMEDIATION_PLAN:
+- Audit trail of API usage
+- Request method, path, status code, duration
+- User identification
+- IP address and user agent
+- Configurable log levels
+Phase 2: TDD Implementation Plan
+Test-Driven Development: RED → GREEN → REFACTOR
+1. RED Phase: Write 15 comprehensive tests for middleware
+2. GREEN Phase: Implement APILoggingMiddleware
+3. REFACTOR Phase: Optimize logging configuration
+Files to Create/Modify:
+- /backend/api/tests/test_request_logging.py - NEW (15 tests)
+- /backend/api/middleware.py - MODIFY (add APILoggingMiddleware)
+- /backend/academy/settings/base.py - MODIFY (add logger
+# Todos
+Step 12.1: Write TDD tests for request logging middleware (RED phase)
+Step 12.2: Implement APILoggingMiddleware class
+Step 12.3: Configure API logger in settings
+Step 12.4: Register middleware in MIDDLEWARE stack
+Step 12.5: Run tests and verify all 200+ tests pass
+Step 12.6: Update documentation files
+
+---
+
+# Verify final test count
+$ cd /home/project/AI-Academy/backend && DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test --noinput 2>&1 | tail -10
+INFO POST /api/v1/auth/register/ - 400 - 0.005s - RequestID: 763ccb54-0d3d-4ebb-b423-93be1309f0f7
+WARNING Bad Request: /api/v1/auth/register/
+.
+----------------------------------------------------------------------
+Ran 210 tests in 5.675s
+OK
+Destroying test database for alias 'default'...
+Found 210 test(s).
+System check identified no issues (0 silenced).
+Thinking: Perfect! I have successfully completed Step 12. Let
+✅ Step 12 Complete: Request Logging Middleware
+Summary
+Successfully implemented comprehensive API request logging middleware following Test-Driven Development (TDD) methodology with all 210 tests passing.
+Implementation Details
+Files Created:
+- /backend/api/tests/test_request_logging.py (384 lines) - 22 comprehensive tests
+Files Modified:
+- /backend/api/middleware.py - Added APILoggingMiddleware class
+- /backend/academy/settings/base.py - Added LOGGING configuration and registered middleware
+Key Features
+1. Comprehensive Audit Trail: Logs all API requests with structured format
+2. Rich Metadata: Method, path, status code, duration, user, IP, request_id, user agent
+3. Smart Filtering: Skips static, media, admin, and non-API paths
+4. Performance Optimized: <1ms overhead per request
+5. File Rotation: 10MB per file, 10 backups
+6. Proxy Support: Handles X-Forwarded-For headers
+Log Format
+INFO GET /api/v1/courses/ - 200 - 3.22ms - testuser - 127.0.0.1 - <request_id> - Mozilla/5.0...
+Test Coverage (22 Tests)
+- ✅ Basic logging (method, path, status, duration)
+- ✅ All HTTP methods (GET, POST, PUT, PATCH, DELETE)
+- ✅ All status codes (200, 201, 400, 401, 403, 404, 500)
+- ✅ Path filtering (non-API, static, media, admin)
+- ✅ User info (authenticated, anonymous)
+- ✅ Request metadata (ID, IP, user agent)
+- ✅ Performance overhead
+- ✅ Error handling
+Documentation Updated
+- ✅ AGENTS.md - Added Step 12 completion
+- ✅ README.md - Updated to 210 tests
+- ✅ ACCOMPLISHMENTS.md - Added Milestone 15
+- ✅ REMEDIATION_PLAN.md - Marked Step 12 as complete
+Status: ✅ All 210 tests passing | Ready for execution
+
