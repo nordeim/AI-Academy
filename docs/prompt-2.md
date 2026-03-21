@@ -30,6 +30,20 @@ Awesome job on your meticulous review, analysis and planning. Please keep up the
 
 ---
 
+Awesome job on your meticulous review, analysis and planning. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, meticulously review and systematically analyze the frontend codebase in @frontend/ to check how it calls and interfaces the backend APIs, then meticulously compare the frontend API calls against the @API_Usage_Guide.md to check for any misalignment and for any wrong methods, payloads and format. Based on findings from a meticulously code review of the frontend, meticulously plan to create a remediation plan to fix all the validated integration issues. Review and validate the remediation plan against the actual codebase again to check for accurate alignment before proceeding to execute it. remember to use TDD to make any code changes.
+
+Systematically analyze the frontend codebase to check how it interfaces with the backend APIs. I need to:
+1. Check the frontend/src directory structure
+2. Look for API-related files (services, hooks, utils)
+3. Check the components that make API calls
+4. Compare against the API_Usage_Guide.md
+
+---
+
+Awesome meticulous job so far. Please keep up the good work. Yes, please meticulously proceed with the frontend remediation plan phase by phase. before starting each phase, create a sub-plan with ToDO list, review and validate it against the codebase again to check accurate alignment before executing the sub-plan.
+
+---
+
 Awesome job on your meticulous review, analysis and planning. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, meticulously plan to audit the backend codebase on the user management implementation to identify the root cause of outstanding test failures. also carefully evaluate the backend implementation for user management to identify any gaps/issues or any areas for improvement. then carefully validate any findings against the actual codebase again to ensure architectural alignment before meticulously create a remediation plan to fix any validated issues and to implement any validated suggestions for improvements. 
 
 1. Audit the backend user management implementation
