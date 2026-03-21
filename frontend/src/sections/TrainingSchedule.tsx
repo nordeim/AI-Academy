@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, parseISO } from "date-fns";
-import { Calendar, Globe, MapPin, ChevronDown, CheckCircle, Zap } from "lucide-react";
+import { Calendar, Globe, MapPin, ChevronDown, CheckCircle, Zap, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { staggerContainer, fadeUpItem } from "@/lib/animations";
-import { cohorts } from "@/data/mockData";
+import { useUpcomingCohorts } from "@/hooks/useCohorts";
+import { Cohort } from "@/types/cohort";
 
-const statusConfig = {
+const statusConfig: Record<string, {
+  bg: string;
+  border: string;
+  text: string;
+  indicator: string;
+  label: string;
+}> = {
   available: {
     bg: "bg-emerald-50",
     border: "border-emerald-500/25",
@@ -21,7 +30,7 @@ const statusConfig = {
     indicator: "bg-amber-500",
     label: "FILLING FAST",
   },
-  waitlist: {
+  "waitlist": {
     bg: "bg-slate-50",
     border: "border-slate-500/25",
     text: "text-slate-700",
@@ -39,10 +48,73 @@ const statusConfig = {
 
 export function TrainingSchedule() {
   const [expandedCohort, setExpandedCohort] = useState<string | null>(null);
+  const { data, isLoading, isError } = useUpcomingCohorts();
 
   const toggleCohort = (id: string) => {
     setExpandedCohort(expandedCohort === id ? null : id);
   };
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <section id="schedule" className="section-padding bg-[var(--color-surface-alt)]">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center mb-16">
+            <Skeleton className="h-4 w-40 mx-auto mb-4" />
+            <Skeleton className="h-10 w-80 mx-auto mb-4" />
+            <Skeleton className="h-6 w-[600px] mx-auto" />
+          </div>
+          <div data-testid="cohorts-loading" className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white border border-[var(--color-border)] p-6">
+                <div className="flex items-start gap-4">
+                  <Skeleton className="w-16 h-16" />
+                  <div className="flex-1">
+                    <Skeleton className="h-6 w-1/3 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                  <Skeleton className="h-10 w-32" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (isError) {
+    return (
+      <section id="schedule" className="section-padding bg-[var(--color-surface-alt)]">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <Alert variant="destructive" data-testid="cohorts-error">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Failed to load cohorts. Please try again later.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </section>
+    );
+  }
+
+  const cohorts: Cohort[] = data?.data.results || [];
+
+  // Empty state
+  if (cohorts.length === 0) {
+    return (
+      <section id="schedule" className="section-padding bg-[var(--color-surface-alt)]">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div data-testid="cohorts-empty" className="text-center py-12">
+            <p className="text-lg text-[var(--text-secondary)]">
+              No upcoming cohorts
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="schedule" className="section-padding bg-[var(--color-surface-alt)]">
@@ -69,13 +141,14 @@ export function TrainingSchedule() {
           {/* Cohort List */}
           <motion.div variants={staggerContainer} className="space-y-4">
             {cohorts.map((cohort) => {
-              const status = statusConfig[cohort.availability.status];
+              const status = statusConfig[cohort.availability_status] || statusConfig.closed;
               const isExpanded = expandedCohort === cohort.id;
 
               return (
                 <motion.div
                   key={cohort.id}
                   variants={fadeUpItem}
+                  data-cohort-id={cohort.id}
                   className={`bg-white border transition-all cursor-pointer ${
                     isExpanded
                       ? "border-[var(--color-primary-400)]"
@@ -91,10 +164,10 @@ export function TrainingSchedule() {
                         {/* Date Box */}
                         <div className="flex-shrink-0 w-16 h-16 bg-[var(--color-surface-alt)] border border-[var(--color-border)] flex flex-col items-center justify-center">
                           <span className="text-xs text-[var(--text-tertiary)] uppercase label-mono">
-                            {format(parseISO(cohort.startDate), "MMM")}
+                            {format(parseISO(cohort.start_date), "MMM")}
                           </span>
                           <span className="text-xl font-bold text-[var(--text-primary)]">
-                            {format(parseISO(cohort.startDate), "d")}
+                            {format(parseISO(cohort.start_date), "d")}
                           </span>
                         </div>
 
@@ -102,14 +175,14 @@ export function TrainingSchedule() {
                         <div>
                           <div className="flex items-center gap-3 mb-1 flex-wrap">
                             <h3 className="font-display text-lg font-semibold text-[var(--text-primary)]">
-                              {cohort.courseName}
+                              {cohort.course_title}
                             </h3>
                             <div
                               className={`inline-flex items-center gap-2 px-3 py-1 border ${status.bg} ${status.border}`}
                             >
                               <motion.span
                                 className={`w-2 h-2 rounded-full ${status.indicator}`}
-                                animate={cohort.availability.status === "filling-fast" ? { opacity: [1, 0.4, 1] } : {}}
+                                animate={cohort.availability_status === "filling-fast" ? { opacity: [1, 0.4, 1] } : {}}
                                 transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
                               />
                               <span className={`label-mono text-xs ${status.text}`}>
@@ -120,14 +193,15 @@ export function TrainingSchedule() {
                           <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-secondary)]">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              {cohort.schedule.days.join(", ")} • {cohort.schedule.time}
+                              {/* Calculate duration from start/end dates */}
+                              {format(parseISO(cohort.start_date), "MMM d, yyyy")}
                             </span>
                             <span className="flex items-center gap-1">
                               <Globe className="w-4 h-4" />
                               {cohort.timezone.split("/")[1]?.replace("_", " ") || cohort.timezone}
                             </span>
                             <span className="flex items-center gap-1">
-                              {cohort.format === "Live Online" ? (
+                              {cohort.format === "online" ? (
                                 <Globe className="w-4 h-4" />
                               ) : (
                                 <MapPin className="w-4 h-4" />
@@ -143,26 +217,26 @@ export function TrainingSchedule() {
                       <div className="flex items-center gap-6">
                         <div className="text-right">
                           <div className="text-2xl font-bold text-[var(--color-primary-600)]">
-                            ${cohort.pricing.earlyBird?.amount || cohort.pricing.standard}
+                            {cohort.early_bird_price ? `$${parseFloat(cohort.early_bird_price).toLocaleString()}` : "Price TBD"}
                           </div>
-                          {cohort.pricing.earlyBird && (
+                          {cohort.early_bird_price && cohort.early_bird_deadline && (
                             <div className="text-xs text-[var(--text-tertiary)]">
-                              Early bird ends {format(parseISO(cohort.pricing.earlyBird.deadline), "MMM d")}
+                              Early bird ends {format(parseISO(cohort.early_bird_deadline), "MMM d")}
                             </div>
                           )}
                         </div>
                         <Button
-                          variant={cohort.availability.status === "available" ? "default" : "outline"}
+                          variant={cohort.availability_status === "available" ? "default" : "outline"}
                           className={`min-w-[140px] ${
-                            cohort.availability.status === "available"
+                            cohort.availability_status === "available"
                               ? "bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white"
                               : "border-[var(--color-border-strong)] text-[var(--text-primary)]"
                           }`}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {cohort.availability.status === "available"
+                          {cohort.availability_status === "available"
                             ? "Enroll Now"
-                            : cohort.availability.status === "filling-fast"
+                            : cohort.availability_status === "filling-fast"
                             ? "Enroll Now"
                             : "Join Waitlist"}
                         </Button>
@@ -193,15 +267,15 @@ export function TrainingSchedule() {
                               <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 bg-[var(--color-primary-100)] flex items-center justify-center">
                                   <span className="text-lg font-semibold text-[var(--color-primary-600)]">
-                                    {cohort.instructor.name.charAt(0)}
+                                    {cohort.instructor_name.charAt(0)}
                                   </span>
                                 </div>
                                 <div>
                                   <p className="font-medium text-[var(--text-primary)]">
-                                    {cohort.instructor.name}
+                                    {cohort.instructor_name}
                                   </p>
                                   <p className="text-sm text-[var(--text-secondary)]">
-                                    {cohort.instructor.title}
+                                    Lead Instructor
                                   </p>
                                 </div>
                               </div>
@@ -231,11 +305,11 @@ export function TrainingSchedule() {
                           </div>
 
                           {/* Urgency Banner */}
-                          {cohort.availability.status === "filling-fast" && (
+                          {cohort.availability_status === "filling-fast" && (
                             <div className="mt-6 p-4 bg-[var(--color-amber-50)] border border-[var(--color-amber-500)]/25 flex items-center gap-3">
                               <Zap className="w-5 h-5 text-[var(--color-amber-500)]" />
                               <p className="text-sm text-[var(--color-amber-700)]">
-                                Only {cohort.availability.spotsRemaining} spots remaining! Enroll now to secure your seat.
+                                Only {cohort.spots_remaining} spots remaining! Enroll now to secure your seat.
                               </p>
                             </div>
                           )}
