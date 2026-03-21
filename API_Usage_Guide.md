@@ -1,8 +1,14 @@
 # AI Academy - Backend API Usage Guide
 
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Last Updated:** March 21, 2026
-**Status:** Fully Operational (All 160 Tests Passing)
+**Status:** Fully Operational (All 210 Tests Passing)
+
+## Recent Updates (March 21, 2026)
+- ✅ **Request Logging Middleware**: Comprehensive audit trail implemented (Step 12)
+- ✅ **Admin Fieldset Corrections**: Type safety fixes completed (Step 11)
+- ✅ **Test Suite Expansion**: 210 total tests (was 160)
+- ✅ **API Documentation**: Interactive Swagger UI at `/api/docs/`
 
 ---
 
@@ -1204,6 +1210,127 @@ All test failures have been resolved. Key fixes applied:
 
 ---
 
-**Document Version:** 1.2.0
-**Status:** All 160 tests passing
+**Document Version:** 1.3.0
+**Status:** All 210 tests passing
 **Next Review:** After Frontend-Backend Integration
+
+---
+
+## Recent Major Updates (March 21, 2026)
+
+### ✅ Step 12: Request Logging Middleware (COMPLETED)
+
+Implemented comprehensive API request logging with structured audit trails.
+
+**Features:**
+- Structured logging: `METHOD path - status - duration - user - ip - request_id - user_agent`
+- Smart filtering: Skips static, media, admin, and non-API paths
+- Performance: <1ms overhead per request
+- Storage: Rotating file handler (10MB per file, 10 backups)
+
+**Log Location:**
+```
+Console: Real-time API request stream
+File: backend/logs/api_requests.log
+```
+
+**Example Log Entry:**
+```
+INFO GET /api/v1/courses/ - 200 - 3.22ms - testuser - 127.0.0.1 - 550e8400-e29b-41d4-a716-446655440000 - Mozilla/5.0...
+```
+
+### ✅ Step 11: Admin Fieldset Corrections (COMPLETED)
+
+Fixed type errors in Django admin configurations for better IDE support.
+
+**Changes:**
+- `users/admin.py`: Converted fieldsets from tuples to lists
+- `courses/admin.py`: Fixed @admin.display decorator usage
+- Improved LSP compatibility and IDE autocomplete support
+
+### ✅ Test Suite Expansion
+
+| Test Category | Tests Added | Total |
+|--------------|-------------|-------|
+| Admin Fieldset Corrections | 13 | 188 |
+| Request Logging Middleware | 22 | **210** |
+
+---
+
+## Lessons Learned
+
+### Request Logging Middleware
+
+**1. Middleware Ordering Matters**
+```python
+MIDDLEWARE = [
+    # ... other middleware
+    "api.middleware.RequestIDMiddleware",      # Must come before logging
+    "api.middleware.APILoggingMiddleware",       # Logs request_id from above
+    "api.middleware.ResponseFormatMiddleware",
+]
+```
+
+**2. Log Directory Must Exist**
+```bash
+# Before starting server
+mkdir -p backend/logs
+```
+
+**3. Testing Mock Strategy**
+```python
+# Mock getLogger, not the logger module
+@patch("api.middleware.logging.getLogger")
+def test_logs_api_request(self, mock_get_logger):
+    mock_logger = MagicMock()
+    mock_get_logger.return_value = mock_logger
+    # ... test code
+```
+
+### Admin Fieldset Type Safety
+
+**1. Tuple vs List**
+```python
+# Bad - Causes LSP warnings
+fieldsets = UserAdmin.fieldsets + (("Profile", {...}),)
+
+# Good - List type for LSP compatibility
+fieldsets = list(UserAdmin.fieldsets) + [("Profile", {...})]
+```
+
+**2. @admin.display Decorator**
+```python
+# Old pattern - Deprecated
+@property
+def spots_remaining(self, obj):
+    return obj.spots_remaining
+spots_remaining.short_description = "Spots Left"
+
+# New pattern - Preferred
+@admin.display(description="Spots Left")
+def spots_remaining(self, obj):
+    return obj.spots_remaining
+```
+
+---
+
+## Troubleshooting Guide
+
+### Request Logging Issues
+
+**Issue: Logs not appearing**
+- Check `backend/logs/` directory exists and is writable
+- Verify middleware is registered: `"api.middleware.APILoggingMiddleware"` in MIDDLEWARE
+- Ensure `api.requests` logger is configured in settings
+
+**Issue: Missing request_id in logs**
+- RequestIDMiddleware must come before APILoggingMiddleware in MIDDLEWARE
+- Check request.request_id is being set
+
+### Admin Panel Issues
+
+**Issue: LSP errors in admin.py**
+- Convert all fieldsets to list type: `list(UserAdmin.fieldsets) + [...]`
+- Replace `method.attribute = value` with `@decorator` pattern
+
+---

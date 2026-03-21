@@ -118,8 +118,21 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 | **Tailwind** | v4.1.18 (CSS-First) | v3.4.19 (JS Config) | **Follow v4 philosophy** (CSS variables) within v3 limits. |
 | **Data State** | Real-time API | Mock Data (`mockData.ts`) | **Preserve Mock Data** for UI until API integration task is issued. |
 
-### Recent Fixes Applied
+### Recent Fixes Applied (March 21, 2026)
 
+**Step 12: Request Logging Middleware**
+- **APILoggingMiddleware:** Comprehensive audit trail with structured format
+- **Smart Filtering:** Skips static, media, and non-API paths
+- **Performance:** <1ms overhead per request with rotating file handler
+- **Test Coverage:** 22 new tests for all logging scenarios
+
+**Step 11: Admin Fieldset Corrections**
+- **Type Safety:** Converted fieldsets from tuples to lists in `users/admin.py`
+- **LSP Compatibility:** Fixed type errors for better IDE support
+- **Decorator Fix:** Updated `@admin.display` usage in `courses/admin.py`
+- **Test Coverage:** 13 new tests for fieldset configuration
+
+**Previous Fixes:**
 - **ENV Loading:** Added `load_dotenv()` to `academy/settings/base.py`
 - **Migrations:** Generated and applied for `users`, `courses`, `api` apps
 - **Sample Data:** Populated via Django shell with realistic course data
@@ -281,6 +294,8 @@ course:intro-to-ai:cohorts     # Course cohorts
 | Request IDs identical | Cache not cleared | Call `cache.clear()` between requests |
 | ImproperlyConfigured: No default throttle rate | Missing scope in settings | Add scope to `DEFAULT_THROTTLE_RATES` |
 | LSP type error in admin | Tuple concatenation | Convert fieldsets to list: `list(UserAdmin.fieldsets) + [...]` |
+| Logs not appearing | Missing logs directory | `mkdir -p backend/logs` |
+| Missing request_id in logs | Wrong middleware order | Place RequestIDMiddleware before APILoggingMiddleware |
 
 ### Test Commands
 ```bash

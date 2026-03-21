@@ -147,7 +147,7 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 
 ## 🔧 Development Status
 
-### Current State (March 2026)
+### Current State (March 21, 2026)
 
 #### Backend (Completed)
 - ✅ **Backend API:** Fully operational with Django REST Framework
@@ -164,6 +164,8 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 - ✅ **Comprehensive Testing:** 210 automated tests (ALL PASSING)
 - ✅ **Rate Limiting:** Throttling configured and verified with custom test classes
 - ✅ **API Documentation:** Interactive Swagger UI and ReDoc documentation
+- ✅ **Request Logging:** Comprehensive audit trail with structured logging
+- ✅ **Admin Fieldset Corrections:** Type safety fixes for better IDE support
 
 #### Frontend
 - ✅ **Frontend:** React 19 + Vite SPA with 51 Shadcn components
@@ -172,6 +174,33 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 #### In Progress
 - ⏳ **Payments:** Stripe configured but payment flow not implemented
 - ⏳ **Email Service:** Password reset configured but email sending not implemented for production
+
+---
+
+## Recent Milestones (March 21, 2026)
+
+### ✅ Step 11: Admin Fieldset Corrections
+**Status:** COMPLETE | **Tests:** 13 passing
+
+Fixed type errors in Django admin configurations:
+- Converted fieldsets from tuples to lists in `users/admin.py`
+- Fixed `@admin.display` decorator usage in `courses/admin.py`
+- Improved LSP compatibility and IDE autocomplete support
+
+### ✅ Step 12: Request Logging Middleware  
+**Status:** COMPLETE | **Tests:** 22 passing
+
+Implemented comprehensive API request logging:
+- Structured log format: `METHOD path - status - duration - user - ip - request_id - user_agent`
+- Smart filtering: Skips static, media, and non-API paths
+- Performance: <1ms overhead per request
+- Storage: Rotating file handler (10MB per file, 10 backups)
+- Log location: `backend/logs/api_requests.log`
+
+**Example Log:**
+```
+INFO GET /api/v1/courses/ - 200 - 3.22ms - testuser - 127.0.0.1 - 550e8400-e29b-41d4-a716-446655440000 - Mozilla/5.0...
+```
 
 ---
 
@@ -262,8 +291,65 @@ This project is licensed under the MIT License. Developed with precision by the 
 
 ## Documentation
 
-- [AGENTS.md](./AGENTS.md) - AI agent instructions and coding standards
-- [ACCOMPLISHMENTS.md](./ACCOMPLISHMENTS.md) - Detailed milestone achievements
-- [API_Usage_Guide.md](./API_Usage_Guide.md) - Complete API reference
+- [AGENTS.md](./AGENTS.md) - AI agent instructions and coding standards (Updated with Steps 11-12)
+- [ACCOMPLISHMENTS.md](./ACCOMPLISHMENTS.md) - Detailed milestone achievements with code changes
+- [API_Usage_Guide.md](./API_Usage_Guide.md) - Complete API reference (v1.3.0, includes logging)
 - [AUDIT_USER_MANAGEMENT.md](./AUDIT_USER_MANAGEMENT.md) - User management test remediation report
 - [REMEDIATION_PLAN.md](./REMEDIATION_PLAN.md) - Backend improvement roadmap
+
+---
+
+## Lessons Learned
+
+### Request Logging Middleware
+
+**1. Middleware Ordering is Critical**
+```python
+MIDDLEWARE = [
+    "api.middleware.RequestIDMiddleware",      # Must come first
+    "api.middleware.APILoggingMiddleware",       # Then logging
+    "api.middleware.ResponseFormatMiddleware",
+]
+```
+
+**2. Testing Mock Strategy**
+Mock `logging.getLogger()` rather than the logger module:
+```python
+@patch("api.middleware.logging.getLogger")
+def test_logs_api_request(self, mock_get_logger):
+    mock_logger = MagicMock()
+    mock_get_logger.return_value = mock_logger
+    # ... test
+```
+
+**3. Log Directory Must Exist**
+```bash
+mkdir -p backend/logs  # Required before server starts
+```
+
+### Admin Fieldset Type Safety
+
+**1. List vs Tuple**
+```python
+# List type for LSP compatibility
+fieldsets = list(UserAdmin.fieldsets) + [("Profile", {...})]
+```
+
+**2. Modern Decorator Pattern**
+```python
+@admin.display(description="Spots Left")
+def spots_remaining(self, obj):
+    return obj.spots_remaining
+```
+
+---
+
+## Troubleshooting Guide
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Logs not appearing | Missing logs directory | `mkdir -p backend/logs` |
+| Missing request_id | Wrong middleware order | Place RequestIDMiddleware before APILoggingMiddleware |
+| LSP errors in admin.py | Tuple concatenation | Use `list(UserAdmin.fieldsets)` |
+| Test failures | Old test count | Update to 210 expected tests |
+| Cache stale data | Signal not registered | Check `courses/apps.py` ready() method |
