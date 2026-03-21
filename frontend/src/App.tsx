@@ -10,6 +10,10 @@ import { TrainingSchedule } from "@/sections/TrainingSchedule";
 import { ConsultingCTA } from "@/sections/ConsultingCTA";
 import { CoursesPage } from "@/pages/CoursesPage";
 import { CourseDetailPage } from "@/pages/CourseDetailPage";
+import { LoginPage } from "@/pages/LoginPage";
+import { RegisterPage } from "@/pages/RegisterPage";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ProfilePage } from "@/pages/ProfilePage";
 
 // HomePage component with existing sections
 function HomePage() {
@@ -32,11 +36,21 @@ function App() {
       <div className="min-h-screen bg-[var(--color-background)]">
         <Navigation />
         <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/courses/:slug" element={<CourseDetailPage />} />
-          </Routes>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:slug" element={<CourseDetailPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
         </main>
         <Footer />
       </div>
