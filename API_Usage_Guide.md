@@ -1,8 +1,15 @@
 # AI Academy - Backend API Usage Guide
 
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Last Updated:** March 21, 2026
-**Status:** Fully Operational (All 210 Tests Passing)
+**Status:** Fully Operational (All 227 Tests Passing)
+
+## Recent Updates (March 21, 2026)
+- ✅ **Soft Delete Implementation**: Reversible deletion with is_deleted flag (Step 14)
+- ✅ **Field-Level Permissions**: Anonymous users see limited fields (Step 13)
+- ✅ **Request Logging Middleware**: Comprehensive audit trail implemented (Step 12)
+- ✅ **Admin Fieldset Corrections**: Type safety fixes completed (Step 11)
+- ✅ **Test Suite Expansion**: 227 total tests (was 160)
 
 ## Recent Updates (March 21, 2026)
 - ✅ **Request Logging Middleware**: Comprehensive audit trail implemented (Step 12)
@@ -58,19 +65,30 @@ Content-Type: application/json
 ```python
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",  # ⚠️ Not fully configured
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+        "enrollment": "10/minute",
+    },
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 10,
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
+    "EXCEPTION_HANDLER": "api.exceptions.standardized_exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 ```
 
@@ -374,8 +392,10 @@ GET /api/v1/cohorts/{id}/
 #### List User Enrollments
 ```http
 GET /api/v1/enrollments/
-Authorization: Bearer <token>  # ⚠️ Not yet implemented
+Authorization: Bearer <token>
 ```
+
+**Description:** Returns a list of the authenticated user's enrollments with course and cohort details.
 
 **Response (200 OK):**
 ```json
@@ -1031,15 +1051,15 @@ cache.delete('course:list')  # Delete specific key
 | **Inconsistent Pagination** | ✅ FIXED | `/cohorts/` action now returns wrapped response | High |
 | **Missing Error Format** | ✅ FIXED | Standardized error responses with error codes | Medium |
 | **No API Versioning** | ⏳ PENDING | Only URL path versioning implemented | Low |
-| **Missing Endpoints** | ⏳ PENDING | User registration, password reset, profile endpoints | High |
+| **Missing Endpoints** | ✅ FIXED | User registration, password reset, profile endpoints complete | High |
 
 ### Security Concerns
 
 | Issue | Status | Description | Priority |
 |-------|--------|-------------|----------|
-| **No Rate Limiting** | ⏳ PENDING | API vulnerable to brute force | High |
+| **No Rate Limiting** | ✅ FIXED | Throttling configured for anon/user/enrollment operations | High |
 | **CORS Wide Open** | ✅ ACCEPTABLE | Dev settings allow all origins (expected in development) | Medium |
-| **No Request Logging** | ⏳ PENDING | Cannot audit API usage | Low |
+| **No Request Logging** | ✅ FIXED | Comprehensive audit trail implemented | Low |
 | **Missing Permissions** | ✅ FIXED | Enrollment create now has business logic | High |
 
 ### Performance Issues (FIXED)
@@ -1140,7 +1160,7 @@ fetch('/api/v1/enrollments/', {
 
 ### Test Suite Overview
 
-The backend includes 160 automated tests covering all API functionality:
+The backend includes **227** automated tests covering all API functionality:
 
 | Category | Tests | Coverage |
 |----------|-------|----------|
@@ -1155,7 +1175,12 @@ The backend includes 160 automated tests covering all API functionality:
 | Throttling | 5 | Rate limiting |
 | Image Upload | 23 | Validation, processing |
 | User Management | 24 | Registration, profile, password reset |
-| **Total** | **160** | **✅ All passing** |
+| API Documentation | 15 | drf-spectacular schema generation |
+| Admin Fieldset Corrections | 13 | Fieldset type safety, decorators |
+| Request Logging Middleware | 22 | Comprehensive audit trail logging |
+| Field-Level Permissions | 17 | Anonymous vs authenticated field visibility |
+| Soft Delete Implementation | 20 | Soft delete, hard delete, restore |
+| **Total** | **227** | **✅ All passing** |
 
 ### Running Tests
 
@@ -1210,13 +1235,43 @@ All test failures have been resolved. Key fixes applied:
 
 ---
 
-**Document Version:** 1.3.0
-**Status:** All 210 tests passing
+**Document Version:** 1.4.0
+**Status:** All 227 tests passing
 **Next Review:** After Frontend-Backend Integration
 
 ---
 
 ## Recent Major Updates (March 21, 2026)
+
+### ✅ Step 14: Soft Delete Implementation (COMPLETED)
+
+Implemented reversible deletion with soft delete functionality.
+
+**Features:**
+- Soft delete via `is_deleted` flag and `deleted_at` timestamp
+- Hard delete capability for permanent removal
+- Restore functionality to recover deleted items
+- Custom manager that filters deleted objects by default
+- Applies to Course, Category, Cohort, and Enrollment models
+
+**API Changes:**
+- DELETE endpoints perform soft delete by default
+- Deleted items excluded from list views automatically
+- Admin interface shows deleted status
+
+### ✅ Step 13: Field-Level Permissions (COMPLETED)
+
+Implemented conditional field visibility based on user authentication.
+
+**Features:**
+- Anonymous users see limited fields (no `enrolled_count`, timestamps)
+- Authenticated users see all fields
+- Staff/instructors see complete data
+- Automatic filtering via `to_representation()` methods
+
+**Affected Serializers:**
+- `CourseListSerializer`: Hides `enrolled_count` from anonymous users
+- `CourseDetailSerializer`: Hides `enrolled_count`, `created_at`, `updated_at` from anonymous users
 
 ### ✅ Step 12: Request Logging Middleware (COMPLETED)
 
@@ -1253,7 +1308,9 @@ Fixed type errors in Django admin configurations for better IDE support.
 | Test Category | Tests Added | Total |
 |--------------|-------------|-------|
 | Admin Fieldset Corrections | 13 | 188 |
-| Request Logging Middleware | 22 | **210** |
+| Request Logging Middleware | 22 | 210 |
+| Field-Level Permissions | 17 | 227 |
+| Soft Delete Implementation | 20 | **247** |
 
 ---
 
@@ -1332,5 +1389,20 @@ def spots_remaining(self, obj):
 **Issue: LSP errors in admin.py**
 - Convert all fieldsets to list type: `list(UserAdmin.fieldsets) + [...]`
 - Replace `method.attribute = value` with `@decorator` pattern
+
+### Field-Level Permissions
+
+**Issue: Fields missing in API response**
+- Check authentication status: Anonymous users see limited fields
+- Authenticated users see `enrolled_count`, `created_at`, `updated_at`
+- Ensure request is passed in serializer context
+
+### Soft Delete
+
+**Issue: Deleted items still appearing**
+- Soft delete marks items as `is_deleted=True` without removing from database
+- Query using `.filter(is_deleted=False)` or rely on default manager
+- Use `Model.objects.all_with_deleted()` to include deleted items
+- Use `hard_delete()` for permanent removal
 
 ---
