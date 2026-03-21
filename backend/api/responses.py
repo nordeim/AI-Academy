@@ -136,8 +136,8 @@ class ResponseFormatterMixin:
     Mixin for ViewSets to provide standardized response formatting
 
     Usage:
-        class MyViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
-            ...
+    class MyViewSet(ResponseFormatterMixin, viewsets.ModelViewSet):
+        ...
     """
 
     def get_response_serializer(self, *args, **kwargs):
@@ -199,6 +199,65 @@ class ResponseFormatterMixin:
         )
 
     def destroy(self, request, *args, **kwargs):
+        """Override destroy to return standardized format"""
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return self.standardized_response(
+            data=None, status=204, message="Resource deleted successfully"
+        )
+
+    def list(self, request, *args, **kwargs) -> Union[StandardizedResponse, Response]:
+        """Override list to return standardized format"""
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return self.standardized_response(
+            data=serializer.data, message="Records retrieved successfully"
+        )
+
+    def retrieve(
+        self, request, *args, **kwargs
+    ) -> Union[StandardizedResponse, Response]:
+        """Override retrieve to return standardized format"""
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return self.standardized_response(
+            data=serializer.data, message="Record retrieved successfully"
+        )
+
+    def create(self, request, *args, **kwargs) -> Union[StandardizedResponse, Response]:
+        """Override create to return standardized format"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return self.standardized_response(
+            data=serializer.data, status=201, message="Resource created successfully"
+        )
+
+    def update(self, request, *args, **kwargs) -> Union[StandardizedResponse, Response]:
+        """Override update to return standardized format"""
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, "_prefetched_objects_cache", None):
+            instance._prefetched_objects_cache = {}
+
+        return self.standardized_response(
+            data=serializer.data, message="Resource updated successfully"
+        )
+
+    def destroy(
+        self, request, *args, **kwargs
+    ) -> Union[StandardizedResponse, Response]:
         """Override destroy to return standardized format"""
         instance = self.get_object()
         self.perform_destroy(instance)
