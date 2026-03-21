@@ -14,6 +14,8 @@ import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ProfilePage } from "@/pages/ProfilePage";
+import { EnrollmentPage } from "@/pages/EnrollmentPage";
+import { EnrollmentConfirmationPage } from "@/pages/EnrollmentConfirmationPage";
 
 // HomePage component with existing sections
 function HomePage() {
