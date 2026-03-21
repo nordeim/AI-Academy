@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from . import views
+from api.views.payments import PaymentViewSet, StripeWebhookView
 
 app_name = "api"
 
@@ -14,6 +15,7 @@ router.register(r"courses", views.CourseViewSet, basename="course")
 router.register(r"cohorts", views.CohortViewSet, basename="cohort")
 router.register(r"categories", views.CategoryViewSet, basename="category")
 router.register(r"enrollments", views.EnrollmentViewSet, basename="enrollment")
+router.register(r"payments", PaymentViewSet, basename="payment")
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -47,4 +49,6 @@ urlpatterns = [
     path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     # Session authentication (for admin/browsable API)
     path("auth/", include("rest_framework.urls")),
+    # Stripe webhook endpoint
+    path("webhooks/stripe/", StripeWebhookView.as_view(), name="stripe-webhook"),
 ]

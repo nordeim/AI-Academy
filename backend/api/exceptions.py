@@ -20,6 +20,7 @@ from rest_framework.exceptions import (
     Throttled,
 )
 from django.core.exceptions import ObjectDoesNotExist
+from api.exceptions.payment import PaymentError
 
 
 ERROR_CODES = {
@@ -35,6 +36,11 @@ ERROR_CODES = {
     502: "BAD_GATEWAY",
     503: "SERVICE_UNAVAILABLE",
 }
+
+
+__all__ = [
+    "PaymentError",
+]
 
 
 def get_error_code(status_code):
@@ -119,6 +125,17 @@ def standardized_exception_handler(exc, context):
             "meta": _build_meta(request, 404),
         }
         return Response(error_data, status=404)
+
+    # Handle custom PaymentError
+    if isinstance(exc, PaymentError):
+        error_data = {
+            "success": False,
+            "data": None,
+            "message": exc.message,
+            "errors": {exc.code: [exc.message]},
+            "meta": _build_meta(request, exc.status_code),
+        }
+        return Response(error_data, status=exc.status_code)
 
     # Unhandled exception - return generic 500
     error_data = {
