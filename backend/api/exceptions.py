@@ -20,7 +20,6 @@ from rest_framework.exceptions import (
     Throttled,
 )
 from django.core.exceptions import ObjectDoesNotExist
-from api.exceptions.payment import PaymentError
 
 
 ERROR_CODES = {
@@ -182,3 +181,26 @@ def _build_meta(request, status_code):
         "request_id": request_id,
         "error_code": get_error_code(status_code),
     }
+
+
+class PaymentError(Exception):
+    """
+    Custom exception for payment-related errors.
+
+    Attributes:
+        message: Human-readable error message
+        code: Machine-readable error code
+        status_code: HTTP status code
+    """
+
+    def __init__(self, message, code="payment_error", status_code=400):
+        self.message = message
+        self.code = code
+        self.status_code = status_code
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "message": self.message,
+            "code": self.code,
+        }

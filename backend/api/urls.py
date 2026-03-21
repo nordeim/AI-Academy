@@ -5,16 +5,27 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from . import views
+from api.views.all_views import (
+    CategoryViewSet,
+    CourseViewSet,
+    CohortViewSet,
+    EnrollmentViewSet,
+    CourseThumbnailUploadView,
+    UserAvatarUploadView,
+    RegisterView,
+    UserMeView,
+    PasswordResetRequestView,
+    PasswordResetConfirmView,
+)
 from api.views.payments import PaymentViewSet, StripeWebhookView
 
 app_name = "api"
 
 router = DefaultRouter()
-router.register(r"courses", views.CourseViewSet, basename="course")
-router.register(r"cohorts", views.CohortViewSet, basename="cohort")
-router.register(r"categories", views.CategoryViewSet, basename="category")
-router.register(r"enrollments", views.EnrollmentViewSet, basename="enrollment")
+router.register(r"courses", CourseViewSet, basename="course")
+router.register(r"cohorts", CohortViewSet, basename="cohort")
+router.register(r"categories", CategoryViewSet, basename="category")
+router.register(r"enrollments", EnrollmentViewSet, basename="enrollment")
 router.register(r"payments", PaymentViewSet, basename="payment")
 
 urlpatterns = [
@@ -22,25 +33,25 @@ urlpatterns = [
     # Image upload endpoints
     path(
         "courses/<slug:slug>/thumbnail/",
-        views.CourseThumbnailUploadView.as_view(),
+        CourseThumbnailUploadView.as_view(),
         name="course-upload-thumbnail",
     ),
     path(
         "users/me/avatar/",
-        views.UserAvatarUploadView.as_view(),
+        UserAvatarUploadView.as_view(),
         name="user-upload-avatar",
     ),
     # User management endpoints
-    path("auth/register/", views.RegisterView.as_view(), name="register"),
-    path("users/me/", views.UserMeView.as_view(), name="user-me"),
+    path("auth/register/", RegisterView.as_view(), name="register"),
+    path("users/me/", UserMeView.as_view(), name="user-me"),
     path(
         "auth/password-reset/",
-        views.PasswordResetRequestView.as_view(),
+        PasswordResetRequestView.as_view(),
         name="password-reset-request",
     ),
     path(
         "auth/password-reset/confirm/",
-        views.PasswordResetConfirmView.as_view(),
+        PasswordResetConfirmView.as_view(),
         name="password-reset-confirm",
     ),
     # JWT Authentication endpoints

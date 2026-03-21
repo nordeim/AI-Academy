@@ -13,6 +13,7 @@ import json
 import hmac
 import hashlib
 import time
+import stripe
 from unittest.mock import patch, MagicMock
 from django.test import TestCase, override_settings
 from django.db import transaction
@@ -55,7 +56,7 @@ class PaymentIntentTests(APITestCase):
         # Create course
         self.course = Course.objects.create(
             title="Test Course",
-            slug="test-course",
+            slug="test-course-2",
             subtitle="Test Subtitle",
             description="Test Description",
             level="intermediate",
@@ -260,7 +261,7 @@ class StripeWebhookTests(APITestCase):
 
         self.course = Course.objects.create(
             title="Test Course",
-            slug="test-course",
+            slug="test-course-2",
             subtitle="Test Subtitle",
             description="Test Description",
             level="intermediate",
@@ -268,6 +269,7 @@ class StripeWebhookTests(APITestCase):
             status="published",
             modules_count=5,
             duration_weeks=4,
+            duration_hours=20,
         )
         self.course.categories.add(self.category)
 
@@ -400,9 +402,7 @@ class StripeWebhookTests(APITestCase):
         Expected: 400 Bad Request
         """
         with patch("stripe.Webhook.construct_event") as mock_construct:
-            from stripe.error import SignatureVerificationError
-
-            mock_construct.side_effect = SignatureVerificationError(
+            mock_construct.side_effect = stripe.error.SignatureVerificationError(
                 "Invalid signature", "test_sig"
             )
 

@@ -7,7 +7,7 @@ All responses follow a consistent envelope structure.
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination

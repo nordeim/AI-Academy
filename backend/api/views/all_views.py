@@ -29,7 +29,7 @@ import json
 import uuid
 from courses.models import Category, Course, Cohort, Enrollment
 from users.models import User
-from .serializers import (
+from api.serializers import (
     CategorySerializer,
     CourseListSerializer,
     CourseDetailSerializer,
@@ -41,10 +41,10 @@ from .serializers import (
     PasswordResetRequestSerializer,
     PasswordResetConfirmSerializer,
 )
-from .throttles import EnrollmentThrottle
-from .responses import ResponseFormatterMixin, SuccessResponse
-from .utils.images import ImageUploadHandler
-from .utils.cache import (
+from api.throttles import EnrollmentThrottle
+from api.responses import ResponseFormatterMixin, SuccessResponse
+from api.utils.images import ImageUploadHandler
+from api.utils.cache import (
     get_course_list_cache_key,
     get_course_detail_cache_key,
     get_category_list_cache_key,
