@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search, Command } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SearchDialog } from "@/components/SearchDialog";
 
 const navItems = [
-  { label: "Courses", href: "#courses" },
+  { label: "Courses", href: "/courses" },
   { label: "Learning Paths", href: "#paths" },
   { label: "Enterprise", href: "#enterprise" },
   { label: "Resources", href: "#resources" },
@@ -14,6 +16,7 @@ const navItems = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,31 +89,45 @@ export function Navigation() {
               </span>
             </a>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-7">
-              {navItems.map((item) => (
-                <button
-                  key={item.href}
-                  onClick={() => scrollToSection(item.href)}
-                  className="text-sm font-medium transition-colors relative py-1 text-[var(--text-secondary)] hover:text-[var(--color-primary-600)]"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-7">
+          <Link
+            to="/courses"
+            className="text-sm font-medium transition-colors relative py-1 text-[var(--text-secondary)] hover:text-[var(--color-primary-600)]"
+          >
+            Courses
+          </Link>
+          {navItems.slice(1).map((item) => (
+            <button
+              key={item.href}
+              onClick={() => {
+                if (item.href.startsWith("#")) {
+                  const element = document.querySelector(item.href);
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }
+                }
+              }}
+              className="text-sm font-medium transition-colors relative py-1 text-[var(--text-secondary)] hover:text-[var(--color-primary-600)]"
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-            {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center gap-4">
-              <button
-                className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-                <span className="hidden xl:inline">Search</span>
-                <kbd className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--color-surface-alt)] border border-[var(--color-border)] font-mono">
-                  <Command className="w-3 h-3" />K
-                </kbd>
-              </button>
+        {/* Desktop Actions */}
+        <div className="hidden lg:flex items-center gap-4">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            aria-label="Search courses"
+          >
+            <Search className="w-4 h-4" />
+            <span className="hidden xl:inline">Search</span>
+            <kbd className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--color-surface-alt)] border border-[var(--color-border)] font-mono">
+              <Command className="w-3 h-3" />K
+            </kbd>
+          </button>
 
               <Button
                 variant="ghost"
@@ -144,7 +161,7 @@ export function Navigation() {
         </div>
       </motion.header>
 
-      {/* Mobile Menu */}
+        {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -169,10 +186,37 @@ export function Navigation() {
               className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white border-l border-[var(--color-border)] p-6 pt-20"
             >
               <div className="flex flex-col gap-4">
-                {navItems.map((item) => (
+                {/* Search Button for Mobile */}
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsSearchOpen(true);
+                  }}
+                  className="flex items-center gap-2 text-lg font-medium py-2 border-b border-[var(--color-border)] text-left text-[var(--text-primary)]"
+                >
+                  <Search className="w-5 h-5" />
+                  Search Courses
+                </button>
+                
+                <Link
+                  to="/courses"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-lg font-medium py-2 border-b border-[var(--color-border)] text-[var(--text-primary)]"
+                >
+                  Courses
+                </Link>
+                {navItems.slice(1).map((item) => (
                   <button
                     key={item.href}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      if (item.href.startsWith("#")) {
+                        const element = document.querySelector(item.href);
+                        if (element) {
+                          element.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }
+                    }}
                     className="text-lg font-medium py-2 border-b border-[var(--color-border)] text-left text-[var(--text-primary)]"
                   >
                     {item.label}
@@ -194,6 +238,9 @@ export function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Search Dialog */}
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </>
   );
 }
