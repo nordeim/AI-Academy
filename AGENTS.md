@@ -15,7 +15,7 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
 
-As of March 21, 2026, the codebase has achieved **Backend API Fully Operational** status with all 175 tests passing and interactive API documentation. Agents must be aware of the following:
+As of March 21, 2026, the codebase has achieved **Backend API Fully Operational** status with all 239 tests passing (including 12 new payment tests) and interactive API documentation. Agents must be aware of the following:
 
 ### Current State
 
@@ -82,9 +82,18 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 | Admin Fieldset Corrections | 13 | ✅ Passing |
 | Request Logging Middleware | 22 | ✅ Passing |
 | Field-Level Permissions | 17 | ✅ Passing |
-| **Total** | **210** | **✅ All passing** |
+| Payment Processing | 12 | ✅ Passing |
+| **Total** | **239** | **✅ All passing** |
 
-**Request Logging Middleware (NEW - Step 12):**
+**Payment Processing (NEW - Phase 7):**
+- ✅ **PaymentViewSet:** PaymentIntent creation and status checking
+- ✅ **StripeWebhookView:** Webhook handling with signature verification
+- ✅ **PaymentRateThrottle:** Custom throttle (5 requests/minute)
+- ✅ **Idempotency:** Duplicate prevention with idempotency keys
+- ✅ **Security:** Webhook signature verification, ownership validation
+- ✅ **Comprehensive Tests:** 12 tests covering all payment scenarios
+
+**Request Logging Middleware (Step 12):**
 - ✅ **Comprehensive Audit Trail:** All API requests logged with structured format
 - ✅ **Request Metadata:** Method, path, status code, duration, user, IP, user agent
 - ✅ **Smart Filtering:** Skips logging for static, media, and non-API paths
@@ -108,10 +117,18 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 #### In Progress
 
 - ⏳ **Frontend Integration:** Ready to connect authenticated API endpoints
-- ⏳ **Payment Integration:** Stripe configured but not connected to enrollment flow
-- ⏳ **Email Service:** Password reset configured but email sending not implemented for production
+- ⏳ **Payment Flow UI:** Backend complete, frontend enrollment pages needed
 
-### Discrepancies
+### Recent Fixes Applied (March 21, 2026)
+
+**Phase 7: Payment Processing Backend**
+- **PaymentViewSet:** PaymentIntent creation with metadata tracking
+- **StripeWebhookView:** Handles payment_intent.succeeded/failed events
+- **PaymentRateThrottle:** Custom rate limiting (5/minute)
+- **Root Cause Fix:** Removed stale import `api.exceptions.payment` causing module load failures
+- **Test Coverage:** 12 new tests for payment flow
+
+**Step 12: Request Logging Middleware**
 
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
 |-----------|-------------------------|-----------------------|---------|
@@ -199,6 +216,8 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 - `apps/users/`: Custom User model extending `AbstractUser`.
 - `apps/courses/`: Core domain (Course, Cohort, Enrollment).
 - `api/`: The DRF implementation layer (Serializers, ViewSets).
+- `api/views/`: ViewSets organized by domain (payments.py, all_views.py).
+- `api/exceptions.py`: Custom exceptions including PaymentError.
 - `api/utils/`: Utility modules (cache.py, images.py).
 - `courses/signals.py`: Cache invalidation signals.
 - `academy/settings/`: Split settings (base, development, production, test).
@@ -231,6 +250,8 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 - Custom test throttle classes available: `TestAnonRateThrottle`, `TestEnrollmentThrottle`
 - Clear cache in tests that verify uniqueness: `cache.clear()`
 - All new features require comprehensive tests
+- Payment tests use Stripe mock mode - never hit live API
+- Payment tests use Stripe mock mode - never hit live API
 
 ---
 
@@ -240,6 +261,8 @@ As of March 21, 2026, the codebase has achieved **Backend API Fully Operational*
 - **Sanitization:** All user inputs must be validated via Zod (Frontend) and Django Forms/Serializers (Backend).
 - **Source Control:** Do not stage or commit unless explicitly directed.
 - **Cache Security:** Never cache authenticated user data without proper key scoping.
+- **Payment Security:** Never store card numbers. Use Stripe Elements for PCI compliance.
+- **Webhook Verification:** Always verify Stripe webhook signatures before processing.
 
 ---
 

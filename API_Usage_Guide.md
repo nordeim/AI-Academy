@@ -1,20 +1,17 @@
 # AI Academy - Backend API Usage Guide
 
-**Version:** 1.4.0
+**Version:** 1.5.0
 **Last Updated:** March 21, 2026
-**Status:** Fully Operational (All 227 Tests Passing)
+**Status:** Fully Operational (All 239 Tests Passing)
 
 ## Recent Updates (March 21, 2026)
-- ✅ **Soft Delete Implementation**: Reversible deletion with is_deleted flag (Step 14)
-- ✅ **Field-Level Permissions**: Anonymous users see limited fields (Step 13)
-- ✅ **Request Logging Middleware**: Comprehensive audit trail implemented (Step 12)
-- ✅ **Admin Fieldset Corrections**: Type safety fixes completed (Step 11)
-- ✅ **Test Suite Expansion**: 227 total tests (was 160)
+- ✅ **Payment Processing**: Stripe PaymentIntent creation and webhook handling (Phase 7)
+- ✅ **Root Cause Resolution**: Fixed stale import in api/exceptions.py
+- ✅ **Test Suite Expansion**: 239 total tests (was 227)
 
 ## Recent Updates (March 21, 2026)
-- ✅ **Request Logging Middleware**: Comprehensive audit trail implemented (Step 12)
-- ✅ **Admin Fieldset Corrections**: Type safety fixes completed (Step 11)
-- ✅ **Test Suite Expansion**: 210 total tests (was 160)
+- ✅ **Payment Processing**: Stripe PaymentIntent creation and webhook handling (Phase 7)
+- ✅ **Test Suite Expansion**: 239 total tests (was 227)
 - ✅ **API Documentation**: Interactive Swagger UI at `/api/docs/`
 
 ---
@@ -25,12 +22,13 @@
 2. [Base Configuration](#base-configuration)
 3. [Authentication](#authentication)
 4. [API Endpoints Reference](#api-endpoints-reference)
-5. [Request/Response Examples](#requestresponse-examples)
-6. [Filtering & Search](#filtering--search)
-7. [Pagination](#pagination)
-8. [Error Handling](#error-handling)
-9. [Known Issues & Limitations](#known-issues--limitations)
-10. [Best Practices](#best-practices)
+5. [Payment Processing](#payment-processing)
+6. [Request/Response Examples](#requestresponse-examples)
+7. [Filtering & Search](#filtering--search)
+8. [Pagination](#pagination)
+9. [Error Handling](#error-handling)
+10. [Known Issues & Limitations](#known-issues--limitations)
+11. [Best Practices](#best-practices)
 
 ---
 
@@ -175,6 +173,113 @@ For Django admin and browsable API:
 # Login via Django admin
 POST /admin/login/
 ```
+
+---
+
+## Payment Processing
+
+### Overview
+
+The API supports Stripe payment processing for course enrollments. The flow involves:
+1. Creating a PaymentIntent on the server
+2. Confirming payment on the frontend with Stripe Elements
+3. Handling webhook events for async confirmation
+
+### Endpoints
+
+#### Create Payment Intent
+```http
+POST /api/v1/payments/create-intent/
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "enrollment_id": "uuid-string"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "client_secret": "pi_xxx_secret_xxx",
+    "payment_intent_id": "pi_xxx",
+    "status": "requires_payment_method"
+  },
+  "message": "Payment intent created successfully",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-21T12:00:00Z",
+    "request_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+#### Check Payment Status
+```http
+GET /api/v1/payments/{enrollment_id}/status/
+Authorization: Bearer <access_token>
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "enrollment_id": "uuid-string",
+    "status": "confirmed",
+    "payment_intent_status": "succeeded",
+    "amount_received": 2499.00
+  },
+  "message": "Payment status retrieved",
+  "errors": {},
+  "meta": {
+    "timestamp": "2026-03-21T12:00:00Z",
+    "request_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+#### Stripe Webhook
+```http
+POST /api/v1/webhooks/stripe/
+Content-Type: application/json
+Stripe-Signature: <webhook_signature>
+
+{
+  "id": "evt_xxx",
+  "object": "event",
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_xxx",
+      "status": "succeeded",
+      "metadata": {
+        "enrollment_id": "uuid-string"
+      }
+    }
+  }
+}
+```
+
+### Security
+
+- **Webhook Verification:** All webhooks are verified using Stripe-Signature header
+- **Idempotency Keys:** Payment intents use enrollment_id + user_id to prevent duplicates
+- **Rate Limiting:** 5 payment requests per minute per user
+- **Ownership Validation:** Users can only pay for their own enrollments
+
+### Error Codes
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `missing_enrollment_id` | 400 | enrollment_id not provided |
+| `enrollment_not_found` | 404 | Enrollment does not exist |
+| `permission_denied` | 403 | User does not own enrollment |
+| `already_confirmed` | 400 | Enrollment already paid |
+| `stripe_error` | 502 | Stripe API error |
+| `stripe_retrieval_error` | 502 | Unable to retrieve payment status |
 
 ---
 
