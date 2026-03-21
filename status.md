@@ -1755,3 +1755,97 @@ None - all milestones completed successfully with comprehensive test coverage.
 1. Frontend-Backend Integration - Connect authenticated endpoints
 2. Cache Monitoring - Add hit/miss metrics
 3. Production Deployment - Configure production settings
+
+---
+
+I see the current serializers. The issue is that all fields are exposed regardless of user role. According to the REMEDIATION_PLAN.md, we need to implement field-level permissions that:
+1. Hide sensitive fields from non-authenticated users (like enrolled_count in CourseDetailSerializer)
+2. Potentially show additional fields to authenticated users or specific roles
+This is Step 13. Let me create a comprehensive plan and implement it using TDD.
+Plan for Step 13: Field-Level Permissions
+Phase 1: Analysis
+- Current issue: Serializers expose all fields regardless of authentication status
+- Target: Hide sensitive fields (enrolled_count) from non-authenticated users
+- Keep read-only fields for unauthenticated users
+- Show all fields to authenticated users
+Phase 2: TDD Implementation
+Files to Create:
+1. /backend/api/tests/test_field_level_permissions.py - New test file
+Files to Modify:
+1. /backend/api/serializers.py - Add to_representation methods with permission checks
+2. /backend/api/views.py - Ensure request is passed in serializer context
+3. /backend/academy/settings/base.py - No changes expected
+4. Documentation files
+Test Plan:
+1. CourseListSerializer Tests:
+   - Anonymous user sees basic fields
+   - Authenticated user sees all fields including enrolled_count
+   
+2. CourseDetailSerializer Tests:
+   - Anonymous user sees basic course info
+   - Authenticated user sees all fields including enrolled_count and created_at
+   
+3. Edge Cases:
+   - No request in context (defaults to authenticated)
+   - Cache doesn't interfere with field visibility
+Implementation Strategy:
+1. Add to_representation method to CourseListSerializer
+2. Add to_representation method to CourseDetailSerializer  
+3. Ensure views pass request in serializer context
+4. Run tests to verify implementation
+Let me start with the
+Step 13: Field-Level Permissions - Meticulous Plan
+Phase 1: Analysis & Planning
+Current Issue: Serializers expose all fields regardless of user authentication status (e.g., enrolled_count is visible to everyone).
+Solution: Implement to_representation() methods that conditionally hide sensitive fields based on authentication.
+Affected Serializers:
+- CourseListSerializer - Hide enrolled_count from anonymous users
+- CourseDetailSerializer - Hide enrolled_count, created_at, updated_at from anonymous users
+Files to Modify:
+1. /backend/api/serializers.py - Add permission checks
+2. /backend/api/views.py - Verify request passed in context (may already be)
+3. /backend/api/tests/test_field_level_permissions.py - New test file (15 tests)
+4. Documentation files
+---
+Phase 2: TDD
+# Todos
+Step 13.1: Write TDD tests for field-level permissions (RED phase)
+Step 13.2: Implement field-level permissions in serializers
+Step 13.3: Verify views pass request in serializer context
+Step 13.4: Run tests and verify all 225+ tests pass
+Step 13.5: Update documentation files
+
+---
+
+Step 13: Field-Level Permissions is now COMPLETE ✅
+Summary
+Successfully implemented field-level permissions following TDD methodology with all 227 tests passing.
+What Was Implemented
+1. TDD Approach (RED → GREEN)
+- RED Phase: Wrote 17 comprehensive tests expecting failures
+- GREEN Phase: Implemented to_representation() methods in both serializers
+- All tests now passing
+2. Files Modified
+- /backend/api/serializers.py - Added permission checks to CourseListSerializer and CourseDetailSerializer
+3. Field Restrictions
+Serializer
+CourseListSerializer
+CourseDetailSerializer
+4. Implementation Pattern
+def to_representation(self, instance):
+    data = super().to_representation(instance)
+    request = self.context.get("request")
+    
+    if not request or not request.user.is_authenticated:
+        data.pop("sensitive_field", None)
+    
+    return data
+5. Test Coverage (17 Tests)
+- Anonymous vs authenticated user scenarios
+- Edge cases (staff, instructors, enrolled users)
+- Graceful handling of missing context
+Updated Metrics
+- Total Tests: 227 (was 210)
+- New Tests: 17
+- Test Pass Rate: 100%
+

@@ -832,3 +832,281 @@ INFO 2026-03-21 00:48:43,200 middleware 772271 123789111005504 POST /api/v1/auth
 INFO 2026-03-21 00:48:43,212 middleware 772271 123789111005504 POST /api/v1/auth/register/ - 201 - 0.009s - RequestID: bbb715e1-81c3-4124-951a-7293483600e6
 INFO 2026-03-21 00:48:43,224 middleware 772271 123789111005504 POST /api/v1/auth/register/ - 400 - 0.006s - RequestID: ad45adaf-ee77-4a97-acd0-3d2d186c635d
 WARNING 2026-03-21 00:48:43,224 log 772271 123789111005504 Bad Request: /api/v1/auth/register/
+INFO 2026-03-21 01:05:23,893 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.356s - RequestID: 20aea026-c59c-4191-b2b9-ce4e29563938
+INFO 2026-03-21 01:05:23,968 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.070s - RequestID: 0cf99bef-e5f5-4ce5-8d03-94e74fea5505
+INFO 2026-03-21 01:05:24,041 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.070s - RequestID: 0dc977bc-481f-4fd7-b7a4-1f2240574daa
+INFO 2026-03-21 01:05:24,121 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.077s - RequestID: cf1ceff5-fb35-46bf-8d86-83024e2341c1
+INFO 2026-03-21 01:05:24,196 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.071s - RequestID: 9a41cedb-17cd-4c57-a1ee-e03d6182d4ce
+INFO 2026-03-21 01:05:24,270 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.070s - RequestID: 3ea672e9-6d0e-4f17-965b-c5979d9bee0f
+INFO 2026-03-21 01:05:24,343 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.070s - RequestID: 67b4c5e5-7f6c-497e-830d-e7451f1b8c5e
+INFO 2026-03-21 01:05:24,416 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.069s - RequestID: 890a512b-5ca5-43f4-afa5-e5339fb7368e
+INFO 2026-03-21 01:05:24,490 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.070s - RequestID: 5ce36587-f521-4947-af1b-7f69a4e61733
+INFO 2026-03-21 01:05:24,643 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.149s - RequestID: f4407708-ca9b-4663-826a-6d2e196dad84
+INFO 2026-03-21 01:05:24,714 middleware 781342 124323100512576 GET /api/schema/ - 200 - 0.068s - RequestID: 8abbcb53-6532-4f1e-9685-3a599285592f
+INFO 2026-03-21 01:05:24,738 middleware 781342 124323100512576 GET /api/redoc/ - 200 - 0.006s - RequestID: fee91cbf-ab22-4859-8a18-68d97ef675c7
+INFO 2026-03-21 01:05:24,742 middleware 781342 124323100512576 GET /api/redoc/ - 200 - 0.001s - RequestID: ebe0cb62-e7d2-4b8c-b952-e7b79ed2abcf
+INFO 2026-03-21 01:05:24,761 middleware 781342 124323100512576 GET /api/docs/ - 200 - 0.002s - RequestID: cb112d0c-29ed-47fb-9ab0-d1f21c34b33f
+INFO 2026-03-21 01:05:24,767 middleware 781342 124323100512576 GET /api/docs/ - 200 - 0.002s - RequestID: 21189e44-84c7-46ab-9461-eab4f18f3107
+INFO 2026-03-21 01:05:24,843 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.016s - RequestID: b51ae645-f995-4199-98f9-1be8d6f6853f
+INFO 2026-03-21 01:05:24,856 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 404 - 0.004s - RequestID: 0f1e61cc-17af-4d52-84eb-ba99ae4ada49
+WARNING 2026-03-21 01:05:24,857 log 781342 124323100512576 Not Found: /api/v1/courses/intro-to-ai/
+INFO 2026-03-21 01:05:24,874 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: 786b8ed7-3a12-442d-ba37-f6887206c395
+INFO 2026-03-21 01:05:24,888 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: 7d72dd58-66f6-44b6-96b4-2cb39cc85bba
+INFO 2026-03-21 01:05:24,935 middleware 781342 124323100512576 GET /api/v1/courses/course-0/ - 200 - 0.014s - RequestID: 6ebada70-5179-4e88-905f-bd57a7d3bf59
+INFO 2026-03-21 01:05:24,945 middleware 781342 124323100512576 GET /api/v1/courses/course-1/ - 200 - 0.009s - RequestID: b60e4a79-8145-4a12-b920-2c612e2fe704
+INFO 2026-03-21 01:05:24,961 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.012s - RequestID: 437fdd96-d77f-4940-874c-c4402c55255c
+INFO 2026-03-21 01:05:24,971 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: 50c38d77-7e4a-430e-bbef-a44a7b9f65fd
+INFO 2026-03-21 01:05:25,015 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.016s - RequestID: 1890bedb-c853-4422-90b4-8506f062a2fa
+INFO 2026-03-21 01:05:25,016 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 9ade90ed-a4e4-4150-92ef-962280577eb0
+INFO 2026-03-21 01:05:25,031 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: d39bf601-0082-4700-be9b-605074c752dd
+INFO 2026-03-21 01:05:25,124 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.019s - RequestID: ff38c5ef-f6b9-4e6d-be29-9ba26276ebd6
+INFO 2026-03-21 01:05:25,126 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 10f575fd-bb7f-4f8c-b68b-0e8eaba6dcce
+INFO 2026-03-21 01:05:25,187 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.021s - RequestID: dd5a90ab-c8a5-4154-9d63-0615891c457c
+INFO 2026-03-21 01:05:25,202 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 252e1a14-9f35-4178-baa8-2bacf5324472
+INFO 2026-03-21 01:05:25,239 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.011s - RequestID: 6e079006-6e19-4aa9-97e5-276bbb50285c
+INFO 2026-03-21 01:05:25,240 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.001s - RequestID: d22f65e3-74f4-4889-a574-fe07a20f011e
+INFO 2026-03-21 01:05:25,292 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/cohorts/ - 200 - 0.020s - RequestID: 85d407ee-01a2-4bc1-a5ed-306a82da88fa
+INFO 2026-03-21 01:05:25,294 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/cohorts/ - 200 - 0.001s - RequestID: a8f8e9fd-535e-4cce-91d9-ce55e0bab7f5
+INFO 2026-03-21 01:05:25,338 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.015s - RequestID: 3ce12dec-3408-4fc0-9a2e-d6ad5723964c
+INFO 2026-03-21 01:05:25,351 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.009s - RequestID: db6edc1f-e8bc-4fa4-9c86-e6cc1445ec7b
+INFO 2026-03-21 01:05:25,365 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.008s - RequestID: 45614159-11c1-4cfe-9b6f-8816d4cd7e0c
+INFO 2026-03-21 01:05:25,366 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.001s - RequestID: 70f71249-c860-4e4f-abba-86d0eb2f65b5
+INFO 2026-03-21 01:05:25,423 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.018s - RequestID: 73b84905-27c7-41fb-a38c-baa6a2d3e842
+INFO 2026-03-21 01:05:25,435 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 4bc88f50-0495-4e27-9ec6-026241f62547
+INFO 2026-03-21 01:05:25,452 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: bc16c265-54f3-47cc-a11d-c53f34d85747
+INFO 2026-03-21 01:05:25,466 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: e1fa6176-3605-4a78-ba1b-b38135326512
+INFO 2026-03-21 01:05:25,468 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 6228e422-f680-4706-a0bd-1160e8e9231c
+INFO 2026-03-21 01:05:25,508 middleware 781342 124323100512576 GET /api/v1/categories/data-science/ - 200 - 0.008s - RequestID: 10cb9a42-530e-4783-a29c-1117614a3165
+INFO 2026-03-21 01:05:25,519 middleware 781342 124323100512576 GET /api/v1/categories/ai-fundamentals/ - 200 - 0.005s - RequestID: ee49ccfe-8284-4465-8c32-4194f1cb6299
+INFO 2026-03-21 01:05:25,529 middleware 781342 124323100512576 GET /api/v1/categories/machine-learning/ - 200 - 0.006s - RequestID: c2cef4f9-f9eb-4a8d-87c3-c25d693a1912
+INFO 2026-03-21 01:05:25,537 middleware 781342 124323100512576 GET /api/v1/categories/ai-fundamentals/ - 200 - 0.003s - RequestID: 20748412-9f56-46fb-9339-700d23a0608d
+INFO 2026-03-21 01:05:25,542 middleware 781342 124323100512576 GET /api/v1/categories/nonexistent/ - 404 - 0.002s - RequestID: 51c0ea93-4284-4753-875d-74ea5c5428b1
+WARNING 2026-03-21 01:05:25,542 log 781342 124323100512576 Not Found: /api/v1/categories/nonexistent/
+INFO 2026-03-21 01:05:25,583 middleware 781342 124323100512576 GET /api/v1/categories/ai-fundamentals/ - 200 - 0.007s - RequestID: 53e291fd-9a53-4ab2-9b3b-70797c995720
+INFO 2026-03-21 01:05:25,593 middleware 781342 124323100512576 GET /api/v1/categories/ai-fundamentals/ - 200 - 0.003s - RequestID: 1d434e99-7ea9-4114-8896-7c39210b9c1c
+INFO 2026-03-21 01:05:25,637 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.011s - RequestID: b57feb1b-bfab-4384-8f47-258692ce524c
+INFO 2026-03-21 01:05:25,643 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.001s - RequestID: 91cc8f5a-7e9d-4a5d-904f-909751cf4324
+INFO 2026-03-21 01:05:25,648 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.001s - RequestID: dda84468-b52b-4741-9406-c686380d48fc
+INFO 2026-03-21 01:05:25,702 middleware 781342 124323100512576 GET /api/v1/cohorts/83e69c63-5544-486d-b6e9-c263498325ae/ - 200 - 0.014s - RequestID: 5a0895fc-20d3-4df1-a587-f1e652d95830
+INFO 2026-03-21 01:05:25,712 middleware 781342 124323100512576 GET /api/v1/cohorts/00000000-0000-0000-0000-000000000000/ - 404 - 0.005s - RequestID: 7c89cdf5-b769-4537-9561-958aec786290
+WARNING 2026-03-21 01:05:25,712 log 781342 124323100512576 Not Found: /api/v1/cohorts/00000000-0000-0000-0000-000000000000/
+INFO 2026-03-21 01:05:25,765 middleware 781342 124323100512576 GET /api/v1/cohorts/72465593-0de2-4745-94cb-f0da83a3c08c/ - 200 - 0.013s - RequestID: 5a76a89b-99f1-43d8-9089-104ec494edba
+INFO 2026-03-21 01:05:25,777 middleware 781342 124323100512576 GET /api/v1/cohorts/72465593-0de2-4745-94cb-f0da83a3c08c/ - 200 - 0.006s - RequestID: b3b46723-a92f-473e-944f-d854ac0055cf
+INFO 2026-03-21 01:05:25,831 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.017s - RequestID: 64b8cd2d-c454-44ec-bd1c-cf5c57c26e9f
+INFO 2026-03-21 01:05:25,846 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.009s - RequestID: 9d76db8d-8ac9-4b69-9bcb-07fa1f536246
+INFO 2026-03-21 01:05:25,859 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.008s - RequestID: a80d0713-00ff-4e84-b8f1-a5409a3a5a38
+INFO 2026-03-21 01:05:25,875 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.010s - RequestID: ba67fd53-9ddb-4b28-bfd3-77b04e6ff7be
+INFO 2026-03-21 01:05:25,928 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.016s - RequestID: 27c6e872-0fe2-4d64-8d81-4a143c773ba3
+INFO 2026-03-21 01:05:25,942 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.008s - RequestID: 084c596a-3480-4f97-a29d-27076f35fc5f
+INFO 2026-03-21 01:05:25,955 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.010s - RequestID: 7575b0be-73b1-4c71-bca9-5b207a30a14a
+INFO 2026-03-21 01:05:26,008 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.016s - RequestID: d1b771e3-a1cd-4dd8-bcfb-63610de41958
+INFO 2026-03-21 01:05:26,022 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.008s - RequestID: a5447742-1b87-4b82-9366-207581886e58
+INFO 2026-03-21 01:05:26,035 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.008s - RequestID: eb7ad7f3-2804-4f6c-8c17-9a4e854d2277
+INFO 2026-03-21 01:05:26,091 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.016s - RequestID: 55135263-e833-47ba-8db2-a0531eed6d9e
+INFO 2026-03-21 01:05:26,105 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.008s - RequestID: 36a4483a-fc9b-44cb-aff3-652d44d586f0
+INFO 2026-03-21 01:05:26,161 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.018s - RequestID: 4ae12b4b-2eb4-4ddd-8b95-69f56aae763d
+INFO 2026-03-21 01:05:26,179 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.013s - RequestID: abe70752-cf7f-461d-9c52-e5f00e510a25
+INFO 2026-03-21 01:05:26,194 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: c5408873-26c6-4127-a83d-b62bc54a2d5a
+INFO 2026-03-21 01:05:26,203 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.005s - RequestID: bcefe202-81b9-4e83-b00c-ab0b3ea829ad
+INFO 2026-03-21 01:05:26,256 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.014s - RequestID: ba189427-f3f3-49da-a26a-c3a0ad641d18
+INFO 2026-03-21 01:05:26,262 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.001s - RequestID: 8f329aba-af8f-4200-b5d4-781435aefdc9
+INFO 2026-03-21 01:05:26,270 middleware 781342 124323100512576 GET /api/v1/courses/nonexistent/ - 404 - 0.004s - RequestID: 6c40310d-6300-4969-be2c-00aa18e76cf3
+WARNING 2026-03-21 01:05:26,271 log 781342 124323100512576 Not Found: /api/v1/courses/nonexistent/
+INFO 2026-03-21 01:05:26,278 middleware 781342 124323100512576 GET /api/v1/courses/draft-course/ - 404 - 0.004s - RequestID: 8175f072-710d-4b0c-be88-a1e1a24d2b70
+WARNING 2026-03-21 01:05:26,278 log 781342 124323100512576 Not Found: /api/v1/courses/draft-course/
+INFO 2026-03-21 01:05:26,335 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.019s - RequestID: ce961a97-6b19-447b-9553-94465e8eee76
+INFO 2026-03-21 01:05:26,355 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.015s - RequestID: 97720928-bdd5-4d23-9f5b-c03fc5200c7c
+INFO 2026-03-21 01:05:26,368 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: cf3e2bd7-5ffc-46a7-97b0-05737b966749
+INFO 2026-03-21 01:05:26,380 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.008s - RequestID: 13744cf3-2bb6-4f6c-928d-0e18335e9454
+INFO 2026-03-21 01:05:26,394 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 7396364e-48ef-4e30-b8f7-c88ae53851ed
+INFO 2026-03-21 01:05:26,408 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: dbf3435e-ccee-41f4-af92-016fa1d256bc
+INFO 2026-03-21 01:05:26,413 middleware 781342 124323100512576 GET /api/v1/courses/ - 400 - 0.002s - RequestID: 665ce881-26c0-4545-be82-c0f6ee0f5242
+WARNING 2026-03-21 01:05:26,413 log 781342 124323100512576 Bad Request: /api/v1/courses/
+INFO 2026-03-21 01:05:26,470 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.018s - RequestID: 164a7851-3e57-4301-9486-c60b2ddcfa11
+INFO 2026-03-21 01:05:26,475 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 226ced32-141a-4f39-9eb3-063577c70137
+INFO 2026-03-21 01:05:26,480 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 568c9cef-db46-4380-9ffd-c8f8905cc488
+INFO 2026-03-21 01:05:26,539 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.017s - RequestID: e1a05737-a2f2-423f-bcc7-ddf9528f143f
+INFO 2026-03-21 01:05:26,553 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 3341e8b5-cfee-4d7c-8f99-36b9b0c6ded5
+INFO 2026-03-21 01:05:26,566 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: e43974f3-18c4-49c5-aba9-854e87f1d818
+INFO 2026-03-21 01:05:26,581 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: 108adad4-51b5-41cd-b027-0f7667d2b54b
+INFO 2026-03-21 01:05:26,596 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: b88e8b86-c879-4c4f-990d-24d5c3a7d73e
+INFO 2026-03-21 01:05:26,611 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: d99ff4f9-a93d-4052-8e16-e6cd2ac79db1
+INFO 2026-03-21 01:05:26,669 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.018s - RequestID: ad74aae9-562b-4712-b0a2-2a19c8e17e8f
+INFO 2026-03-21 01:05:26,684 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 27011161-fad9-4953-98b0-ebfe214b84e4
+INFO 2026-03-21 01:05:26,699 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: 11db8500-3f11-4f0e-84bb-ecb456e3545c
+INFO 2026-03-21 01:05:26,712 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: 4e7fdb93-0bf9-470b-a56d-19cd86c01087
+INFO 2026-03-21 01:05:26,723 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: c5f28c5d-e70b-4a80-a33b-d85009c84e93
+INFO 2026-03-21 01:05:26,731 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.005s - RequestID: 3f8504ff-672c-4674-9321-4d0b6c20ce47
+INFO 2026-03-21 01:05:26,744 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 5a05da95-55bd-439b-9b10-681a52a9e4f9
+INFO 2026-03-21 01:05:26,782 middleware 781342 124323100512576 POST /api/v1/enrollments/b3bff666-ff7e-4d34-b22b-c301c7c9b58c/cancel/ - 400 - 0.005s - RequestID: c49d993d-08b1-4439-89e0-cc687392262c
+WARNING 2026-03-21 01:05:26,783 log 781342 124323100512576 Bad Request: /api/v1/enrollments/b3bff666-ff7e-4d34-b22b-c301c7c9b58c/cancel/
+INFO 2026-03-21 01:05:26,806 middleware 781342 124323100512576 POST /api/v1/enrollments/975fb014-f0c7-41de-9843-629a5a803e48/cancel/ - 200 - 0.008s - RequestID: b0f65114-10ca-4381-bed7-a9026432d71b
+INFO 2026-03-21 01:05:26,826 middleware 781342 124323100512576 POST /api/v1/enrollments/4228fa99-629f-4344-8e5c-fe48b2e730b6/cancel/ - 200 - 0.006s - RequestID: 18417c18-72b2-441a-afc4-65b313ce5b51
+INFO 2026-03-21 01:05:26,849 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.009s - RequestID: 7346d64f-d4dc-425d-855c-8a97fee6f446
+WARNING 2026-03-21 01:05:26,849 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:26,865 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.006s - RequestID: 06c9d8c8-b0cc-4f8f-bffb-bd70ceb7e460
+WARNING 2026-03-21 01:05:26,866 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:26,884 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 401 - 0.001s - RequestID: 664d26bc-5848-43a8-a38b-b09497f24135
+WARNING 2026-03-21 01:05:26,884 log 781342 124323100512576 Unauthorized: /api/v1/enrollments/
+INFO 2026-03-21 01:05:26,907 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 201 - 0.013s - RequestID: a95bc16e-8459-40fc-a0bb-76959b624a27
+INFO 2026-03-21 01:05:26,929 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 201 - 0.013s - RequestID: 7ede385e-b0e5-4541-beb9-859ce3f12e5a
+INFO 2026-03-21 01:05:26,953 middleware 781342 124323100512576 GET /api/v1/enrollments/ - 200 - 0.011s - RequestID: f9a8ea65-dd04-4f13-a540-b9893f2b81b9
+INFO 2026-03-21 01:05:27,256 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.018s - RequestID: 8e64453f-d90f-4347-a3da-502f8d6c02f6
+INFO 2026-03-21 01:05:27,297 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.003s - RequestID: 0a0b2542-e1c1-488b-9974-f77075339dca
+WARNING 2026-03-21 01:05:27,297 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:27,580 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.019s - RequestID: e100a24c-b1f1-49e5-92a4-b80fc950fc66
+WARNING 2026-03-21 01:05:27,580 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:27,592 middleware 781342 124323100512576 POST /api/v1/courses/nonexistent-course/thumbnail/ - 404 - 0.004s - RequestID: dcc10de3-44f4-4b63-a5c7-e688baefa53a
+WARNING 2026-03-21 01:05:27,593 log 781342 124323100512576 Not Found: /api/v1/courses/nonexistent-course/thumbnail/
+INFO 2026-03-21 01:05:27,600 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.003s - RequestID: 4d395279-6779-475a-a350-0efa2ed31129
+WARNING 2026-03-21 01:05:27,600 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:27,620 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.011s - RequestID: 1c553839-87bf-4546-bd6c-5ea35f56f46d
+INFO 2026-03-21 01:05:27,650 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.014s - RequestID: 7d6c67c7-2de4-4c1e-b21e-314e4bae6d3a
+INFO 2026-03-21 01:05:27,725 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.014s - RequestID: 58386c3d-d2c0-4c27-aec6-b4c394d541cc
+INFO 2026-03-21 01:05:27,740 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 401 - 0.001s - RequestID: 7af24954-d321-4b7a-bb5b-2e8b7cf8df70
+WARNING 2026-03-21 01:05:27,741 log 781342 124323100512576 Unauthorized: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:27,868 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.087s - RequestID: 2af8219e-be68-4c01-af44-58ce6dc5481a
+INFO 2026-03-21 01:05:28,200 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.265s - RequestID: 39f09851-b0b4-452e-adc5-29fc8a588bd1
+INFO 2026-03-21 01:05:28,225 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.011s - RequestID: d537171a-5f1b-46f2-9a6f-acf1fdfb87c6
+INFO 2026-03-21 01:05:28,259 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.005s - RequestID: 0ce61fde-e0e2-43e8-adad-4002e604ccd7
+WARNING 2026-03-21 01:05:28,259 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:28,267 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.003s - RequestID: 5d9aade5-ce41-4cf7-b454-77d5ff59225a
+WARNING 2026-03-21 01:05:28,267 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:28,288 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.013s - RequestID: c2798b76-49d8-420c-942a-eb452a26c80d
+INFO 2026-03-21 01:05:28,296 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.003s - RequestID: 5844f5b1-b1ca-4317-a3b9-5e5197ba5a09
+WARNING 2026-03-21 01:05:28,296 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:28,304 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 400 - 0.003s - RequestID: 6f375162-2cfe-4660-81bc-1f778e1c39e7
+WARNING 2026-03-21 01:05:28,304 log 781342 124323100512576 Bad Request: /api/v1/courses/intro-to-ai/thumbnail/
+INFO 2026-03-21 01:05:28,355 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.015s - RequestID: 0a6919d6-8033-4cb2-aee3-76cb1745bb95
+INFO 2026-03-21 01:05:28,367 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.011s - RequestID: 0987236c-328f-4f68-9e4c-dcd1d3413881
+INFO 2026-03-21 01:05:28,386 middleware 781342 124323100512576 POST /api/v1/courses/intro-to-ai/thumbnail/ - 201 - 0.011s - RequestID: 5206ee81-8b36-4880-8d77-7178501d0d4e
+INFO 2026-03-21 01:05:28,521 middleware 781342 124323100512576 POST /api/v1/users/me/avatar/ - 201 - 0.086s - RequestID: 98cbea15-7975-4b3d-9f12-a31c58d900b8
+INFO 2026-03-21 01:05:28,539 middleware 781342 124323100512576 POST /api/v1/users/me/avatar/ - 401 - 0.001s - RequestID: 5be5fd07-5273-49d7-8750-293b31ea9d39
+WARNING 2026-03-21 01:05:28,539 log 781342 124323100512576 Unauthorized: /api/v1/users/me/avatar/
+INFO 2026-03-21 01:05:28,551 middleware 781342 124323100512576 POST /api/v1/users/me/avatar/ - 201 - 0.007s - RequestID: 3d7e8fb4-e48b-4f0a-9097-ec44938af0f2
+INFO 2026-03-21 01:05:28,561 middleware 781342 124323100512576 POST /api/v1/users/me/avatar/ - 201 - 0.006s - RequestID: 24e1d4e3-89ea-4ff9-b2a0-643e8d8c8a9e
+INFO 2026-03-21 01:05:28,582 middleware 781342 124323100512576 GET /api/v1/enrollments/ - 401 - 0.001s - RequestID: 637f007d-f64f-41b2-9879-07d4ded79e35
+WARNING 2026-03-21 01:05:28,583 log 781342 124323100512576 Unauthorized: /api/v1/enrollments/
+INFO 2026-03-21 01:05:28,621 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 200 - 0.038s - RequestID: 2b92ccaf-3309-4238-aaa4-2804440a8696
+INFO 2026-03-21 01:05:28,629 middleware 781342 124323100512576 GET /api/v1/enrollments/ - 200 - 0.007s - RequestID: ecdd54c9-26ab-46b2-8d40-033fcc69f76e
+INFO 2026-03-21 01:05:28,638 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 401 - 0.003s - RequestID: 817aaeda-01fe-4f9e-8066-2fbae627a7a0
+WARNING 2026-03-21 01:05:28,638 log 781342 124323100512576 Unauthorized: /api/v1/auth/token/
+INFO 2026-03-21 01:05:28,647 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 200 - 0.005s - RequestID: f79ffcf2-3051-45a1-b09e-f0481bfd71f0
+INFO 2026-03-21 01:05:28,656 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 200 - 0.005s - RequestID: 366f0cda-ccd1-40ab-ae23-73a875474e3e
+INFO 2026-03-21 01:05:28,665 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 200 - 0.006s - RequestID: f469bc3a-5afc-4071-92a7-e71ab10dda0e
+INFO 2026-03-21 01:05:28,682 middleware 781342 124323100512576 POST /api/v1/auth/token/refresh/ - 200 - 0.016s - RequestID: 51796ae3-07b8-4c80-bbca-50e03e46aaab
+INFO 2026-03-21 01:05:28,695 middleware 781342 124323100512576 POST /api/v1/auth/token/ - 200 - 0.006s - RequestID: 235846ef-7e75-4d88-907d-83a92ba46c59
+INFO 2026-03-21 01:05:28,698 middleware 781342 124323100512576 POST /api/v1/auth/token/verify/ - 200 - 0.003s - RequestID: 49663120-6ac8-430b-8390-d2c4ce18bcaa
+INFO 2026-03-21 01:05:28,764 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.017s - RequestID: 38a42c93-969d-4ef7-b73b-a76ae5e09ca3
+INFO 2026-03-21 01:05:28,804 middleware 781342 124323100512576 GET /api/v1/courses/course-0/cohorts/ - 200 - 0.012s - RequestID: 5f2a082e-3dad-4176-9d09-30a84887f1ec
+INFO 2026-03-21 01:05:28,835 middleware 781342 124323100512576 GET /api/v1/courses/course-0/ - 200 - 0.010s - RequestID: 589ea9db-b7d6-4efa-b13c-b7ae156985aa
+INFO 2026-03-21 01:05:28,868 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.012s - RequestID: 080b1646-a81e-44ec-8c77-8dd0174b166a
+INFO 2026-03-21 01:05:29,054 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.018s - RequestID: 5e5a903e-0064-4c1e-93a1-2a7e89e412db
+INFO 2026-03-21 01:05:29,101 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/cohorts/ - 200 - 0.019s - RequestID: b67d518c-34e1-4ef1-a210-e7e6edb1eb91
+INFO 2026-03-21 01:05:29,128 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 4f614562-6ceb-46f0-a5d0-23f3e38b5c56
+INFO 2026-03-21 01:05:29,147 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.017s - RequestID: 4572e2ea-7b20-4349-94ed-4421e4d94843
+INFO 2026-03-21 01:05:29,178 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.003s - RequestID: 0ac660ba-22cb-4dc2-b596-ab716ef8128a
+WARNING 2026-03-21 01:05:29,178 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,182 middleware 781342 124323100512576 GET /api/v1/enrollments/ - 401 - 0.001s - RequestID: ed534b31-9165-48d8-a764-3b64ad8bdd43
+WARNING 2026-03-21 01:05:29,182 log 781342 124323100512576 Unauthorized: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,192 middleware 781342 124323100512576 GET /api/v1/courses/non-existent-course/ - 404 - 0.007s - RequestID: 1cddd1f0-6e2b-413c-879d-2f69809e9eb1
+WARNING 2026-03-21 01:05:29,192 log 781342 124323100512576 Not Found: /api/v1/courses/non-existent-course/
+INFO 2026-03-21 01:05:29,204 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.009s - RequestID: 97ec4c92-ab51-416b-bc7b-f12b21d742fa
+WARNING 2026-03-21 01:05:29,204 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,214 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.006s - RequestID: 5c0bc221-c5d1-4d94-8a6b-17326ba4d4ff
+WARNING 2026-03-21 01:05:29,214 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,296 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.019s - RequestID: 61912049-54f3-4edd-9936-b358c73aa666
+INFO 2026-03-21 01:05:29,313 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.011s - RequestID: 5eb4f62b-cd70-4d36-b3cc-d47f530724fe
+INFO 2026-03-21 01:05:29,356 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.016s - RequestID: a2ecf787-5dff-4ab6-a50b-0195dec492e7
+INFO 2026-03-21 01:05:29,366 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.009s - RequestID: 6f4e8062-f9d7-45ae-a4cd-a4c2e9fcbc8b
+INFO 2026-03-21 01:05:29,402 middleware 781342 124323100512576 GET /api/v1/categories/ - 200 - 0.011s - RequestID: b03c3284-1479-419e-a2d2-91ff9e118ac5
+INFO 2026-03-21 01:05:29,423 middleware 781342 124323100512576 GET /api/v1/cohorts/ - 200 - 0.014s - RequestID: 693cc9fd-c86e-4cfe-b84e-ca2b7d5b61fc
+INFO 2026-03-21 01:05:29,436 middleware 781342 124323100512576 GET /api/v1/courses/intro-to-ai/ - 200 - 0.009s - RequestID: 95799df0-a41f-42bb-851b-c2f77b42fbba
+INFO 2026-03-21 01:05:29,450 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.010s - RequestID: 76a0a02c-b462-4532-892a-65795547717d
+INFO 2026-03-21 01:05:29,492 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.017s - RequestID: 5d649d5a-9e2f-4855-a903-736f3f06523d
+INFO 2026-03-21 01:05:29,587 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.063s - RequestID: 2ae04b63-a386-4d5b-ba9b-ed0da8cbf852
+INFO 2026-03-21 01:05:29,596 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.009s - RequestID: fcf1c511-041d-4f68-823b-fcaff1befe10
+INFO 2026-03-21 01:05:29,606 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 2fe8daf2-1847-44ee-85f5-0878d2add507
+INFO 2026-03-21 01:05:29,608 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 429 - 0.001s - RequestID: 85f778e3-5d70-41fe-85fc-2efa70a306d6
+WARNING 2026-03-21 01:05:29,608 log 781342 124323100512576 Too Many Requests: /api/v1/auth/register/
+INFO 2026-03-21 01:05:29,640 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 201 - 0.019s - RequestID: 9fcd2579-9f26-46e1-8eaf-35f22346cfff
+INFO 2026-03-21 01:05:29,647 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: 1673380f-42e1-41f8-89a0-b1e70613f6fb
+WARNING 2026-03-21 01:05:29,647 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,656 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.008s - RequestID: 2b1ac0a3-9a04-4f15-9428-f358358fade6
+WARNING 2026-03-21 01:05:29,656 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,663 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: 0af48240-cb62-4d4f-9302-dfd046ab3ca5
+WARNING 2026-03-21 01:05:29,663 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,672 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.008s - RequestID: 0d0dd8a1-f9e5-454e-ab21-add2d9569c77
+WARNING 2026-03-21 01:05:29,672 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,680 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: fabaccc5-6e3b-4143-b336-c4da88d50f06
+WARNING 2026-03-21 01:05:29,680 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,688 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: cf227b0c-5ad1-4f04-81df-459a0f271364
+WARNING 2026-03-21 01:05:29,689 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,697 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: 54ef3374-e452-40ec-b158-2b4cbfd4714b
+WARNING 2026-03-21 01:05:29,697 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,706 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.009s - RequestID: 81a1a106-a5a1-4b98-992d-27a152c74e6c
+WARNING 2026-03-21 01:05:29,707 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,715 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.008s - RequestID: 0bdc1bb0-60fe-42ee-9517-8326e0a24796
+WARNING 2026-03-21 01:05:29,715 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,718 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 429 - 0.002s - RequestID: 126de4af-9814-44f8-bbe5-5d004a1e150e
+WARNING 2026-03-21 01:05:29,718 log 781342 124323100512576 Too Many Requests: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,742 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 201 - 0.012s - RequestID: 9d007887-12be-42bc-add1-b6e82076de9f
+INFO 2026-03-21 01:05:29,749 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: ab4af0e3-87b9-4d32-b939-99676be479ca
+WARNING 2026-03-21 01:05:29,750 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,759 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.009s - RequestID: 01d64f15-9757-4e43-a0a2-1d276efe8008
+WARNING 2026-03-21 01:05:29,759 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,766 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.007s - RequestID: 3aa343d3-fe81-41ce-b1fd-edff57cff2b7
+WARNING 2026-03-21 01:05:29,767 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,775 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 400 - 0.008s - RequestID: 64915234-d3bd-4ea3-91c3-af43db0ba5fa
+WARNING 2026-03-21 01:05:29,775 log 781342 124323100512576 Bad Request: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,777 middleware 781342 124323100512576 POST /api/v1/enrollments/ - 429 - 0.001s - RequestID: a817b0a3-5e0e-466b-ac0b-629c8783b9b1
+WARNING 2026-03-21 01:05:29,778 log 781342 124323100512576 Too Many Requests: /api/v1/enrollments/
+INFO 2026-03-21 01:05:29,802 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.013s - RequestID: d968e082-8143-4879-a2b6-47455ac3895d
+INFO 2026-03-21 01:05:29,804 middleware 781342 124323100512576 GET /api/v1/courses/ - 200 - 0.001s - RequestID: 3a137065-e6a3-41f4-8b1a-7a9c8b3afd19
+INFO 2026-03-21 01:05:29,823 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.009s - RequestID: d97a315e-8898-4b8d-b7db-9ad3c8fa4c52
+INFO 2026-03-21 01:05:29,831 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 88746ebd-b481-418e-9318-05e8986c4bac
+INFO 2026-03-21 01:05:29,842 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.010s - RequestID: 617b4953-58b9-4889-a191-d6a1471cd983
+INFO 2026-03-21 01:05:29,844 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 429 - 0.001s - RequestID: b783cb80-e503-4417-98b2-3dee11063a4c
+WARNING 2026-03-21 01:05:29,844 log 781342 124323100512576 Too Many Requests: /api/v1/auth/register/
+INFO 2026-03-21 01:05:29,871 middleware 781342 124323100512576 GET /api/v1/users/me/ - 200 - 0.002s - RequestID: 00a796b3-7bd7-4dce-b50c-478a929fdc07
+INFO 2026-03-21 01:05:29,903 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.014s - RequestID: 0e3a207c-bcc5-4bac-be32-9f96a43b0935
+INFO 2026-03-21 01:05:29,913 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 135253e6-9d14-462a-8f74-c4a9edd57f6e
+INFO 2026-03-21 01:05:29,924 middleware 781342 124323100512576 PATCH /api/v1/users/me/ - 200 - 0.005s - RequestID: a3aa5462-43d1-4922-8b55-0b79ecc1fda7
+INFO 2026-03-21 01:05:29,949 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/confirm/ - 400 - 0.002s - RequestID: 0c89bcf2-2e88-4f18-937e-61959f061a78
+WARNING 2026-03-21 01:05:29,950 log 781342 124323100512576 Bad Request: /api/v1/auth/password-reset/confirm/
+INFO 2026-03-21 01:05:29,962 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/confirm/ - 400 - 0.009s - RequestID: 76a79f86-9251-4b7e-8363-8e4846a1ba25
+WARNING 2026-03-21 01:05:29,962 log 781342 124323100512576 Bad Request: /api/v1/auth/password-reset/confirm/
+INFO 2026-03-21 01:05:29,967 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 400 - 0.002s - RequestID: 1011100f-8aea-4c11-a5b7-119a5177f5ea
+WARNING 2026-03-21 01:05:29,967 log 781342 124323100512576 Bad Request: /api/v1/auth/password-reset/
+INFO 2026-03-21 01:05:29,976 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.006s - RequestID: b7d8bd89-7a73-4dfd-9be1-eef4658b1d42
+INFO 2026-03-21 01:05:29,982 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.003s - RequestID: d5147390-58d7-496d-a68f-1619f3d7678d
+INFO 2026-03-21 01:05:29,988 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/confirm/ - 400 - 0.002s - RequestID: a8a83442-7365-413c-bdef-c75eb287786b
+WARNING 2026-03-21 01:05:29,988 log 781342 124323100512576 Bad Request: /api/v1/auth/password-reset/confirm/
+INFO 2026-03-21 01:05:30,014 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.008s - RequestID: e3bf745d-acab-43ca-a6ca-dd7811b4f0b3
+INFO 2026-03-21 01:05:30,019 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.004s - RequestID: e3087427-b0c9-41bb-9f58-3aae3a8aef94
+INFO 2026-03-21 01:05:30,023 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.004s - RequestID: 3bd84ffd-fb73-4257-9abc-be6cf517c575
+INFO 2026-03-21 01:05:30,027 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.003s - RequestID: 3c30b1e4-376f-40ea-b19f-edd507d26ff0
+INFO 2026-03-21 01:05:30,032 middleware 781342 124323100512576 POST /api/v1/auth/password-reset/ - 200 - 0.003s - RequestID: 643a76d4-ec32-4bc5-9477-1a9f7d07670e
+INFO 2026-03-21 01:05:30,047 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.012s - RequestID: 0b740053-329b-4cb3-a6c4-7f0b3a44a496
+INFO 2026-03-21 01:05:30,055 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 6afa48da-db69-4956-a85a-98ab491d9bd4
+INFO 2026-03-21 01:05:30,063 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.007s - RequestID: 3bbcf630-d4d9-4825-8fad-195e507c2a36
+INFO 2026-03-21 01:05:30,072 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.009s - RequestID: cd6ba781-1c7d-417a-90d8-412d25ede4e7
+INFO 2026-03-21 01:05:30,081 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.007s - RequestID: a15c3af2-303f-468f-a1d1-f48d501afd01
+INFO 2026-03-21 01:05:30,105 middleware 781342 124323100512576 GET /api/v1/users/me/ - 200 - 0.002s - RequestID: 275979d5-84c4-4549-a670-51040201f127
+INFO 2026-03-21 01:05:30,119 middleware 781342 124323100512576 GET /api/v1/users/me/ - 401 - 0.001s - RequestID: 8feb6eff-3b9e-4f00-9402-72127cd6b85b
+WARNING 2026-03-21 01:05:30,120 log 781342 124323100512576 Unauthorized: /api/v1/users/me/
+INFO 2026-03-21 01:05:30,125 middleware 781342 124323100512576 GET /api/v1/users/me/ - 200 - 0.002s - RequestID: 92a3a51e-8bf5-4dd7-a75e-289e9a646155
+INFO 2026-03-21 01:05:30,133 middleware 781342 124323100512576 PATCH /api/v1/users/me/ - 200 - 0.005s - RequestID: 7b9ec52a-a1bc-4573-9d27-84635637fc88
+INFO 2026-03-21 01:05:30,142 middleware 781342 124323100512576 PATCH /api/v1/users/me/ - 200 - 0.004s - RequestID: ff20f9ac-0869-4063-8b3b-7d7c3cd9ab60
+INFO 2026-03-21 01:05:30,173 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 400 - 0.009s - RequestID: bc931869-5902-4b13-b73c-71f2541cb682
+WARNING 2026-03-21 01:05:30,174 log 781342 124323100512576 Bad Request: /api/v1/auth/register/
+INFO 2026-03-21 01:05:30,183 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 400 - 0.005s - RequestID: 12bb1c65-b9ac-4701-a376-28e58f75339c
+WARNING 2026-03-21 01:05:30,184 log 781342 124323100512576 Bad Request: /api/v1/auth/register/
+INFO 2026-03-21 01:05:30,193 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 400 - 0.005s - RequestID: c21ee311-368d-429c-ae19-1f32bf65d6d1
+WARNING 2026-03-21 01:05:30,193 log 781342 124323100512576 Bad Request: /api/v1/auth/register/
+INFO 2026-03-21 01:05:30,200 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 400 - 0.004s - RequestID: 60e333f2-4909-4f3f-93be-4109ed6b3294
+WARNING 2026-03-21 01:05:30,200 log 781342 124323100512576 Bad Request: /api/v1/auth/register/
+INFO 2026-03-21 01:05:30,212 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 443c48c6-c910-467a-bd1a-d4d7e7aeb5fd
+INFO 2026-03-21 01:05:30,223 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 6ead7c53-bfcf-469c-91a5-5ae0c5cb2a98
+INFO 2026-03-21 01:05:30,234 middleware 781342 124323100512576 POST /api/v1/auth/register/ - 400 - 0.006s - RequestID: 880938d9-4a6a-4806-aef6-a84d27e3b0da
+WARNING 2026-03-21 01:05:30,234 log 781342 124323100512576 Bad Request: /api/v1/auth/register/

@@ -40,6 +40,17 @@ class CourseListSerializer(serializers.ModelSerializer):
             "is_featured",
         ]
 
+    def to_representation(self, instance):
+        """Conditionally hide sensitive fields from anonymous users."""
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+
+        # Hide enrolled_count from non-authenticated users
+        if not request or not request.user.is_authenticated:
+            data.pop("enrolled_count", None)
+
+        return data
+
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
@@ -72,6 +83,19 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def to_representation(self, instance):
+        """Conditionally hide sensitive fields from anonymous users."""
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+
+        # Hide sensitive fields from non-authenticated users
+        if not request or not request.user.is_authenticated:
+            data.pop("enrolled_count", None)
+            data.pop("created_at", None)
+            data.pop("updated_at", None)
+
+        return data
 
 
 class CohortSerializer(serializers.ModelSerializer):
