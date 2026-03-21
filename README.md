@@ -174,7 +174,13 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 - ⏳ **Integration:** Ready to connect to authenticated API endpoints
 
 #### In Progress
-- ⏳ **Payment Flow UI:** Stripe backend complete, frontend enrollment pages needed
+- ⏳ **Payment Flow UI:** Frontend types and API services created, components in progress
+
+#### Completed (March 21, 2026 - Phase B Frontend)
+- ✅ **Payment Frontend Foundation:** Stripe SDK installed, types defined, API service created
+- ✅ **Payment Hooks:** usePayment.ts with useCreatePaymentIntent, usePaymentStatus, useConfirmPayment, useCheckout
+- ✅ **Type Definitions:** PaymentIntent, PaymentStatus, PaymentFormState types
+- ✅ **API Integration:** Payment service with createPaymentIntent and getPaymentStatus
 
 #### Completed (March 21, 2026 - Phase 7)
 - ✅ **Payment Backend:** Stripe PaymentIntent creation and webhook handling
@@ -183,6 +189,32 @@ DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test api.tests.tes
 ---
 
 ## Recent Milestones (March 21, 2026)
+
+### ✅ Phase B: Frontend Payment Foundation (NEW)
+**Status:** IN PROGRESS | **Components:** Types, Services, Hooks Complete
+
+**Installed Dependencies:**
+- `@stripe/stripe-js` - Stripe JavaScript SDK
+- `@stripe/react-stripe-js` - React bindings for Stripe Elements
+
+**Files Created:**
+- `types/payment.ts` - Payment type definitions (10 types)
+- `services/api/payments.ts` - Payment API service with error handling
+- `hooks/usePayment.ts` - Payment React Query hooks
+
+**Features:**
+- **createPaymentIntent:** Creates PaymentIntent via backend API
+- **useConfirmPayment:** Stripe Elements confirmation with CardElement
+- **useCheckout:** Orchestrates full enrollment + payment flow
+- **Error Handling:** User-friendly error messages for all payment errors
+- **Currency Formatter:** Intl.NumberFormat for amounts
+
+**Next Steps:**
+- Create PaymentForm component (Stripe CardElement)
+- Create CohortSelector component
+- Create EnrollmentPage (3-step wizard)
+- Create EnrollmentConfirmationPage
+- Add 25 TDD tests
 
 ### ✅ Phase 7: Payment Processing Backend (NEW)
 **Status:** COMPLETE | **Tests:** 12 passing
