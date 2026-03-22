@@ -6,7 +6,7 @@
 [![Django 6.0.3](https://img.shields.io/badge/Django-6.0.3-green.svg)](https://www.djangoproject.com/)
 [![Tailwind 3.4.19](https://img.shields.io/badge/Tailwind-3.4.19-38bdf8.svg)](https://tailwindcss.com/)
 [![WCAG AAA](https://img.shields.io/badge/Accessibility-AAA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
-[![Tests](https://img.shields.io/badge/Tests-239_passing-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-257_passing-brightgreen.svg)](#testing)
 
 **An elite, full-stack educational platform built for the next generation of AI Engineers.**
 
@@ -317,7 +317,7 @@ npm run dev
 
 ## 🧪 Testing
 
-### Backend Tests (239 total - ALL PASSING)
+### Backend Tests (257 total - ALL PASSING)
 
 | Category | Tests | Status |
 |----------|-------|--------|
@@ -326,7 +326,8 @@ npm run dev
 | Payment Processing | 12 | ✅ |
 | Response Format | 17 | ✅ |
 | Audit Logging | 22 | ✅ |
-| **Total** | **239** | **✅** |
+| Soft Delete | 18 | ✅ |
+| **Total** | **257** | **✅** |
 
 ### Frontend Tests (Vitest)
 

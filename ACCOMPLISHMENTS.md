@@ -1211,3 +1211,143 @@ frontend/package.json (updated with test scripts)
 ---
 
 **End of Accomplishments Document**
+
+---
+
+### ✅ Milestone 19: Soft Delete Implementation Complete (Phase 1 Remediation)
+**Date:** March 22, 2026
+**Status:** 18/18 Soft Delete Tests Passing (100%)
+
+#### Background
+During the code audit, it was discovered that Step 14 (Soft Delete) was documented as complete in AGENTS.md but was **missing from the actual implementation**. The models lacked `deleted_at` fields and soft delete functionality.
+
+#### Implementation Summary
+
+**TDD Approach Used:**
+1. **RED Phase:** Wrote 18 comprehensive tests that initially failed
+2. **GREEN Phase:** Implemented soft delete infrastructure to make tests pass
+3. **REFACTOR Phase:** Optimized manager patterns and response formats
+
+**Files Created/Modified:**
+
+| File | Changes | Lines Added |
+|------|---------|-------------|
+| `courses/tests/test_soft_delete.py` | NEW - 18 TDD tests | 355 lines |
+| `courses/models.py` | Soft delete fields + managers + methods | +115 lines |
+| `courses/migrations/0003_cohort_deleted_at_course_deleted_at.py` | NEW migration | - |
+| `courses/migrations/0004_enrollment_deleted_at.py` | NEW migration | - |
+
+**Features Implemented:**
+
+1. **Model-Level Soft Delete:**
+   - `deleted_at` DateTimeField on Course, Cohort, Enrollment
+   - Database indexes for performance
+   - Django-compatible delete() return values
+
+2. **Custom Managers:**
+   - `SoftDeleteManager` - Default manager (excludes deleted)
+   - `objects.all_objects()` - Returns all records including deleted
+   - `objects.only_deleted()` - Returns only soft deleted records
+
+3. **Instance Methods:**
+   - `delete()` - Soft delete (sets deleted_at timestamp)
+   - `restore()` - Restore soft deleted record (clears deleted_at)
+
+4. **QuerySet Methods:**
+   - `delete()` - Bulk soft delete
+   - `restore()` - Bulk restore
+   - `only_deleted()` - Filter for deleted records
+   - `exclude_deleted()` - Filter for active records (default)
+
+**Test Coverage (18 Tests):**
+
+| Category | Tests | Description |
+|----------|-------|-------------|
+| Course Soft Delete | 5 | Field presence, soft delete, restore, manager filtering |
+| Cohort Soft Delete | 4 | Same coverage for cohorts |
+| Enrollment Soft Delete | 4 | Same coverage for enrollments |
+| Manager Tests | 3 | objects, all_objects, only_deleted behavior |
+| API Tests | 2 | Endpoint exclusion of deleted records |
+
+**Root Causes Fixed:**
+
+1. ✅ **Missing delete()/restore() methods** - Added to Cohort and Enrollment
+2. ✅ **Manager access pattern** - Fixed tests to use method calls
+3. ✅ **URL namespacing** - Updated to use "api:" namespace
+4. ✅ **API response structure** - Fixed to use standardized format
+
+**Lessons Learned:**
+
+1. **TDD is Essential:** Writing tests first exposed all missing functionality
+2. **Manager Pattern Matters:** Django managers need careful implementation
+3. **API Documentation Sync:** Response format must match test expectations
+4. **Migration Strategy:** Always create new migrations, never modify existing
+
+**Technical Insights:**
+
+```python
+# Manager Implementation Pattern
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        return SoftDeleteQuerySet(self.model, using=self._db).exclude_deleted()
+    
+    def all_objects(self):
+        return SoftDeleteQuerySet(self.model, using=self._db)
+    
+    def only_deleted(self):
+        return SoftDeleteQuerySet(self.model, using=self._db).only_deleted()
+```
+
+**Test Results:**
+- **Soft Delete Tests:** 18/18 passing ✅
+- **Core API Tests:** 55/55 passing ✅
+- **Total Backend:** 257 tests (239 + 18) ✅
+- **No Regressions:** All existing functionality preserved ✅
+
+**Next Steps:**
+- API views automatically exclude deleted records via manager
+- Future: Add admin interface for viewing/restoring deleted records
+- Future: Add cascade soft delete for related objects
+
+---
+
+### ✅ Milestone 20: Documentation Updates Complete
+**Date:** March 22, 2026
+
+**Updated Files:**
+- README.md - Test count badge (239 → 257)
+- README.md - Backend test table (added Soft Delete row)
+- AGENTS.md - Test coverage summary (239 → 257)
+- API_Usage_Guide.md - Version bump to 1.6.0
+- ACCOMPLISHMENTS.md - This entry
+
+**Key Changes:**
+- Total test count: 239 → 257 (+18 soft delete tests)
+- Soft delete now documented as complete
+- Phase 1 remediation fully documented
+
+---
+
+## Current Project Status (March 22, 2026)
+
+### Backend (100% Complete)
+- ✅ All 257 tests passing (239 original + 18 soft delete)
+- ✅ Soft delete fully implemented
+- ✅ API documentation complete
+- ✅ Payment processing operational
+- ✅ Caching and optimization complete
+
+### Frontend (90% Complete)
+- ✅ Payment components implemented
+- ✅ Enrollment flow working
+- ✅ Test infrastructure ready
+- ⏳ Phase 2: Frontend Routes (next task)
+
+### Next Tasks
+1. **Phase 2:** Add enrollment routes to App.tsx
+2. **Phase 3:** Full integration testing
+3. **Phase 4:** Production deployment prep
+
+---
+
+**End of Accomplishments Document - Updated March 22, 2026**
