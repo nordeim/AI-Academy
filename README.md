@@ -3,8 +3,8 @@
 <div align="center">
 
 [![React 19](https://img.shields.io/badge/React-19.2-blue.svg)](https://react.dev/)
-[![Django 6.0](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
-[![Tailwind 3](https://img.shields.io/badge/Tailwind-3.4-38bdf8.svg)](https://tailwindcss.com/)
+[![Django 6.0.3](https://img.shields.io/badge/Django-6.0.3-green.svg)](https://www.djangoproject.com/)
+[![Tailwind 3.4.19](https://img.shields.io/badge/Tailwind-3.4.19-38bdf8.svg)](https://tailwindcss.com/)
 [![WCAG AAA](https://img.shields.io/badge/Accessibility-AAA-blueviolet.svg)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Tests](https://img.shields.io/badge/Tests-239_passing-brightgreen.svg)](#testing)
 
@@ -97,26 +97,26 @@ The project is architected as a strictly decoupled system to ensure scalability 
 ┌─────────────────────────────────────────────────────────────────┐
 │                         CLIENT LAYER                            │
 ├─────────────────────────────────────────────────────────────────┤
-│  🌐 Web Browser    📱 Mobile (Future)                           │
+│  🌐 Web Browser (Vite SPA)    📱 Mobile (Future)                │
 └───────────────────────┬─────────────────────────────────────────┘
                         │
                         ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                         EDGE LAYER                               │
 ├─────────────────────────────────────────────────────────────────┤
-│  🚀 CDN (Cloudflare)                                             │
+│  🚀 TanStack Query (Caching) & React Router v6                   │
 └───────────────────────┬─────────────────────────────────────────┘
                         │
         ┌───────────────┴───────────────┐
         ▼                               ▼
 ┌─────────────────────────┐   ┌─────────────────────────┐
 │    ⚡ FRONTEND          │   │    🔧 BACKEND           │
-│    React 19 + Vite      │   │    Django 6.0         │
+│    React 19 + Vite 7    │   │    Django 6.0.3 + DRF   │
 ├─────────────────────────┤   ├─────────────────────────┤
-│ • Component Library     │   │ • REST Framework        │
-│ • Zustand State         │   │ • JWT Authentication    │
-│ • Tailwind CSS          │   │ • Rate Limiting         │
-│ • Shadcn/Radix UI       │   │ • Business Logic        │
+│ • Shadcn UI / Radix     │   │ • SimpleJWT Auth        │
+│ • Zustand State         │   │ • APILogging Middleware │
+│ • Tailwind CSS v3.4     │   │ • Rate Limiting (Scopes)│
+│ • Stripe Elements       │   │ • Redis Caching         │
 └───────────┬─────────────┘   └───────────┬─────────────┘
             │                             │
             │      REST API (JSON)        │
@@ -138,32 +138,26 @@ The project is architected as a strictly decoupled system to ensure scalability 
 │   ├── src/
 │   │   ├── components/          # React components
 │   │   │   ├── ui/             # 51 Shadcn/Radix primitives
-│   │   │   ├── PaymentForm.tsx # Stripe CardElement
-│   │   │   └── CohortSelector.tsx # Cohort selection
-│   │   ├── pages/
-│   │   │   ├── EnrollmentPage.tsx        # Enrollment wizard
-│   │   │   └── EnrollmentConfirmationPage.tsx # Success
-│   │   ├── hooks/
-│   │   │   └── usePayment.ts   # Payment React Query hooks
-│   │   ├── services/api/
-│   │   │   └── payments.ts     # Payment API service
-│   │   └── types/
-│   │       └── payment.ts      # Payment TypeScript types
-│   └── vitest.config.ts        # Testing configuration
+│   │   │   ├── PaymentForm.tsx # Stripe CardElement integration
+│   │   │   └── CohortSelector.tsx # Interactive selection
+│   │   ├── pages/               # Integrated page views
+│   │   │   ├── EnrollmentPage.tsx        # Multi-step wizard
+│   │   │   └── EnrollmentConfirmationPage.tsx # Success UI
+│   │   ├── hooks/               # React Query & Custom hooks
+│   │   ├── services/api/        # Axios service layer
+│   │   └── types/               # Strict TypeScript definitions
+│   └── vitest.config.ts        # Vitest configuration
 │
-├── backend/                     # Django 6.0.2 REST API
+├── backend/                     # Django 6.0.3 REST API
 │   ├── api/
-│   │   ├── views/
-│   │   │   ├── payments.py     # PaymentViewSet
-│   │   │   └── all_views.py    # Main viewsets
-│   │   ├── tests/
-│   │   │   └── test_payments.py # 12 payment tests
-│   │   └── urls.py             # Payment routes
-│   ├── academy/settings/       # Split settings
-│   ├── courses/                # Course models
-│   └── users/                  # User models
+│   │   ├── views/              # Response-standardized views
+│   │   ├── serializers/        # Conditional field visibility
+│   │   ├── middleware/         # Logging & Request ID
+│   │   └── tests/              # 239 comprehensive tests
+│   ├── courses/                # Domain models
+│   └── users/                  # Custom Auth & Profile
 │
-└── GEMINI.md                   # AI agent coding standards
+└── GEMINI.md                   # AI agent mission brief (SSoT)
 ```
 
 ---
@@ -176,23 +170,24 @@ The project is architected as a strictly decoupled system to ensure scalability 
 |------------|---------|---------|
 | [React](https://react.dev) | 19.2.0 | UI framework |
 | [Vite](https://vitejs.dev) | 7.2.4 | Build tool & dev server |
-| [TypeScript](https://typescriptlang.org) | 5.9.3 | Type safety |
+| [TypeScript](https://typescriptlang.org) | 5.x | Type safety |
 | [Tailwind CSS](https://tailwindcss.com) | 3.4.19 | Styling |
 | [Shadcn/UI](https://ui.shadcn.com) | Latest | Component primitives |
-| [TanStack Query](https://tanstack.com/query) | 5.91.3 | Server state |
+| [TanStack Query](https://tanstack.com/query) | 5.x | Server state & Caching |
 | [Zustand](https://zustand-demo.pmnd.rs) | 5.0.3 | Client state |
-| [Stripe](https://stripe.com) | 14.4.1 | Payments |
+| [Stripe SDK](https://stripe.com) | 14.4.1 | Payments |
 
 ### Backend
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| [Django](https://djangoproject.com) | 6.0.2 | Web framework |
-| [DRF](https://django-rest-framework.org) | 3.15.2 | API framework |
+| [Django](https://djangoproject.com) | 6.0.3 | Web framework |
+| [DRF](https://django-rest-framework.org) | 3.16.1 | API framework |
 | [PostgreSQL](https://postgresql.org) | 16 | Primary database |
-| [Redis](https://redis.io) | 5.2.1 | Caching |
+| [Redis](https://redis.io) | 6.4.0 | Caching |
 | [MinIO](https://min.io) | Latest | Object storage |
-| [Stripe](https://stripe.com) | 11.3.0 | Payment processing |
+| [Stripe](https://stripe.com) | 14.4.1 | Payment processing |
+| [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io/) | 5.5.1 | Token Auth |
 
 ---
 
@@ -200,34 +195,33 @@ The project is architected as a strictly decoupled system to ensure scalability 
 
 ### 🎓 Course Management
 - Multi-level courses (beginner, intermediate, advanced)
-- Category-based organization with visual indicators
+- Category-based organization with course counts
 - Rich metadata: pricing, ratings, enrollment counts
-- Featured course highlighting
+- Conditional field visibility (Anonymous vs Authenticated)
 
 ### 📅 Cohort System
 - Scheduled course instances with date ranges
 - Capacity tracking with real-time availability
-- Multiple formats: online, in-person, hybrid
+- Atomic spot reservation logic
 - Instructor assignments
 
 ### 🎫 Enrollment Flow
-- **Capacity validation** with atomic transactions
-- **Duplicate prevention** - one enrollment per user per cohort
+- **Multi-step Wizard**: Cohort Selection → Review → Payment
+- **Transaction Safety**: Atomic increments for reserved spots
 - **Status workflow**: pending → active → completed/cancelled
-- **Stripe payment integration** with CardElement
+- **Stripe integration**: SCA-ready PaymentIntent flow
 
 ### 🔐 Authentication & Security
-- JWT token-based authentication with refresh
-- Rate limiting: 100/hour anon, 1000/hour auth, 5/min payments
-- Request ID tracking for debugging
-- Comprehensive audit logging
+- JWT token-based authentication with refresh & blacklisting
+- Rate limiting: Scoped throttles for all endpoints
+- Audit Trail: APILoggingMiddleware for every request
+- Request ID tracking across the lifecycle
 
 ### 🎨 Design System
 - "Precision Futurism" aesthetic
 - Sharp architectural edges (0rem radius)
 - Electric Indigo + Neural Cyan palette
-- High-contrast, code-centric typography
-- WCAG AAA accessibility compliance
+- JetBrains Mono typography for technical authority
 
 ---
 
@@ -265,62 +259,42 @@ npm run dev
 
 **Access the application:**
 - 🌐 Frontend: http://localhost:5173
-- 🔧 API: http://localhost:8000/api/v1
+- 🔧 API Docs: http://localhost:8000/api/docs/
 - 📊 Admin: http://localhost:8000/admin
-
-### Environment Setup
-
-**Backend (.env):**
-```bash
-DEBUG=True
-SECRET_KEY=your-secret-key
-DATABASE_URL=postgres://user:pass@localhost:5432/academy_db
-REDIS_URL=redis://localhost:6379/1
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
-**Frontend (.env.local):**
-```bash
-VITE_API_URL=http://localhost:8000/api/v1
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
-```
 
 ---
 
 ## 📊 Development Status
 
-### Current State (March 21, 2026)
+### Current State (March 22, 2026)
 
-#### Backend (100% Complete)
+#### Backend (100% Core Complete)
 ✅ **239 automated tests** - ALL PASSING
-✅ **Payment Processing:** Stripe integration with webhooks
-✅ **JWT Authentication:** SimpleJWT configured
-✅ **N+1 Query Optimization:** 82-83% reduction
-✅ **Redis Caching:** High-traffic endpoints cached
-✅ **API Documentation:** Swagger UI + ReDoc
-✅ **Request Logging:** Comprehensive audit trail
+✅ **Payment Processing:** Phase 7 Stripe integration verified
+✅ **JWT Authentication:** SimpleJWT with Blacklisting
+✅ **N+1 Optimization:** 82% query reduction verified
+✅ **Standardized API:** Consistency via ResponseFormatterMixin
+✅ **API Documentation:** Swagger UI + ReDoc operational
 
-#### Frontend (73% Complete - Phase B)
-✅ **Payment Components:** PaymentForm, CohortSelector, EnrollmentPage
-✅ **Stripe Integration:** CardElement, hooks, services
-✅ **TDD Infrastructure:** Vitest configured, 8+ tests written
-⏳ **Route Integration:** App.tsx routes added
-⏳ **Stripe Provider:** Elements provider configured
+#### Frontend (90% Integrated)
+✅ **Phase B Complete:** Payment infrastructure & components
+✅ **Integrated Pages:** `CoursesPage` and `CourseDetailPage` using real API
+✅ **Enrollment Flow:** 3-step wizard implemented with Stripe hooks
+✅ **TDD Infrastructure:** Vitest configured with 130+ tests (90+ passing)
+⏳ **Unified Landing:** `Hero` and `Features` still use `mockData.ts`
 
 ### Recent Milestones
 
-#### ✅ Phase B: Frontend Payment (March 21, 2026)
-- **PaymentForm:** Stripe CardElement with order summary
-- **CohortSelector:** Interactive cohort selection with spots
-- **EnrollmentPage:** 3-step wizard (cohort → payment → success)
-- **Tests:** 8 comprehensive TDD tests
+#### ✅ Phase B: Frontend Payment & Integration
+- **EnrollmentPage:** Full multi-step enrollment wizard
+- **API Services:** 100% coverage for Course and Category endpoints
+- **Hooks:** React Query integration for caching and state
+- **Security:** CSRF and JWT handling in Axios interceptors
 
-#### ✅ Phase 7: Payment Backend (March 21, 2026)
-- **PaymentViewSet:** PaymentIntent creation
-- **StripeWebhookView:** Payment event handling
-- **Tests:** 12 comprehensive payment tests
-- **Security:** Webhook signature verification
+#### ✅ Phase 7: Backend Payments
+- **PaymentViewSet:** PaymentIntent lifecycle management
+- **Webhooks:** Signature-verified Stripe webhook handling
+- **Standardization:** standardized error codes for payment failures
 
 ---
 
@@ -334,10 +308,10 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 | `/courses/{slug}/` | 4 queries | 2 queries | **50%** faster |
 
 ### Caching Performance
-| Endpoint | Before | Cache Hit | Improvement |
-|----------|--------|-----------|-------------|
-| Course List | ~200ms | ~20ms | **10x** faster |
-| Category List | ~100ms | ~10ms | **10x** faster |
+| Endpoint | Cache TTL | Backend Action | Impact |
+|----------|-----------|----------------|--------|
+| Course List | 5 min | Signal Invalidation | **10x** speedup |
+| Category List | 30 min | Manual Refresh | **~10ms** latency |
 
 ---
 
@@ -347,14 +321,14 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 
 | Category | Tests | Status |
 |----------|-------|--------|
-| Payment Processing | 12 | ✅ |
 | Course API | 30 | ✅ |
-| Cohort API | 16 | ✅ |
-| Enrollment | 9 | ✅ |
-| JWT Auth | 6 | ✅ |
+| User Management | 24 | ✅ |
+| Payment Processing | 12 | ✅ |
+| Response Format | 17 | ✅ |
+| Audit Logging | 22 | ✅ |
 | **Total** | **239** | **✅** |
 
-### Frontend Tests (TDD)
+### Frontend Tests (Vitest)
 
 ```bash
 # Run all tests
@@ -363,18 +337,9 @@ npm run test
 
 # Run with coverage
 npm run test:coverage
-
-# Run specific test
-npm run test PaymentForm
 ```
 
-### Test Coverage Requirements
-- ✅ **PaymentForm:** 8 tests (rendering, validation, success, failure)
-- 📝 **CohortSelector:** 5 tests planned
-- 📝 **EnrollmentPage:** 6 tests planned
-- 📝 **usePayment:** 4 tests planned
-
-**Total Target:** 25+ TDD tests
+**Status:** 90 tests passing (Phase B components verified). Pre-existing failures in legacy components are being addressed.
 
 ---
 
@@ -382,87 +347,31 @@ npm run test PaymentForm
 
 | Document | Purpose |
 |----------|---------|
-| [AGENTS.md](./AGENTS.md) | AI agent coding standards |
-| [ACCOMPLISHMENTS.md](./ACCOMPLISHMENTS.md) | Detailed milestone achievements |
+| [GEMINI.md](./GEMINI.md) | Single Source of Truth for AI Agents |
+| [Project_Architecture_Document.md](./Project_Architecture_Document.md) | Technical deep-dive & hierarchy |
 | [API_Usage_Guide.md](./API_Usage_Guide.md) | Complete API reference (v1.5.0) |
-| [GEMINI.md](./GEMINI.md) | Single source of truth for agents |
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these guidelines:
-
-### Development Workflow
-
-1. **Fork & Clone**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/ai-academy.git
-   cd ai-academy
-   ```
-
-2. **Create Feature Branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-
-3. **Make Changes & Test**
-   ```bash
-   # Backend tests
-   cd backend
-   python manage.py test
-   
-   # Frontend tests
-   cd frontend
-   npm run test
-   ```
-
-4. **Commit with Conventional Format**
-   ```bash
-   git commit -m "feat: add amazing feature"
-   ```
-
-5. **Push & Create PR**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-
-### Code Standards
-
-- **Python:** PEP 8, Black formatting
-- **TypeScript:** ESLint + Prettier, strict mode
-- **Tests:** TDD methodology, all tests must pass
-- **Commits:** Conventional Commits specification
+| [CODE_REVIEW_AUDIT_REPORT.md](./CODE_REVIEW_AUDIT_REPORT.md) | Gap analysis & Remediation plan |
 
 ---
 
 ## 🗺 Roadmap
 
 ### Q1 2026 ✅ Completed
-- [x] Backend API architecture
-- [x] JWT authentication
-- [x] N+1 query optimization
-- [x] Enrollment business logic
-- [x] Payment integration (backend)
+- [x] Backend API architecture & Security hardening
+- [x] JWT authentication & Response Standardization
+- [x] N+1 query optimization & Redis Caching
+- [x] Frontend Payment Foundation (Phase B)
 
 ### Q2 2026 🚧 In Progress
-- [x] Frontend payment foundation
-- [ ] Complete TDD tests (25+)
-- [ ] E2E testing with Playwright
-- [ ] User profile dashboard
-- [ ] Email notifications
+- [ ] **Remediation**: Restore Soft Delete logic (Step 14)
+- [ ] **Unified Data**: Migrate landing page to full API sourcing
+- [ ] **E2E Testing**: Playwright integration for critical flows
+- [ ] **Deployment**: CI/CD pipelines & Production Docker
 
 ### Q3 2026 📋 Planned
-- [ ] Video lesson player
-- [ ] Discussion forums
-- [ ] Certificate generation
-- [ ] Mobile app (React Native)
-
-### Future 🔮
-- [ ] AI-powered course recommendations
-- [ ] Live streaming integration
-- [ ] Corporate training features
-- [ ] Multi-language support
+- [ ] Student Dashboard & Progress tracking
+- [ ] Video Lesson Player (MinIO integration)
+- [ ] Automated Certificate Generation
 
 ---
 

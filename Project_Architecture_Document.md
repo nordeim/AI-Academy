@@ -10,13 +10,13 @@ The project follows a **"Precision Futurism"** aesthetic, emphasizing:
 - **CSS-First Styling:** utilizing Tailwind CSS with extensive CSS variables for theming.
 - **Component-Driven UI:** Leveraging Shadcn/UI primitives for accessible, composable interfaces.
 
-> **⚠️ Architecture Note:** While the `README.md` references Next.js, the actual codebase is currently implemented as a **Vite + React Single Page Application (SPA)**. This document reflects the actual implementation found in the codebase. The frontend currently utilizes **mock data** for UI rendering, while the backend is fully structured to serve real data via REST APIs.
+> **⚠️ Architecture Note:** The project is implemented as a **Vite + React Single Page Application (SPA)** and a **Django REST API**. While initially documented as using mock data, the system is currently in a **Hybrid Integration Phase** where core pages (`CoursesPage`, `CourseDetailPage`) are fully integrated with the backend API, while landing page sections still utilize legacy mock data.
 
 ---
 
 ## 2. High-Level System Architecture
 
-The system follows a classic **Client-Server** architecture.
+The system follows a strictly decoupled **Client-Server** architecture.
 
 ```mermaid
 graph TD
@@ -24,14 +24,16 @@ graph TD
     
     subgraph Frontend [Frontend (Vite + React)]
         SPA[Single Page App]
-        Router[Client Router]
+        Router[React Router v6]
+        TanStack[TanStack Query - Data Fetching]
         Zustand[State Management]
         UI[Shadcn UI Components]
     end
     
     subgraph Backend [Backend (Django)]
         API[Django REST Framework]
-        Auth[JWT Authentication]
+        Auth[SimpleJWT Authentication]
+        Logging[APILoggingMiddleware - Audit Trail]
         Admin[Django Admin]
         
         subgraph Services
@@ -45,20 +47,22 @@ graph TD
         DB[(PostgreSQL)]
         Redis[(Redis Cache)]
         Stripe[Stripe Payment Gateway]
+        Storage[MinIO / S3 - Media]
     end
 
     User -->|HTTPS| SPA
-    SPA -->|Mock Data / API Calls| API
+    SPA -->|REST API (JSON)| API
     API -->|Read/Write| DB
     API -->|Cache| Redis
     API -->|Payments| Stripe
+    API -->|Object Storage| Storage
 ```
 
 ---
 
 ## 3. Frontend Architecture
 
-The frontend is built with **React 19** using **Vite** for tooling. It emphasizes a strict separation between presentation (Sections) and primitives (UI Components).
+The frontend is built with **React 19** using **Vite 7** for tooling. It follows a modular architecture separating pages, sections, and low-level primitives.
 
 ### 3.1 Directory Structure
 
@@ -66,237 +70,107 @@ The frontend is built with **React 19** using **Vite** for tooling. It emphasize
 graph TD
     src[src]
     src --> components[components]
+    src --> pages[pages]
     src --> sections[sections]
-    src --> data[data]
-    src --> lib[lib]
+    src --> services[services/api]
     src --> hooks[hooks]
+    src --> types[types]
     
-    components --> layout[layout]
     components --> ui[ui (Shadcn)]
+    components --> Payment[PaymentForm.tsx]
     
-    layout --> Nav[Navigation.tsx]
-    layout --> Foot[Footer.tsx]
+    pages --> Courses[CoursesPage.tsx]
+    pages --> Detail[CourseDetailPage.tsx]
+    pages --> Enroll[EnrollmentPage.tsx]
     
-    ui --> Button[Button.tsx]
-    ui --> Card[Card.tsx]
+    services --> Client[client.ts - Axios]
+    services --> CoursesAPI[courses.ts]
     
     sections --> Hero[Hero.tsx]
-    sections --> Features[Features.tsx]
     
-    data --> Mock[mockData.ts]
+    types --> API[api.ts]
+    types --> PaymentTypes[payment.ts]
 ```
 
 ### 3.2 Key Technologies
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Vite** | 7.2.4 | Build tool and dev server. Replaces Next.js in this implementation. |
+| **Vite** | 7.2.4 | Build tool and dev server. |
 | **React** | 19.2.0 | UI Library. |
-| **Tailwind CSS** | 3.4.19 | Styling engine. Configured with a CSS-variable based theme (`index.css`). |
-| **Framer Motion** | 12.35.0 | Complex animations (staggered entrances, scroll reveals). |
-| **Lucide React** | 0.562.0 | Iconography. |
-| **Shadcn/UI** | - | Re-usable component primitives (Radix UI wrappers). |
+| **TanStack Query** | 5.x | Server state management and caching. |
+| **Tailwind CSS** | 3.4.19 | Styling engine with CSS-variable based theme. |
+| **Framer Motion** | 12.35.0 | High-fidelity animations. |
+| **Stripe SDK** | 14.4.1 | Frontend payment processing (Stripe Elements). |
 
 ### 3.3 Design System Implementation
-The design system is centralized in `src/index.css` via CSS variables, enabling dynamic theming.
+Centralized in `src/index.css` via CSS variables.
+- **Sharp Corners:** `--radius: 0rem` mandatory.
+- **Accent Top:** `card-accent-top` pattern for all containers.
+- **Contrast:** High contrast Ivory/Indigo/Cyan palette.
 
-**Key Theme Variables:**
-- **Primary:** `Electric Indigo` (`#4f46e5`) - Used for primary actions and branding.
-- **Secondary:** `Neural Cyan` (`#06b6d4`) - Used for AI/ML accents.
-- **Typography:**
-    - Display: `Space Grotesk`
-    - Body: `Inter`
-    - Code: `JetBrains Mono`
-
-### 3.4 Data Flow (Current State)
-Currently, the frontend components import data directly from `src/data/mockData.ts`.
-
-```typescript
-// Example: src/sections/FeaturedCourse.tsx
-import { courses } from "@/data/mockData";
-
-export function FeaturedCourse() {
-  const featuredCourse = courses[0]; 
-  // ... renders UI based on mock object
-}
-```
+### 3.4 Data Flow
+- **Integrated Pages:** Use `useQuery` hooks from `src/hooks/` which consume services in `src/services/api/`.
+- **Legacy Sections:** Still import from `src/data/mockData.ts` (Scheduled for migration).
 
 ---
 
 ## 4. Backend Architecture
 
-The backend is a robust **Django 6.0.2** application exposing a REST API. It is structured into modular applications.
+A modular **Django 6.0.2** application utilizing DRF for a standardized REST API.
 
-### 4.1 Module Hierarchy
-
-```mermaid
-graph TD
-    Root[Backend Root]
-    
-    subgraph Apps
-        API[api]
-        Courses[courses]
-        Users[users]
-    end
-    
-    API -->|Serializes| Courses
-    API -->|Serializes| Users
-    
-    Courses -->|Defines| CourseModel
-    Courses -->|Defines| CohortModel
-    Courses -->|Defines| EnrollmentModel
-    
-    Users -->|Defines| UserModel
-```
+### 4.1 Middleware & Security
+- **JWT:** simplejwt for secure token-based authentication.
+- **Audit Logging:** `APILoggingMiddleware` records every API request with user metadata, IP, and duration.
+- **Throttling:** Scoped rate limiting for anonymous, authenticated, and enrollment endpoints.
+- **Response Envelopes:** All responses wrapped in a `SuccessResponse` or error envelope via `ResponseFormatterMixin`.
 
 ### 4.2 Application Modules
+1. **`users`:** Custom User model, registration, and profile management.
+2. **`courses`:** Core domain models (Course, Category, Cohort, Enrollment).
+3. **`api`:** The DRF implementation layer (Views, Serializers, Custom Exceptions).
 
-#### 1. `users` App
-Handles user authentication and profiles.
-- Extends `AbstractUser`.
-- Roles: `is_student`, `is_instructor`.
-- Metadata: `bio`, `company`, `linkedin_url`.
-
-#### 2. `courses` App
-The core domain logic.
-- **Course:** Educational content (Title, Slug, Pricing, Level).
-- **Cohort:** Scheduled instances of a course (Dates, Format, Capacity).
-- **Enrollment:** Link between `User` and `Cohort` (Payment Status).
-
-#### 3. `api` App
-The interface layer using Django REST Framework (DRF).
-- **Views:** `CourseViewSet`, `CohortViewSet`.
-- **Serializers:** Transforms Models to JSON.
-- **Routers:** Auto-generates URL configs (`/api/v1/courses/`).
-
-### 4.3 Data Model Diagram (ERD)
-
-```mermaid
-erDiagram
-    User ||--o{ Enrollment : has
-    User ||--o{ Cohort : instructs
-    
-    Course ||--o{ Cohort : schedules
-    Course ||--o{ Category : belongs_to
-    
-    Cohort ||--o{ Enrollment : contains
-    
-    User {
-        string email
-        string role
-        string bio
-    }
-    
-    Course {
-        string title
-        string slug
-        decimal price
-        string level
-    }
-    
-    Cohort {
-        date start_date
-        date end_date
-        int spots_remaining
-        string format
-    }
-    
-    Enrollment {
-        string status
-        decimal amount_paid
-        timestamp created_at
-    }
-```
+### 4.3 Key Features
+- **N+1 Optimization:** 82% query reduction via `select_related` and `prefetch_related`.
+- **Field-Level Permissions:** Serializers conditionally hide sensitive fields (e.g., `enrolled_count`) from anonymous users.
+- **Caching:** Redis-backed caching for high-traffic endpoints (Courses, Categories).
 
 ---
 
 ## 5. Key Interactions & Workflows
 
-### 5.1 Landing Page Rendering (User View)
-This workflow represents the current "Hybrid" state where the frontend uses mock data but mimics the structure of the backend data models.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant App as App.tsx
-    participant Nav as Navigation
-    participant Hero as Hero Section
-    participant Data as mockData.ts
-
-    User->>App: Opens Application
-    App->>Nav: Render Navigation
-    App->>Hero: Render Hero Section
-    Hero->>Data: Import stats
-    Hero-->>User: Display Animated Stats
-    
-    App->>User: Render Feature Sections
-    
-    User->>Nav: Click "Courses"
-    Nav->>App: Scroll to #courses
-```
-
-### 5.2 Enrollment Flow (Backend Design)
-This outlines the intended architecture once frontend/backend integration is complete.
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API as Django API
-    participant DB as PostgreSQL
-    participant Stripe
-
-    Client->>API: POST /api/v1/cohorts/{id}/enroll/
-    activate API
-    API->>API: Check Auth & Availability
-    
-    alt Spots Available
-        API->>Stripe: Create Payment Intent
-        Stripe-->>API: Payment Intent ID
-        API->>DB: Create Enrollment (Pending)
-        API-->>Client: Return Checkout URL
-    else Cohort Full
-        API-->>Client: Error (Waitlist Available)
-    end
-    deactivate API
-```
+### 5.1 Enrollment & Payment Flow
+1. **Client:** `POST /api/v1/enrollments/` (Authenticated).
+2. **Server:** Validates capacity, creates a `pending` Enrollment.
+3. **Client:** `POST /api/v1/payments/create-intent/` with `enrollment_id`.
+4. **Server:** Returns Stripe `client_secret`.
+5. **Client:** Confirms payment via Stripe Elements.
+6. **Server (Webhook):** Receives `payment_intent.succeeded`, updates Enrollment to `confirmed`.
 
 ---
 
-## 6. Project Configuration & Tooling
+## 6. Project Status & Roadmap
 
-### 6.1 Configuration Files
-- **`frontend/vite.config.ts`**: Configures the build pipeline, resolves aliases (`@/*` to `src/*`).
-- **`frontend/tailwind.config.js`**: Defines the Design System tokens (Colors, Spacing, Animations).
-- **`backend/academy/settings/*.py`**: Split settings strategy:
-    - `base.py`: Common config (Apps, Middleware).
-    - `development.py`: Local debug settings.
-    - `production.py`: Security hardening, DB config via env vars.
+### 6.1 Completed Milestones
+- [x] Backend API Fully Operational (239 tests).
+- [x] JWT Authentication & Token Blacklisting.
+- [x] Standardized API Response Format.
+- [x] Frontend Payment Foundation (Stripe integration).
+- [x] Course & Category API Integration in Frontend.
 
-### 6.2 Environment Variables
-| Variable | Scope | Purpose |
-|----------|-------|---------|
-| `NEXT_PUBLIC_API_URL` | Frontend | Base URL for Backend API (e.g. `localhost:8000/api/v1`). |
-| `SECRET_KEY` | Backend | Django cryptographic signing key. |
-| `DATABASE_URL` | Backend | PostgreSQL connection string. |
-| `REDIS_URL` | Backend | Cache and Celery broker connection. |
-| `STRIPE_SECRET_KEY` | Backend | API key for processing payments. |
+### 6.2 Pending / Missing Features
+- [ ] **Soft Delete (Step 14):** Documented but currently missing from implementation.
+- [ ] **Unified Landing Data:** Migration of `Hero` and `Features` to API data.
+- [ ] **Deployment:** Finalization of production Docker configurations.
 
 ---
 
 ## 7. Developer Handbook
 
-### Adding a New UI Component
-1. Run shadcn command (if applicable) or create `src/components/ui/MyComponent.tsx`.
-2. Ensure it accepts `className` for overriding styles via `cn()`.
-3. Export from the file.
+### Running Tests
+- **Backend:** `cd backend && DJANGO_SETTINGS_MODULE=academy.settings.test python manage.py test`
+- **Frontend:** `cd frontend && npm run test`
 
-### Adding a New API Endpoint
-1. Define the **Model** in `backend/courses/models.py`.
-2. Create a **Serializer** in `backend/api/serializers.py`.
-3. Create a **ViewSet** in `backend/api/views.py`.
-4. Register the ViewSet in `backend/api/urls.py`.
-
-### Migration to Production
-To move from the current Mock Data state to Full Stack:
-1. Replace `import { courses } from "@/data/mockData"` with `fetch('/api/v1/courses/')`.
-2. Use `useEffect` or React Query to handle loading/error states in React components.
-3. Ensure CORS is configured in `backend/academy/settings/base.py` to allow the frontend domain.
+### Adding a New View
+1. Inherit from `ResponseFormatterMixin` in `api/views/all_views.py`.
+2. Apply `@extend_schema` for OpenAPI documentation.
+3. Update `api/urls.py`.

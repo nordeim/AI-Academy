@@ -14,13 +14,14 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 ---
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
-As of March 20, 2026, the codebase is in a **Hybrid Integration Phase**. Agents must be aware of the following discrepancies between documentation and implementation:
+As of **March 22, 2026**, the codebase is in an **Advanced Hybrid Integration Phase**. The backend is fully operational, and core frontend pages are integrated with real APIs.
 
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
 |-----------|-------------------------|-----------------------|---------|
-| **Framework** | Next.js 16.1.4 | Vite + React 19 SPA | **Maintain Vite** until explicit migration is requested. |
+| **Framework** | Next.js 16.1.4 | Vite 7.2.4 + React 19 SPA | **Maintain Vite** until explicit migration is requested. |
 | **Tailwind** | v4.1.18 (CSS-First) | v3.4.19 (JS Config) | **Follow v4 philosophy** (CSS variables) within v3 limits. |
-| **Data State** | Real-time API | Mock Data (`mockData.ts`) | **Preserve Mock Data** for UI until API integration task is issued. |
+| **Data State** | Real-time API | **Mixed** (API + Mock) | Core pages (`Courses`, `Detail`) use API; Landing sections use `mockData.ts`. |
+| **Soft Delete** | ✅ Completed | ❌ **Missing** | Step 14 is documented but missing from code. **Remediation required.** |
 
 ---
 
@@ -29,17 +30,19 @@ As of March 20, 2026, the codebase is in a **Hybrid Integration Phase**. Agents 
 ### Frontend (SPA)
 - **Library:** React 19.2.0
 - **Build Tool:** Vite 7.2.4
-- **State:** Zustand 5.0.3
+- **State:** Zustand 5.0.3 (Client) / TanStack Query 5.x (Server)
 - **Animations:** Framer Motion 12.35.0 (Strictly follow `lib/animations.ts`)
 - **Icons:** Lucide React 0.562.0
 - **Primitives:** Radix UI / Shadcn UI
+- **Payments:** Stripe SDK 14.4.1
 
 ### Backend (REST API)
-- **Framework:** Django 6.0.2
-- **API:** Django REST Framework 3.15.2
+- **Framework:** Django 6.0.3
+- **API:** Django REST Framework 3.16.1
 - **Database:** PostgreSQL 16
-- **Cache/Broker:** Redis 5.2.1
-- **Payments:** Stripe 11.3.0
+- **Cache:** Redis 6.4.0 (via django-redis 6.0.0)
+- **Payments:** Stripe 14.4.1
+- **Auth:** SimpleJWT 5.5.1
 
 ---
 
@@ -69,14 +72,19 @@ As of March 20, 2026, the codebase is in a **Hybrid Integration Phase**. Agents 
 ### Frontend Path: `/frontend`
 - `src/components/ui/`: Low-level Shadcn primitives.
 - `src/components/layout/`: Global Shell (Navigation, Footer).
-- `src/sections/`: High-level page blocks (Hero, Features, etc.). **Add new sections here.**
-- `src/lib/animations.ts`: Centralized motion constants. **Never hardcode durations.**
+- `src/pages/`: Full page components (`CoursesPage.tsx`, `EnrollmentPage.tsx`).
+- `src/sections/`: High-level landing page blocks (Hero, Features, etc.).
+- `src/services/api/`: Axios-based API client and domain-specific services.
+- `src/hooks/`: React Query hooks for data fetching (e.g., `useCourses.ts`).
+- `src/types/`: TypeScript interfaces and API response shapes.
 
 ### Backend Path: `/backend`
-- `apps/users/`: Custom User model extending `AbstractUser`.
-- `apps/courses/`: Core domain (Course, Cohort, Enrollment).
-- `api/`: The DRF implementation layer (Serializers, ViewSets).
-- `academy/settings/`: Split settings (base, development, production).
+- `users/`: Custom User model, registration, and profile management.
+- `courses/`: Core domain models (Course, Category, Cohort, Enrollment).
+- `api/views/`: ViewSets inheriting from `ResponseFormatterMixin`.
+- `api/serializers/`: Data transformation with field-level permissions.
+- `api/middleware/`: `APILoggingMiddleware` (Audit Trail) and `RequestIDMiddleware`.
+- `academy/settings/`: Split settings (base, development, production, test).
 
 ---
 
@@ -84,35 +92,40 @@ As of March 20, 2026, the codebase is in a **Hybrid Integration Phase**. Agents 
 
 ### General
 - **Transparency:** Never call tools in silence. Explain the "Why" before the "How".
-- **Surgical Edits:** Use `replace` or `write_file` with targeted precision. Avoid massive re-writes unless necessary.
-- **Dryness:** Always check `lib/utils.ts` and `lib/animations.ts` before creating helpers.
+- **Surgical Edits:** Use `replace` or `write_file` with targeted precision.
+- **TDD Mandate:** ALWAYS write or update tests before/during implementation.
 
 ### Frontend Logic
+- Use React Query hooks from `src/hooks/` for all API interactions.
 - Use `cn()` from `@/lib/utils` for all tailwind merging.
-- Prefer **Composition** over inheritance.
 - Handle all UI states: `Loading`, `Error`, `Empty`, `Success`.
+- Strictly typed props and API responses.
 
 ### Backend Logic
 - Strictly typed Model fields (Django 6 defaults).
-- Use UUIDs for primary keys in `Course` and `Cohort`.
-- Business logic belongs in **Models** or **Services**, not Views.
+- Use UUIDs for primary keys in `Course`, `Cohort`, and `Enrollment`.
+- All ViewSets must use `ResponseFormatterMixin` for standardized envelopes.
+- Implement conditional field visibility in Serializers via `to_representation()`.
 
 ---
 
 ## 7. SECURITY & SAFETY
 - **Credential Protection:** Never log, print, or commit `.env` variables or Stripe keys.
-- **Sanitization:** All user inputs must be validated via Zod (Frontend) and Django Forms/Serializers (Backend).
-- **Source Control:** Do not stage or commit unless explicitly directed.
+- **Sanitization:** All user inputs must be validated via Zod (Frontend) and Django Serializers (Backend).
+- **Payment Security:** Never store card numbers. Use Stripe Elements for PCI compliance.
+- **Audit Trail:** Ensure every API request is logged via `APILoggingMiddleware`.
 
 ---
 
 ## 8. DEFINITION OF DONE (DoD)
 A task is complete only when:
-1. **Validation:** Behavioral correctness is verified (simulated or shell test).
-2. **Styling:** Adheres strictly to the Design System (sharp corners, indigo/cyan theme).
-3. **Documentation:** Any new files/logic are added to `Project_Architecture_Document.md`.
-4. **Performance:** No unnecessary re-renders or N+1 queries introduced.
+1. **Tests Pass:** `python manage.py test` (Backend) and `npm run test` (Frontend) return 100% success.
+2. **Standardization:** Response format adheres to the standardized JSON envelope.
+3. **Styling:** Adheres strictly to the Design System (sharp corners, high contrast).
+4. **Documentation:** New files/logic are added to `Project_Architecture_Document.md`.
+5. **Performance:** No N+1 queries introduced; caching used for high-traffic GETs.
 
 ---
-**Status:** READY FOR EXECUTION
+**Status:** READY FOR REMEDIATION
 **Agent Mode:** Senior Architect & Avant-Garde Designer
+**Last Updated:** March 22, 2026

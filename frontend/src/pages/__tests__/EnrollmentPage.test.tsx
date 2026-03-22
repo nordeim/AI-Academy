@@ -26,7 +26,6 @@ vi.mock('@stripe/react-stripe-js', () => ({
 // Mock hooks
 vi.mock('@/hooks/useCourses', () => ({
   useCourseDetail: vi.fn(),
-  useCourseCohorts: vi.fn(),
 }));
 
 vi.mock('@/hooks/useCohorts', () => ({
@@ -41,7 +40,7 @@ vi.mock('@/services/api/payments', () => ({
   createPaymentIntent: vi.fn(),
 }));
 
-import { useCourseDetail, useCourseCohorts } from '@/hooks/useCourses';
+import { useCourseDetail } from '@/hooks/useCourses';
 import { useCohorts } from '@/hooks/useCohorts';
 import { createEnrollment } from '@/services/api/enrollments';
 import { createPaymentIntent } from '@/services/api/payments';
@@ -262,21 +261,20 @@ describe('EnrollmentPage', () => {
         expect(screen.getByText('Online Cohort')).toBeInTheDocument();
       });
 
-      // Select first cohort
-      const onlineCohort = screen.getByText('Online Cohort').closest('[role="button"]') ||
-        screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
-      
-      if (onlineCohort) {
-        await user.click(onlineCohort);
+      // Select first cohort by clicking on the cohort card
+      const onlineCohortCard = screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
+      if (onlineCohortCard) {
+        await user.click(onlineCohortCard);
       }
 
       // Click continue button
       const continueButton = screen.getByRole('button', { name: /continue/i });
       await user.click(continueButton);
 
-      // Should advance to review step
+      // Should advance to review step - look for specific CardTitle element
       await waitFor(() => {
-        expect(screen.getByText(/Review Your Enrollment/i)).toBeInTheDocument();
+        const reviewTitle = screen.getByRole('heading', { name: /Review Your Enrollment/i });
+        expect(reviewTitle).toBeInTheDocument();
       });
     });
   });
@@ -309,11 +307,9 @@ describe('EnrollmentPage', () => {
         expect(screen.getByText('Online Cohort')).toBeInTheDocument();
       });
 
-      const onlineCohort = screen.getByText('Online Cohort').closest('[role="button"]') ||
-        screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
-      
-      if (onlineCohort) {
-        await user.click(onlineCohort);
+      const onlineCohortCard = screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
+      if (onlineCohortCard) {
+        await user.click(onlineCohortCard);
       }
 
       // Continue to review
@@ -322,7 +318,8 @@ describe('EnrollmentPage', () => {
 
       // Should show review details
       await waitFor(() => {
-        expect(screen.getByText(/Review Your Enrollment/i)).toBeInTheDocument();
+        const reviewTitle = screen.getByRole('heading', { name: /Review Your Enrollment/i });
+        expect(reviewTitle).toBeInTheDocument();
         expect(screen.getByText(mockCourse.title)).toBeInTheDocument();
         expect(screen.getByText(/\$2,499\.00/i)).toBeInTheDocument();
       });
@@ -359,20 +356,19 @@ describe('EnrollmentPage', () => {
         expect(screen.getByText('Online Cohort')).toBeInTheDocument();
       });
 
-      const onlineCohort = screen.getByText('Online Cohort').closest('[role="button"]') ||
-        screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
-      
-      if (onlineCohort) {
-        await user.click(onlineCohort);
+      const onlineCohortCard = screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
+      if (onlineCohortCard) {
+        await user.click(onlineCohortCard);
       }
 
       // Continue to review
       const continueButton = screen.getByRole('button', { name: /continue/i });
       await user.click(continueButton);
 
-      // Proceed to payment
+      // Wait for review step
       await waitFor(() => {
-        expect(screen.getByText(/Review Your Enrollment/i)).toBeInTheDocument();
+        const reviewTitle = screen.getByRole('heading', { name: /Review Your Enrollment/i });
+        expect(reviewTitle).toBeInTheDocument();
       });
 
       const payButton = screen.getByRole('button', { name: /proceed to payment/i });
@@ -420,11 +416,9 @@ describe('EnrollmentPage', () => {
         expect(screen.getByText('Online Cohort')).toBeInTheDocument();
       });
 
-      const onlineCohort = screen.getByText('Online Cohort').closest('[role="button"]') ||
-        screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
-      
-      if (onlineCohort) {
-        await user.click(onlineCohort);
+      const onlineCohortCard = screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
+      if (onlineCohortCard) {
+        await user.click(onlineCohortCard);
       }
 
       // Continue through review
@@ -432,7 +426,8 @@ describe('EnrollmentPage', () => {
       await user.click(continueButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Review Your Enrollment/i)).toBeInTheDocument();
+        const reviewTitle = screen.getByRole('heading', { name: /Review Your Enrollment/i });
+        expect(reviewTitle).toBeInTheDocument();
       });
 
       const payButton = screen.getByRole('button', { name: /proceed to payment/i });
@@ -464,7 +459,10 @@ describe('EnrollmentPage', () => {
       render(<EnrollmentPage />, { wrapper: createWrapper() });
 
       await waitFor(() => {
-        expect(screen.getByText(/Error loading course/i)).toBeInTheDocument();
+        // Should show alert with error message
+        const alert = screen.getByRole('alert');
+        expect(alert).toBeInTheDocument();
+        expect(screen.getByText(/Failed to load course/i)).toBeInTheDocument();
       });
     });
 
@@ -484,10 +482,7 @@ describe('EnrollmentPage', () => {
         refetch: vi.fn(),
       } as any);
 
-      vi.mocked(createEnrollment).mockRejectedValue({
-        message: 'Cohort is full',
-        code: 'cohort_full',
-      });
+      vi.mocked(createEnrollment).mockRejectedValue(new Error('Cohort is full'));
 
       render(<EnrollmentPage />, { wrapper: createWrapper() });
 
@@ -496,11 +491,9 @@ describe('EnrollmentPage', () => {
         expect(screen.getByText('Online Cohort')).toBeInTheDocument();
       });
 
-      const onlineCohort = screen.getByText('Online Cohort').closest('[role="button"]') ||
-        screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
-      
-      if (onlineCohort) {
-        await user.click(onlineCohort);
+      const onlineCohortCard = screen.getByText('Online Cohort').closest('div[class*="cursor-pointer"]');
+      if (onlineCohortCard) {
+        await user.click(onlineCohortCard);
       }
 
       // Continue to review
@@ -508,7 +501,8 @@ describe('EnrollmentPage', () => {
       await user.click(continueButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Review Your Enrollment/i)).toBeInTheDocument();
+        const reviewTitle = screen.getByRole('heading', { name: /Review Your Enrollment/i });
+        expect(reviewTitle).toBeInTheDocument();
       });
 
       const payButton = screen.getByRole('button', { name: /proceed to payment/i });
@@ -527,22 +521,22 @@ describe('EnrollmentPage', () => {
         data: null,
         isLoading: true,
         error: null,
-} as any);
+      } as any);
 
-    vi.mocked(useCohorts).mockReturnValue({
-      data: null,
-      isLoading: true,
-      error: null,
-      refetch: vi.fn(),
-    } as any);
+      vi.mocked(useCohorts).mockReturnValue({
+        data: null,
+        isLoading: true,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
 
-    render(<EnrollmentPage />, { wrapper: createWrapper() });
+      render(<EnrollmentPage />, { wrapper: createWrapper() });
 
-    // Component shows skeleton loaders when loading
-    const skeletons = screen.getAllByRole('generic').filter(
-      el => el.getAttribute('data-slot') === 'skeleton' || el.className?.includes('animate-pulse')
-    );
-    expect(skeletons.length).toBeGreaterThan(0);
-  });
+      // Component shows skeleton loaders when loading
+      const skeletons = screen.getAllByRole('generic').filter(
+        el => el.getAttribute('data-slot') === 'skeleton' || el.className?.includes('animate-pulse')
+      );
+      expect(skeletons.length).toBeGreaterThan(0);
+    });
   });
 });

@@ -54,6 +54,14 @@ Awesome job on your meticulous review, analysis and planning. Please keep up the
 
 ---
 
+please meticulously review @README.md , @AGENTS.md , @status.md , @status_2.md , @API_Usage_Guide.md , @VALIDATION_ANALYSIS.md and @FRONTEND_API_INTEGRATION_PLAN.md to have a deep understanding of the WHAT, WHY and HOW of the project and its codebase design and architecture, then meticulously validate your deep understanding against the actual codebase to ensure accurate alignment. Based on your validated deep understanding, next meticulously plan and create a comprehensive code review and audit analysis assessment report with recommendations. create the report as a markdown document with an appropriate filename. Next, meticulously plan and update @Project_Architecture_Document.md to ensure correct and accurate alignment with the current codebase.
+
+---
+
+Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously plan and update @GEMINI.md with additional details to make it more useful/informative and align it with the current codebase correctly and accurately (based on your validated understanding). next, please meticulously plan and make precise updates (do not delete any section or other details unless inaccurate) to @README.md
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md , @FRONTEND_API_INTEGRATION_PLAN.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:
