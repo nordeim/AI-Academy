@@ -42,6 +42,23 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/courses/:slug" element={<CourseDetailPage />} />
+          {/* Enrollment routes - Protected (Phase 2) */}
+          <Route
+            path="/courses/:slug/enroll"
+            element={
+              <ProtectedRoute>
+                <EnrollmentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/enrollment/confirmation"
+            element={
+              <ProtectedRoute>
+                <EnrollmentConfirmationPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
