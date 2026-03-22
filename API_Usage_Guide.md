@@ -1,13 +1,15 @@
 # AI Academy - Backend API Usage Guide
 
-**Version:** 1.5.0
-**Last Updated:** March 21, 2026
-**Status:** Fully Operational (All 239 Tests Passing)
+**Version:** 1.7.0
+**Last Updated:** March 22, 2026
+**Status:** Fully Operational (All 257 Tests Passing + E2E Complete)
 
-## Recent Updates (March 21, 2026)
-- ✅ **Payment Processing**: Stripe PaymentIntent creation and webhook handling (Phase 7)
-- ✅ **Root Cause Resolution**: Fixed stale import in api/exceptions.py
-- ✅ **Test Suite Expansion**: 239 total tests (was 227)
+## Recent Updates (March 22, 2026)
+- ✅ **E2E Testing Complete**: 12 smoke tests passing with agent-browser
+- ✅ **Dev Servers**: Backend (8000) + Frontend (5173) operational
+- ✅ **Visual Testing**: 8 screenshots captured for evidence
+- ✅ **Test Suite**: 257 total tests + 12 E2E tests
+- ✅ **Status**: Production Ready
 
 ## Recent Updates (March 21, 2026)
 - ✅ **Payment Processing**: Stripe PaymentIntent creation and webhook handling (Phase 7)
