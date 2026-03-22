@@ -5103,3 +5103,15 @@ INFO 2026-03-22 01:24:30,175 middleware 1395446 126226196455744 POST /api/v1/aut
 INFO 2026-03-22 01:24:30,185 middleware 1395446 126226196455744 POST /api/v1/auth/register/ - 201 - 0.008s - RequestID: 8b40b92a-aff1-498f-a261-dbdaf638d82a
 INFO 2026-03-22 01:24:30,198 middleware 1395446 126226196455744 POST /api/v1/auth/register/ - 400 - 0.006s - RequestID: 6b1b11b4-b09f-4264-87a2-ce9a0f298ce0
 WARNING 2026-03-22 01:24:30,199 log 1395446 126226196455744 Bad Request: /api/v1/auth/register/
+INFO 2026-03-22 02:31:00,671 middleware 1439939 131247135871296 GET /api/v1/courses/ml-course/ - 404 - 0.022s - RequestID: 3727065c-0c0c-4060-ab89-fab08082923b
+WARNING 2026-03-22 02:31:00,672 log 1439939 131247135871296 Not Found: /api/v1/courses/ml-course/
+INFO 2026-03-22 02:31:00,687 middleware 1439939 131247135871296 GET /api/v1/courses/ - 200 - 0.009s - RequestID: 9c052e95-4de0-4756-828a-b0cb31b54eba
+INFO 2026-03-22 02:33:06,348 middleware 1441004 129155491053888 GET /api/v1/courses/ml-course/ - 404 - 0.024s - RequestID: 2d2b962d-89c3-475f-bba1-bdb439ec7dd3
+WARNING 2026-03-22 02:33:06,349 log 1441004 129155491053888 Not Found: /api/v1/courses/ml-course/
+INFO 2026-03-22 02:33:06,366 middleware 1441004 129155491053888 GET /api/v1/courses/ - 200 - 0.006s - RequestID: 984480a1-badc-4279-9283-caaa9b5fb2c2
+INFO 2026-03-22 02:34:51,836 middleware 1442691 134233654567232 GET /api/v1/courses/ml-course/ - 404 - 0.024s - RequestID: 2b7bc9be-498c-44ca-a4f9-0f765cc80556
+WARNING 2026-03-22 02:34:51,837 log 1442691 134233654567232 Not Found: /api/v1/courses/ml-course/
+INFO 2026-03-22 02:34:51,853 middleware 1442691 134233654567232 GET /api/v1/courses/ - 200 - 0.007s - RequestID: 9cd950bd-72c1-4a6b-b0bd-9ff778e3a1c4
+INFO 2026-03-22 02:35:20,508 middleware 1443228 126585674191168 GET /api/v1/courses/ml-course/ - 404 - 0.025s - RequestID: ea7adf7e-a703-44cd-90db-684594bc029b
+WARNING 2026-03-22 02:35:20,509 log 1443228 126585674191168 Not Found: /api/v1/courses/ml-course/
+INFO 2026-03-22 02:35:20,525 middleware 1443228 126585674191168 GET /api/v1/courses/ - 200 - 0.009s - RequestID: 627b3da6-d74e-4963-b97e-d4e829f3fa15

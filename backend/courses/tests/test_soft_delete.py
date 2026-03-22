@@ -67,8 +67,8 @@ class CourseSoftDeleteTests(TestCase):
         course_id = self.course.id
         self.course.delete()
 
-        # Should still exist in database
-        self.assertTrue(Course.objects.filter(id=course_id).exists())
+        # Should still exist in database (via all_objects)
+        self.assertTrue(Course.objects.all_objects().filter(id=course_id).exists())
 
     def test_course_manager_excludes_soft_deleted(self):
         """Test that default manager excludes soft deleted records"""
@@ -79,7 +79,7 @@ class CourseSoftDeleteTests(TestCase):
         self.assertFalse(Course.objects.filter(id=course_id).exists())
 
         # But should exist with all_objects
-        self.assertTrue(Course.all_objects.filter(id=course_id).exists())
+        self.assertTrue(Course.objects.all_objects().filter(id=course_id).exists())
 
     def test_course_restore_clears_deleted_at(self):
         """Test that restore() clears deleted_at timestamp"""
@@ -150,7 +150,8 @@ class CohortSoftDeleteTests(TestCase):
         self.cohort.delete()
 
         self.assertFalse(Cohort.objects.filter(id=cohort_id).exists())
-        self.assertTrue(Cohort.all_objects.filter(id=cohort_id).exists())
+        # Use method call instead of attribute access
+        self.assertTrue(Cohort.objects.all_objects().filter(id=cohort_id).exists())
 
     def test_cohort_restore_clears_deleted_at(self):
         """Test that restore() clears deleted_at"""
@@ -230,7 +231,10 @@ class EnrollmentSoftDeleteTests(TestCase):
         self.enrollment.delete()
 
         self.assertFalse(Enrollment.objects.filter(id=enrollment_id).exists())
-        self.assertTrue(Enrollment.all_objects.filter(id=enrollment_id).exists())
+        # Use method call instead of attribute access
+        self.assertTrue(
+            Enrollment.objects.all_objects().filter(id=enrollment_id).exists()
+        )
 
     def test_enrollment_restore_clears_deleted_at(self):
         """Test that restore() clears deleted_at"""
@@ -288,12 +292,14 @@ class SoftDeleteManagerTests(TestCase):
 
     def test_all_objects_returns_including_deleted(self):
         """Test that all_objects returns all records including deleted"""
-        courses = Course.all_objects.all()
+        # all_objects() returns a QuerySet directly
+        courses = Course.objects.all_objects()
         self.assertEqual(courses.count(), 2)
 
     def test_only_deleted_returns_only_soft_deleted(self):
-        """Test that only_deleted returns only soft deleted records"""
-        deleted_courses = Course.only_deleted.all()
+        """Test that only_deleted returns only deleted records"""
+        # only_deleted() returns a QuerySet directly
+        deleted_courses = Course.objects.only_deleted()
         self.assertEqual(deleted_courses.count(), 1)
         self.assertEqual(deleted_courses.first().title, "Deleted Course")
 
@@ -328,7 +334,7 @@ class SoftDeleteAPITests(APITestCase):
         self.course.delete()
 
         # Get course list via API
-        url = reverse("course-list")
+        url = reverse("api:course-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -343,7 +349,7 @@ class SoftDeleteAPITests(APITestCase):
         self.course.delete()
 
         # Try to get deleted course via API
-        url = reverse("course-detail", kwargs={"slug": self.course.slug})
+        url = reverse("api:course-detail", kwargs={"slug": self.course.slug})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

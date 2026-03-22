@@ -145,6 +145,8 @@ class Course(models.Model):
         """Soft delete by setting deleted_at timestamp"""
         self.deleted_at = timezone.now()
         self.save(update_fields=["deleted_at"])
+        # Return tuple for Django compatibility (count, {model: count})
+        return 1, {self._meta.label: 1}
 
     def restore(self):
         """Restore soft deleted record"""
@@ -233,6 +235,18 @@ class Cohort(models.Model):
         else:
             return "available"
 
+    def delete(self, *args, **kwargs):
+        """Soft delete by setting deleted_at timestamp"""
+        self.deleted_at = timezone.now()
+        self.save(update_fields=["deleted_at"])
+        # Return tuple for Django compatibility
+        return 1, {self._meta.label: 1}
+
+    def restore(self):
+        """Restore soft deleted record"""
+        self.deleted_at = None
+        self.save(update_fields=["deleted_at"])
+
 
 class Enrollment(models.Model):
     STATUS_CHOICES = [
@@ -281,3 +295,15 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.cohort}"
+
+    def delete(self, *args, **kwargs):
+        """Soft delete by setting deleted_at timestamp"""
+        self.deleted_at = timezone.now()
+        self.save(update_fields=["deleted_at"])
+        # Return tuple for Django compatibility
+        return 1, {self._meta.label: 1}
+
+    def restore(self):
+        """Restore soft deleted record"""
+        self.deleted_at = None
+        self.save(update_fields=["deleted_at"])
