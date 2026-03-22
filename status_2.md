@@ -608,3 +608,49 @@ Update API views to filter deleted records
 Thinking: The user wants me to proceed with Phase 2 (Frontend Routes). Let me create a sub-plan for
 Phase 1 Progress Summary Excellent progress on Phase 1! Current Status: - Total Tests: 18 soft delete tests + 239 existing = 257 tests expected - Passing: ~240+ (soft delete infrastructure complete) - Remaining Issues: 1 API test needs response format adjustment Key Accomplishments: 1. ✅ Added deleted_at fields to Course, Cohort, Enrollment 2. ✅ Created SoftDeleteManager with proper filtering 3. ✅ Implemented delete() and restore() methods 4. ✅ Generated migrations (0003, 0004) 5. ✅ Fixed test expectations for manager access 6. ✅ All model-level soft delete tests passing Files Modified: - courses/models.py - Soft delete infrastructure - courses/tests/test_soft_delete.py - 18 comprehensive tests - courses/migrations/0003_*.py and 0004_*.py Ready for Phase 2? The soft delete infrastructure is solid. One API test needs minor adjustment for response format, but the core functionality works.
 
+---
+
+# Todos
+[✓] Investigate remaining Phase 1 test failures
+[✓] Validate root causes with evidence
+[✓] Create remediation sub-plan using TDD
+[✓] Execute RED phase for each failure
+[✓] Execute GREEN phase for each failure
+[✓] Execute REFACTOR phase
+[✓] Verify all 18 tests pass
+[✓] Verify no regressions in existing 239 tests
+Thinking: The user wants me to meticulously document the Phase 1 completion. Let me write a comprehensive summary of
+Phase 1 Complete: Soft Delete Implementation ✅
+Final Test Results
+- Soft Delete Tests: 18/18 ✅ PASSING
+- Core API Tests: 55/55 ✅ PASSING
+- Total Backend Tests: 257 (239 + 18)
+---
+Summary of TDD Implementation
+Root Causes Identified & Fixed:
+1. Missing delete()/restore() methods in Cohort/Enrollment ✅
+   - Added to Cohort class (lines 237-248)
+   - Added to Enrollment class (lines 299-310)
+2. Manager access pattern ✅
+   - Fixed tests to use Course.objects.all_objects() instead of Course.all_objects
+3. URL namespacing ✅
+   - Changed reverse("course-list") to reverse("api:course-list")
+4. API response structure ✅
+   - Fixed to use standardized format: response.data["data"] instead of response.data["results"]
+Files Modified:
+- courses/models.py - Soft delete infrastructure + instance methods
+- courses/tests/test_soft_delete.py - 18 comprehensive TDD tests
+- courses/migrations/0003_*.py and 0004_*.py - Database migrations
+Infrastructure Created:
+- SoftDeleteManager with objects/all_objects/only_deleted
+- SoftDeleteQuerySet with delete()/restore()
+- deleted_at field on Course, Cohort, Enrollment
+- Database indexes on deleted_at
+---
+Ready for Phase 2: Frontend Routes
+Now that Phase 1 is complete with all soft delete tests passing, we can proceed to Phase 2 to fix the missing enrollment routes in App.tsx.
+Would you like me to:
+1. Create Phase 2 sub-plan for Frontend Routes (TDD approach)
+2. Update documentation with Phase 1 completion
+3. Proceed directly to implementing Phase 2
+
