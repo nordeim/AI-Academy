@@ -7,14 +7,21 @@
  * @module pages/__tests__/EnrollmentPage.test
  */
 
+import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Elements } from '@stripe/react-stripe-js';
 import { EnrollmentPage } from '../EnrollmentPage';
-import { mockStripe, mockLoadStripe } from '@/test/mocks/stripe';
+
+// Mock Stripe Elements completely
+vi.mock('@stripe/react-stripe-js', () => ({
+  Elements: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  CardElement: () => <div data-testid="card-element">Card Input</div>,
+  useStripe: () => ({ confirmCardPayment: vi.fn() }),
+  useElements: () => ({ getElement: vi.fn() }),
+}));
 
 // Mock hooks
 vi.mock('@/hooks/useCourses', () => ({
@@ -139,11 +146,9 @@ const createWrapper = (initialRoute = '/courses/ai-engineering-bootcamp/enroll')
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={[initialRoute]}>
-        <Elements stripe={mockStripe as any}>
-          <Routes>
-            <Route path="/courses/:slug/enroll" element={children} />
-          </Routes>
-        </Elements>
+        <Routes>
+          <Route path="/courses/:slug/enroll" element={children} />
+        </Routes>
       </MemoryRouter>
     </QueryClientProvider>
   );
@@ -522,18 +527,22 @@ describe('EnrollmentPage', () => {
         data: null,
         isLoading: true,
         error: null,
-      } as any);
+} as any);
 
-      vi.mocked(useCohorts).mockReturnValue({
-        data: null,
-        isLoading: true,
-        error: null,
-        refetch: vi.fn(),
-      } as any);
+    vi.mocked(useCohorts).mockReturnValue({
+      data: null,
+      isLoading: true,
+      error: null,
+      refetch: vi.fn(),
+    } as any);
 
-      render(<EnrollmentPage />, { wrapper: createWrapper() });
+    render(<EnrollmentPage />, { wrapper: createWrapper() });
 
-      expect(screen.getByText(/Loading course information/i)).toBeInTheDocument();
-    });
+    // Component shows skeleton loaders when loading
+    const skeletons = screen.getAllByRole('generic').filter(
+      el => el.getAttribute('data-slot') === 'skeleton' || el.className?.includes('animate-pulse')
+    );
+    expect(skeletons.length).toBeGreaterThan(0);
+  });
   });
 });
