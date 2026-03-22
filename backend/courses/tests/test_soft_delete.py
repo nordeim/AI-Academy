@@ -339,8 +339,9 @@ class SoftDeleteAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Deleted course should not appear
-        course_titles = [c["title"] for c in response.data["results"]]
+        # Deleted course should not appear (response uses standardized format)
+        # Response structure: {'success': True, 'data': [course_list], ...}
+        course_titles = [c["title"] for c in response.data["data"]]
         self.assertNotIn("ML Course", course_titles)
 
     def test_api_detail_returns_404_for_soft_deleted(self):
