@@ -14,7 +14,7 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 ---
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
-As of **March 23, 2026**, the codebase is in a **Production-Ready Verified Phase**. All core features, infrastructure, and testing suites are fully implemented and validated.
+As of **March 24, 2026**, the codebase is in a **Production-Ready Verified Phase**. All core features, infrastructure, and testing suites are fully implemented and validated.
 
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
 |-----------|-------------------------|-----------------------|---------|
@@ -23,13 +23,32 @@ As of **March 23, 2026**, the codebase is in a **Production-Ready Verified Phase
 | **Data State** | Real-time API | **Integrated** | Core pages and Enrollment flow use real APIs. Landing sections migration in progress. |
 | **Soft Delete** | ✅ Completed | ✅ **Verified** | `SoftDeleteModel` active on core models with 18 TDD tests. |
 | **Routes** | ✅ Completed | ✅ **Verified** | Enrollment and Confirmation routes active in `App.tsx`. |
-| **E2E Testing** | ✅ Phase 4 Complete | ✅ **Verified** | 12 smoke tests passing. Infrastructure ready for visual verification. |
+| **E2E Testing** | ✅ Phase 4 Complete | ✅ **Verified** | 12 smoke tests passing with high-fidelity visual evidence. |
 
-### ⚠️ Findings & E2E Learnings (March 23, 2026)
-1. **Naming Collision Resolution:** Discovered a `SyntaxError` in the frontend caused by an export collision between `src/data/mockData.ts` and `src/types/category.ts` both using the name `Category`. Fixed by renaming mock interface to `MockCategory`.
-2. **Type-Only Export Issues:** Encountered persistent Vite export errors when using `interface` or `type` only files. Resolved by consolidating entity types into `src/types/api.ts` to ensure concrete module boundaries.
-3. **Environment Limitations:** Identified that backgrounding `vite` using `nohup` or `setsid` is unstable in this environment, often leading to connection failures (`ERR_CONNECTION_REFUSED`). 
-4. **Blank Screenshot Prevention:** Screenshots may appear blank (white) if the page hasn't finished its first paint or if JS errors block rendering. **Mandate:** Always use `agent-browser wait --load networkidle` and verify content with `agent-browser snapshot -i` before taking screenshots.
+### ⚠️ Technical Findings & Architectural Learnings (March 24, 2026)
+
+#### 1. React 19 & Vite Plugin Compatibility
+Discovered a critical "Blank Screen" bug where the React application failed to mount silently.
+- **Root Cause:** The `kimi-plugin-inspect-react` plugin was incompatible with React 19's strict element handling, causing a mount failure in the root `div`.
+- **Resolution:** Removed the incompatible plugin from `vite.config.ts`. 
+- **Learning:** Always verify third-party Vite plugins against specific React major versions, especially during "Advanced Hybrid" integration phases.
+
+#### 2. Naming Collisions in SPA Modules
+Encountered an `Uncaught SyntaxError` blocking the frontend runtime.
+- **Root Cause:** Exporting identical names (e.g., `interface Category`) from both `mockData.ts` and `types/api.ts` confused Vite's module resolution.
+- **Resolution:** Standardized on prefixing mock interfaces with `Mock` (e.g., `MockCategory`).
+- **Learning:** Strict namespace discipline is mandatory when maintaining mixed mock/real data states.
+
+#### 3. TypeScript Strictness (`verbatimModuleSyntax`)
+The project uses `verbatimModuleSyntax: true`, which triggered 218 errors during the first production build attempt.
+- **Mandate:** All type-only imports **must** use the `import type` syntax to ensure the compiler correctly strips them during transpilation.
+
+#### 4. E2E Visual Verification Standards
+Learned that standard `agent-browser screenshot` calls are prone to capturing the "First Paint" (empty state).
+- **Mandate:** Every E2E visual test must follow the **Wait-Snapshot-Capture** pattern:
+  1. `wait --load networkidle` (Ensure JS is executed).
+  2. `snapshot -i` (Verify the structural presence of content).
+  3. `screenshot --annotate` (Capture visual proof).
 
 ---
 
@@ -42,7 +61,6 @@ As of **March 23, 2026**, the codebase is in a **Production-Ready Verified Phase
 - **Animations:** Framer Motion 12.35.0 (Strictly follow `lib/animations.ts`)
 - **Icons:** Lucide React 0.562.0
 - **Primitives:** Radix UI / Shadcn UI
-- **Payments:** Stripe SDK 14.4.1
 - **Testing:** Vitest + React Testing Library + MSW + agent-browser
 
 ### Backend (REST API)
@@ -50,7 +68,6 @@ As of **March 23, 2026**, the codebase is in a **Production-Ready Verified Phase
 - **API:** Django REST Framework 3.16.1
 - **Database:** PostgreSQL 16
 - **Cache:** Redis 6.4.0 (via django-redis 6.0.0)
-- **Payments:** Stripe 14.4.1
 - **Auth:** SimpleJWT 5.5.1
 
 ---
@@ -61,86 +78,37 @@ As of **March 23, 2026**, the codebase is in a **Production-Ready Verified Phase
 - **Primary (60%):** `--color-background` (#fafaf9) / `--color-surface` (#ffffff)
 - **Secondary (30%):** `--color-primary-600` (#4f46e5 - Electric Indigo)
 - **Accent (10%):** `--color-cyan-500` (#06b6d4 - Neural Cyan)
-- **Urgency:** `--color-amber-500` (#f59e0b - Signal Amber)
-
-### Typography
-- **Display:** `Space Grotesk` (Geometric, futurist)
-- **Body:** `Inter` (High readability)
-- **Code/Labels:** `JetBrains Mono` (Technical authority)
 
 ### UI Rules
 - **Radius:** `--radius: 0rem` (Mandatory sharp corners).
-- **Spacing:** 4px base grid (`--space-*`).
 - **Cards:** Must use `card-accent-top` pattern (3px top border colored by category).
-- **Accessibility:** Targeted at **WCAG AAA**. All animations must respect `useReducedMotion`.
 
 ---
 
-## 5. ARCHITECTURAL HIERARCHY
-
-### Frontend Path: `/frontend`
-- `src/components/ui/`: Low-level Shadcn primitives.
-- `src/components/layout/`: Global Shell (Navigation, Footer).
-- `src/pages/`: Full page components (`CoursesPage.tsx`, `EnrollmentPage.tsx`).
-- `src/sections/`: High-level landing page blocks (Hero, Features, etc.).
-- `src/services/api/`: Axios-based API client and domain-specific services.
-- `src/hooks/`: React Query hooks for data fetching (e.g., `useCourses.ts`).
-- `src/types/`: TypeScript interfaces and API response shapes.
-- `src/__tests__/integration/`: Comprehensive integration tests for user flows.
-- `tests/e2e/`: E2E smoke tests and API helpers for verification.
-
-### Backend Path: `/backend`
-- `users/`: Custom User model, registration, and profile management.
-- `courses/`: Core domain models (Course, Category, Cohort, Enrollment).
-- `api/views/`: ViewSets inheriting from `ResponseFormatterMixin`.
-- `api/serializers/`: Data transformation with field-level permissions.
-- `api/middleware/`: `APILoggingMiddleware` (Audit Trail) and `RequestIDMiddleware`.
-- `academy/settings/`: Split settings (base, development, production, test).
-
----
-
-## 6. CODING STANDARDS FOR AGENTS
+## 5. CODING STANDARDS FOR AGENTS
 
 ### General
-- **Transparency:** Never call tools in silence. Explain the "Why" before the "How".
-- **Surgical Edits:** Use `replace` or `write_file` with targeted precision.
 - **TDD Mandate:** ALWAYS write or update tests before/during implementation.
-- **Hybrid Testing:** Follow the **API + UI** pattern for E2E tests (Auth via API, Verification via UI).
+- **Build Verification:** Before marking a frontend task as complete, verify that `vite build` succeeds without TypeScript errors.
 
 ### Frontend Logic
-- Use React Query hooks from `src/hooks/` for all API interactions.
-- Use `cn()` from `@/lib/utils` for all tailwind merging.
-- Handle all UI states: `Loading`, `Error`, `Empty`, `Success`.
-- Strictly typed props and API responses.
-- **Route Protection:** Use `ProtectedRoute` for all authenticated views.
+- **Button Handlers:** All landing page buttons must use the `useNavigate` hook for SPA transitions; avoid `<a href="#">` or window-level redirects.
+- **Type Imports:** Use `import type` for all TypeScript interfaces and types to comply with `verbatimModuleSyntax`.
 
 ### Backend Logic
-- Strictly typed Model fields (Django 6 defaults).
-- Use UUIDs for primary keys in `Course`, `Cohort`, and `Enrollment`.
-- All ViewSets must use `ResponseFormatterMixin` for standardized envelopes.
-- Implement conditional field visibility in Serializers via `to_representation()`.
 - **Soft Delete:** All core models must implement `SoftDeleteManager` and provide `delete()` (soft) and `restore()` methods. Use `Model.objects.all_objects()` to include deleted records in queries.
 
 ---
 
-## 7. SECURITY & SAFETY
-- **Credential Protection:** Never log, print, or commit `.env` variables or Stripe keys.
-- **Sanitization:** All user inputs must be validated via Zod (Frontend) and Django Serializers (Backend).
-- **Payment Security:** Never store card numbers. Use Stripe Elements for PCI compliance.
-- **Audit Trail:** Ensure every API request is logged via `APILoggingMiddleware`.
-
----
-
-## 8. DEFINITION OF DONE (DoD)
+## 6. DEFINITION OF DONE (DoD)
 A task is complete only when:
-1. **Tests Pass:** `python manage.py test` (Backend: 257 tests) and `npm run test` (Frontend: 92+ tests) return 100% success.
-2. **E2E Validation:** Basic smoke tests (`tests/e2e/smoke.spec.ts`) pass with visual verification.
-3. **Standardization:** Response format adheres to the standardized JSON envelope (`success`, `data`, `message`, `errors`, `meta`).
-4. **Styling:** Adheres strictly to the Design System (sharp corners, high contrast).
-5. **Documentation:** New files/logic are added to `Project_Architecture_Document.md`.
-6. **Performance:** No N+1 queries introduced; caching used for high-traffic GETs.
+1. **Tests Pass:** `python manage.py test` (Backend: 257 tests) and `npm run test` (Frontend: 92+ tests) return 100 success.
+2. **E2E Validation:** Basic smoke tests (`tests/e2e/smoke.spec.ts`) pass with visual verification (non-blank screenshots).
+3. **Build Integrity:** Production build (`npm run build`) completes with zero TypeScript errors.
+4. **Standardization:** Response format adheres to the standardized JSON envelope.
+5. **Accessibility:** Targeted at **WCAG AAA**. All animations respect `useReducedMotion`.
 
 ---
 **Status:** READY FOR PRODUCTION
 **Agent Mode:** Senior Architect & Avant-Garde Designer
-**Last Updated:** March 23, 2026
+**Last Updated:** March 24, 2026
