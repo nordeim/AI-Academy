@@ -66,13 +66,10 @@ export function Navigation() {
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="flex items-center justify-between h-[68px]">
             {/* Logo */}
-            <a
-              href="#"
+            <Link
+              to="/"
               className="flex items-center gap-2"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <div className="w-8 h-8 bg-[var(--color-primary-600)] flex items-center justify-center">
                 <span className="text-white font-bold text-lg font-display">A</span>
@@ -80,7 +77,7 @@ export function Navigation() {
               <span className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)]">
                 Academy
               </span>
-            </a>
+            </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-7">

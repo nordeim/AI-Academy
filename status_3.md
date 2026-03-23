@@ -698,3 +698,69 @@ The frontend landing page buttons now respond correctly when clicked, with prope
 - Enrollment page (/courses/{slug}/enroll)
 Status: All buttons functional 🎉
 
+---
+
+ The user is reporting that the 'A Academy' button (the logo) in the top navigation bar is not responding when clicked. It should redirect to the home page. Let me investigate the Navigation.tsx component to see how this button/link is implemented.
+I'll investigate the 'A Academy' logo button implementation in the Navigation component.
+→ Read frontend/src/components/layout/Navigation.tsx [offset=65, limit=30]
+Thinking: I found the issue! The 'A Academy' logo is implemented as an <a> tag with href="#" instead of using React Router's Link component. The onClick handler only scrolls to the top of the page (window.scrollTo({ top: 0, behavior: "smooth" })) instead of navigating to the home page.
+This is problematic because:
+1. The <a href="#"> doesn't use React Router navigation
+2. The scroll to top only works if already on the home page
+3. When clicked from another page, it doesn't actually navigate home
+Let me fix this by replacing the <a> tag with a React Router Link component that navigates to the home page.
+
+---
+
+The screenshot was captured successfully. The page is rendering correctly with all the buttons and links. The 'A Academy' logo is now a proper link (e2) that will navigate to the home page.
+Let me now provide a comprehensive summary of what was fixed.
+✅ Logo Click Issue Resolved!
+I've successfully identified and fixed the 'A Academy' logo click issue on the top navigation bar.
+---
+Root Cause
+Problem: The 'A Academy' logo was implemented as:
+<a href="#" onClick={(e) => {
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}}>
+Issues:
+1. Used <a href="#"> instead of React Router Link
+2. Only scrolled to top instead of navigating to home page
+3. Didn't work when clicking from other pages
+---
+Fix Applied
+Changed from:
+<a href="#" className="flex items-center gap-2" onClick={(e) => {
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}}>
+Changed to:
+<Link to="/" className="flex items-center gap-2" onClick={() => 
+  window.scrollTo({ top: 0, behavior: "smooth" })
+}>
+---
+Files Modified
+File
+Navigation.tsx
+---
+How It Works Now
+Feature
+Navigation
+Scroll to Top
+React Router
+Click Response
+---
+### **Verification**
+**Screenshot:** `logo-click-fix.png` captured  
+**DOM:** Logo shows as `@e2 link "A Academy"`  
+**Status:** All navigation links now functional
+---
+All Navigation Elements Fixed ✅
+Element
+A Academy
+Sign In
+Get Started
+Enroll Now
+Courses
+Status: All navigation elements functional 🎉
+
