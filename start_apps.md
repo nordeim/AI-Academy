@@ -50,3 +50,48 @@ cd frontend && (nohup vite --host 0.0.0.0 --port 5173 > /tmp/vite.log 2>&1 &) &&
 
 cd frontend && (nohup npx vite --port 5173 < /dev/null > /tmp/vite_local.log 2>&1 &) && sleep 5 && ss -tlnp | grep :5173 
 
+---
+
+   1 # Start servers using the stable patterns in E2E_TESTING_GUIDE.md
+   2 # Then run:
+   3 agent-browser open http://localhost:5173 && \
+   4 agent-browser wait --load networkidle && \
+   5 agent-browser screenshot /tmp/verification.png
+
+
+pkill -f "manage.py runserver"
+ss -tlnp | grep -E "8000|5173"
+cd /home/project/AI-Academy/backend && /opt/venv/bin/python manage.py runserver 0.0.0.0:8000 > /home/project/AI-Academy/backend_debug.log 2>&1 & 
+cd /home/project/AI-Academy/backend && /opt/venv/bin/python manage.py runserver 0.0.0.0:8000 > /home/project/AI-Academy/backend_debug.log 2>&1 & 
+
+---
+
+ pkill -f vite                                                                                                                                                                                                                            │
+ pkill -f "manage.py runserver"                                                                                                                                                                                                           │
+ # Attempt one more time with a very simple vite command in background                                                                                                                                                                    │
+ cd /home/project/AI-Academy/frontend && (nohup ./node_modules/.bin/vite --port 5173 --host 127.0.0.1 > /dev/null 2>&1 &)                                                                                                                 │
+ sleep 5                                                                                                                                                                                                                                  │
+ ss -tlnp | grep 5173
+
+---
+
+✦ Analyzing Build Failures The build is currently failing with 218 errors, primarily due to TypeScript strictness. Many of these errors stem from type-only imports and unused variables. I'm focusing on resolving these issues to get a
+  successful build.
+* Diagnosing the Connection Refused I've addressed the build failures, but I'm still hitting that ERR_CONNECTION_REFUSED on port 5173. I suspect the environment's security settings or a specific network configuration is
+  blocking internal access to that port. I'll continue to investigate this persistent connectivity issue.
+* Exploring chrome-devtools-mcp I'm now exploring the chrome-devtools-mcp skill to see if it can help bypass the connectivity issues. I've noted the browserUrl option, which might allow me to connect to an existing Chrome
+  instance. This could be a promising workaround.
+* Pinpointing the Problem I've identified the root cause: the frontend wasn't mounting due to a naming collision, and my background server startup was failing. I've fixed the collision, but I still need a successful
+  server run to capture the screenshots. I'm going to attempt one more background startup, but I'll add a 10-second sleep and then use a snapshot from DevTools to confirm the page content is actually there before proceeding.
+* I'll try one more background startup for the frontend with a 10-second sleep, then use a DevTools snapshot to confirm the page content before proceeding.
+
+cd /home/project/AI-Academy/frontend && (nohup npx vite --port 5173 --host 0.0.0.0 < /dev/null > /tmp/vite_final_debug.log 2>&1 &) && sleep 10
+
+✦ Verifying DevTools Connection It's listening on all interfaces. Now, I'm using DevTools to confirm accessibility and see what it's actually rendering.
+* I'll use DevTools to confirm if the frontend is accessible and see what it's rendering.
+
+  ✓  navigate_page (chrome-devtools-mcp MCP Server) {"url":"http://127.0.0.1:5173/"}                                                                                                                                                   │
+                                                                                                                                                                                                                                       │
+  Unable to navigate in the  selected page: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:5173/.                                                                                                                                     │
+  Pages                                                                                                                                                                                                                                │
+  1: chrome-error://chromewebdata/ [selected]  

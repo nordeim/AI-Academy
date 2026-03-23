@@ -1,6 +1,6 @@
 # E2E Testing Guide: AI Academy
 
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Date:** March 23, 2026  
 **Author:** Gemini CLI (Senior Architect & Avant-Garde Designer)
 
@@ -51,16 +51,6 @@ This guide provides a comprehensive breakdown of the E2E testing journey for the
 
 ---
 
-### Pitfall 4: Test Discovery Failures (Backend)
-**Symptoms:** `manage.py test` reported 239 tests, while documentation claimed 257.
-- **Root Cause:** The `backend/courses/tests/` directory was missing an `__init__.py` file, causing Django's test runner to skip the 18 soft-delete tests.
-
-**Resolution:**
-1.  **Package Integrity:** Ensure every test directory (e.g., `courses/tests/`) contains a valid `__init__.py`.
-2.  **Direct Execution:** If discovery fails, run tests directly by module: `python manage.py test courses.tests.test_soft_delete`.
-
----
-
 ## 🧪 2. Strategic Testing Patterns
 
 ### Pattern A: The Hybrid API + UI Approach
@@ -74,30 +64,54 @@ Every E2E test must provide two levels of proof:
 1.  **Structural Proof:** `agent-browser snapshot -i` (Verify the DOM/Accessibility tree).
 2.  **Visual Proof:** `agent-browser screenshot --annotate` (Provide a labeled image for humans).
 
-### Pattern C: Multi-Device Validation
-Always verify responsive behavior using the viewport commands:
-```bash
-agent-browser set viewport 375 812  # iPhone X/12
-agent-browser open <url>
-agent-browser screenshot /tmp/mobile.png
-```
-
 ---
 
-## 🔧 3. Diagnostic Playbook
+## 🔧 3. Diagnostic & Server Management Playbook
 
-If a test fails or captures a blank screen, follow this diagnostic sequence:
+### Scenario: Browser getting no response from URLs
+If the browser or `curl` returns `Connection Refused` or a timeout even when the server seems to be "ready":
 
-1.  **Port Check:** `ss -tlnp | grep -E "8000|5173"`
-2.  **Console Inspection:** Use `chrome-devtools-mcp.list_console_messages` to look for `SyntaxError` or `404` errors.
-3.  **A11y Tree Check:** Use `chrome-devtools-mcp.take_snapshot` to see what the browser *actually* sees. If the snapshot only shows `RootWebArea` with no children, the JS has crashed.
-4.  **Log Tailing:** `tail -n 50 /tmp/backend_debug.log /tmp/frontend_debug.log`
+1.  **Check Port Ownership:**
+    ```bash
+    ss -tlnp | grep -E "8000|5173"
+    ```
+    If no process is listed, the server has terminated. If it *is* listed but unreachable, verify if it's bound to `0.0.0.0` vs `127.0.0.1`.
+
+2.  **Console Inspection:** Use `chrome-devtools-mcp.list_console_messages` to look for `SyntaxError` or `404` errors that might prevent the React app from mounting.
+
+3.  **A11y Tree Check:** Use `chrome-devtools-mcp.take_snapshot`. If the snapshot only shows `RootWebArea` with no children, the JS has crashed.
+
+### Correct Way to Start/Restart Servers
+
+#### Backend (Django)
+Always activate the virtual environment and use `nohup` with redirection:
+```bash
+# To Start:
+cd backend && source /opt/venv/bin/activate && \
+(nohup python manage.py runserver 0.0.0.0:8000 > /tmp/backend_debug.log 2>&1 &)
+
+# To Restart:
+pkill -f "manage.py runserver" && [repeat start command]
+```
+
+#### Frontend (Vite)
+Vite requires `/dev/null` as `stdin` to remain stable in background mode:
+```bash
+# To Start:
+cd frontend && \
+(nohup npx vite --port 5173 < /dev/null > /tmp/frontend_debug.log 2>&1 &) && sleep 5
+
+# To Restart:
+pkill -f vite && [repeat start command]
+```
+
+**Mandate:** After starting, always verify with `curl -I http://127.0.0.1:5173/` before triggering tests.
 
 ---
 
 ## 📋 4. Definition of Done for E2E
 A new E2E test is complete only when:
-- [ ] It starts with a healthy server check.
+- [ ] It starts with a healthy server check (HTTP 200).
 - [ ] It uses `networkidle` waiting.
 - [ ] It captures both a `.png` screenshot and a console log.
 - [ ] It resets any modified environment state (e.g., viewport size).
@@ -113,4 +127,4 @@ A new E2E test is complete only when:
 
 ---
 **Status:** PRODUCTION READY  
-**Agent Recommendation:** Follow the Hybrid Auth pattern for all future enrollment flow tests.
+**Agent Recommendation:** If Vite terminates unexpectedly, ensure `< /dev/null` is present in the `nohup` command.

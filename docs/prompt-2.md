@@ -74,6 +74,10 @@ please meticulously document all your E2E experiences, pitfalls and resolutions,
 
 ---
 
+Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously plan and update @README.md with your awesome E2E work and relevant details. take care not to delete or affect other sections of the README.md to avoid regressions (document losing some current content).
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md , @FRONTEND_API_INTEGRATION_PLAN.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:
