@@ -3,8 +3,9 @@
  * 
  * API methods for authentication-related endpoints
  */
-import { apiClient, extractApiError, ApiResponse, setTokens, clearTokens } from './client';
-import {
+import { apiClient, extractApiError, setTokens, clearTokens } from './client';
+import type { ApiResponse } from './client';
+import type {
   User,
   AuthTokens,
   LoginCredentials,

@@ -4,10 +4,10 @@
  * API methods for enrollment-related endpoints
  * Requires authentication - JWT token must be set
  */
-import { apiClient, extractApiError, ApiResponse, PaginatedData } from './client';
-import {
+import { apiClient, extractApiError } from './client';
+import type { ApiResponse, PaginatedData } from './client';
+import type {
   Enrollment,
-  EnrollmentListResponse,
   CreateEnrollmentRequest,
   CancelEnrollmentResponse,
   EnrollmentFilters,

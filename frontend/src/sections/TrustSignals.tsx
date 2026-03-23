@@ -24,7 +24,7 @@ export function TrustSignals() {
             variants={staggerContainer}
             className="flex flex-wrap justify-center items-center gap-8 md:gap-12"
           >
-            {partners.map((partner, index) => (
+            {partners.map((partner, index: number) => (
               <motion.div
                 key={partner.id}
                 variants={fadeIn}

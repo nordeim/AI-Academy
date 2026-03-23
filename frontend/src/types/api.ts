@@ -47,6 +47,9 @@ export interface PaginatedData<T> {
   results: T[];
 }
 
+// Category list response (convenience type)
+export type CategoryListResponse = ApiResponse<PaginatedData<Category>>;
+
 // API Error structure
 export interface ApiErrorData {
   message: string;

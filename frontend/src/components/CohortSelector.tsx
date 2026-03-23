@@ -24,7 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useCohorts } from '@/hooks/useCohorts';
-import { Cohort } from '@/types/cohort';
+import type { Cohort } from '@/types/cohort';
 import { cn } from '@/lib/utils';
 
 interface CohortSelectorProps {
@@ -57,10 +57,10 @@ export function CohortSelector({
   disabled = false,
   error,
 }: CohortSelectorProps) {
-  const { data, isLoading, error: queryError, refetch } = useCohorts(courseSlug);
+  const { data, isLoading, error: queryError, refetch } = useCohorts({ course: courseSlug });
   const [selectedId, setSelectedId] = useState<string | null>(value);
 
-  const cohorts = data?.results || [];
+  const cohorts = data?.data?.results || [];
   const displayError = error || queryError?.message;
 
   /**

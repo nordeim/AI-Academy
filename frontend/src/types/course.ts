@@ -5,7 +5,7 @@
  * Based on API_Usage_Guide.md specifications
  */
 
-import { Category } from './api';
+import type { Category } from './api';
 
 // Course difficulty level
 export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
@@ -63,6 +63,7 @@ export interface CourseFilters {
   ordering?: string; // e.g., '-price', 'rating', '-created_at'
   featured?: boolean;
   page?: number;
+  page_size?: number;
 }
 
 // Course detail response wrapper

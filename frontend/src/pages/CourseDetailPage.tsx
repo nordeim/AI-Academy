@@ -8,7 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { useCourseDetail } from "@/hooks/useCourses";
-import { CourseDetail } from "@/types/course";
+import type { CourseDetail } from "@/types/course";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -123,7 +123,7 @@ export function CourseDetailPage() {
                   {course.level}
                 </span>
                 <span className="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--text-secondary)] text-xs">
-                  {course.category.name}
+                  {course.categories?.[0]?.name || 'General'}
                 </span>
               </div>
 
@@ -143,11 +143,11 @@ export function CourseDetailPage() {
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  {course.duration}
+                  {course.duration_weeks} weeks
                 </span>
                 <span className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  {course.enrolled_count.toLocaleString()} students
+                  {course.enrolled_count?.toLocaleString() || 0} students
                 </span>
               </div>
             </motion.div>
@@ -159,9 +159,9 @@ export function CourseDetailPage() {
                   <span className="text-3xl font-bold text-[var(--color-primary-600)]">
                     {formatPrice(course.price)}
                   </span>
-                  {course.compare_at_price && parseFloat(course.compare_at_price) > parseFloat(course.price) && (
+                  {course.original_price && parseFloat(course.original_price) > parseFloat(course.price) && (
                     <span className="ml-2 text-lg text-[var(--text-tertiary)] line-through">
-                      {formatPrice(course.compare_at_price)}
+                      {formatPrice(course.original_price)}
                     </span>
                   )}
                 </div>
@@ -177,7 +177,7 @@ export function CourseDetailPage() {
                 <div className="space-y-3 pt-4 border-t border-[var(--color-border)]">
                   <p className="text-sm font-medium text-[var(--text-primary)] mb-2">This course includes:</p>
                   {[
-                    `${course.modules.length} modules`,
+                    `${course.modules_count || 0} modules`,
                     "Live instruction + recordings",
                     "Hands-on labs",
                     "Certificate of completion",
@@ -235,27 +235,31 @@ export function CourseDetailPage() {
               </motion.div>
             )}
 
-            {/* Curriculum Tab */}
+              {/* Curriculum Tab */}
             {activeTab === "curriculum" && (
               <motion.div variants={fadeUpItem}>
                 <h2 className="font-display text-2xl font-bold text-[var(--text-primary)] mb-4">
                   Course Curriculum
                 </h2>
                 <div className="space-y-4">
-                  {course.modules.map((module, index) => (
-                    <div
-                      key={module.id}
-                      className="flex items-start gap-4 p-4 bg-white border border-[var(--color-border)]"
-                    >
-                      <span className="flex-shrink-0 w-8 h-8 bg-[var(--color-primary-600)] text-white flex items-center justify-center text-sm font-semibold">
-                        {index + 1}
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-[var(--text-primary)]">{module.title}</h3>
-                        <p className="text-sm text-[var(--text-secondary)]">{module.duration}</p>
+                  {course.modules_count > 0 ? (
+                    Array.from({ length: course.modules_count }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 p-4 bg-white border border-[var(--color-border)]"
+                      >
+                        <span className="flex-shrink-0 w-8 h-8 bg-[var(--color-primary-600)] text-white flex items-center justify-center text-sm font-semibold">
+                          {index + 1}
+                        </span>
+                        <div className="flex-1">
+                          <h3 className="font-medium text-[var(--text-primary)]">Module {index + 1}</h3>
+                          <p className="text-sm text-[var(--text-secondary)]">Duration varies</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="text-[var(--text-secondary)]">Curriculum details coming soon</p>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -268,13 +272,15 @@ export function CourseDetailPage() {
                 </h2>
                 <div className="flex items-start gap-4 p-6 bg-white border border-[var(--color-border)]">
                   <div className="w-16 h-16 bg-[var(--color-primary-100)] flex items-center justify-center text-2xl font-bold text-[var(--color-primary-600)]">
-                    {course.instructor.name.charAt(0)}
+                    A
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-[var(--text-primary)] mb-2">
-                      {course.instructor.name}
+                      Expert Instructor
                     </h3>
-                    <p className="text-[var(--text-secondary)]">{course.instructor.bio}</p>
+                    <p className="text-[var(--text-secondary)]">
+                      Our instructors are industry experts with years of experience in their fields.
+                    </p>
                   </div>
                 </div>
               </motion.div>

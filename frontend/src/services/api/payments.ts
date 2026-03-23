@@ -7,13 +7,12 @@
  * @module services/api/payments
  */
 
-import { apiClient, extractApiError, ApiResponse } from './client';
-import {
+import { apiClient, extractApiError } from './client';
+import type { ApiResponse } from './client';
+import type {
   PaymentIntentCreateRequest,
   PaymentIntentCreateResponse,
   PaymentStatus,
-  PaymentIntentCreateApiResponse,
-  PaymentStatusApiResponse,
 } from '@/types/payment';
 
 const PAYMENTS_ENDPOINT = '/payments/';

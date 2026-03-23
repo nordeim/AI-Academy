@@ -12,43 +12,6 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Elements } from '@stripe/react-stripe-js';
-import React from 'react';
-
-// Mock Stripe
-const mockStripe = {
-  elements: vi.fn(),
-  createToken: vi.fn(),
-  createPaymentMethod: vi.fn(),
-} as any;
-
-// Create QueryClient for tests
-const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-    mutations: { retry: false },
-  },
-});
-
-// Test Wrapper Component
-const TestWrapper = ({ children, initialEntries = ['/'] }: { 
-  children: React.ReactNode;
-  initialEntries?: string[];
-}) => {
-  const queryClient = createTestQueryClient();
-  return (
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={initialEntries}>
-        <Elements stripe={mockStripe}>
-          {children}
-        </Elements>
-      </MemoryRouter>
-    </QueryClientProvider>
-  );
-};
 
 describe('Phase 2: Enrollment Routes', () => {
   describe('Route Registration', () => {

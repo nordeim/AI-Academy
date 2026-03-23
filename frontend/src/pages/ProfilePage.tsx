@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Calendar, LogOut, Loader2, Save } from 'lucide-react';
+import { User, Mail, LogOut, Loader2, Save } from 'lucide-react';
 import { useAuthStore, useUser } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { fadeUpItem } from '@/lib/animations';
 
 export function ProfilePage() {
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ export function ProfilePage() {
                 <div>
                   <CardTitle className="text-2xl">{user.username}</CardTitle>
                   <CardDescription>
-                    Member since {new Date(user.date_joined || Date.now()).toLocaleDateString()}
+                    Member since {new Date(user.created_at).toLocaleDateString()}
                   </CardDescription>
                 </div>
               </div>

@@ -240,3 +240,57 @@ export const stats = [
   { label: "Partner Companies", value: "150+" },
   { label: "Success Rate", value: "94%" }
 ];
+
+export const heroStats = {
+  completionRate: 94,
+  placementRate: 89,
+  averageSalaryIncrease: 42
+};
+
+export const features = [
+  {
+    id: "feature-1",
+    icon: "Video",
+    title: "Live Instruction",
+    description: "Learn directly from industry experts in real-time sessions"
+  },
+  {
+    id: "feature-2",
+    icon: "Laptop",
+    title: "Hands-on Projects",
+    description: "Build portfolio-worthy AI systems with guided projects"
+  },
+  {
+    id: "feature-3",
+    icon: "Briefcase",
+    title: "Career Support",
+    description: "Get personalized coaching and job placement assistance"
+  },
+  {
+    id: "feature-4",
+    icon: "Award",
+    title: "Industry Certification",
+    description: "Earn recognized credentials valued by top employers"
+  },
+  {
+    id: "feature-5",
+    icon: "Users",
+    title: "Community Access",
+    description: "Join a network of 12,000+ AI professionals"
+  },
+  {
+    id: "feature-6",
+    icon: "BookOpen",
+    title: "Lifetime Materials",
+    description: "Access course updates and resources indefinitely"
+  }
+];
+
+export const partners = [
+  { id: "partner-1", name: "Google", logo: "/logos/google.svg" },
+  { id: "partner-2", name: "Microsoft", logo: "/logos/microsoft.svg" },
+  { id: "partner-3", name: "Amazon", logo: "/logos/amazon.svg" },
+  { id: "partner-4", name: "Meta", logo: "/logos/meta.svg" },
+  { id: "partner-5", name: "OpenAI", logo: "/logos/openai.svg" },
+  { id: "partner-6", name: "Anthropic", logo: "/logos/anthropic.svg" }
+];

@@ -3,8 +3,9 @@
  * 
  * API methods for cohort-related endpoints
  */
-import { apiClient, extractApiError, ApiResponse, PaginatedData } from './client';
-import { Cohort, CohortFilters, CohortListResponse } from '@/types/cohort';
+import { apiClient, extractApiError } from './client';
+import type { ApiResponse, PaginatedData } from './client';
+import type { Cohort, CohortFilters } from '@/types/cohort';
 
 const COHORTS_ENDPOINT = '/cohorts/';
 

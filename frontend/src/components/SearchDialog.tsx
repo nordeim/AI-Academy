@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Loader2, GraduationCap } from "lucide-react";
 import { useCourses } from "@/hooks/useCourses";
-import { Course } from "@/types/course";
+import type { Course } from "@/types/course";
 import {
   CommandDialog,
   CommandInput,
@@ -134,7 +134,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     {/* Thumbnail */}
                     <div className="flex-shrink-0 w-16 h-12 rounded overflow-hidden bg-[var(--color-surface-alt)]">
                       <img
-                        src={course.thumbnail}
+                        src={course.thumbnail || undefined}
                         alt={course.title}
                         className="w-full h-full object-cover"
                       />
@@ -158,7 +158,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       <div className="flex items-center gap-2 mt-1 text-xs text-[var(--text-tertiary)]">
                         <span>{course.level}</span>
                         <span>•</span>
-                        <span>{course.duration}</span>
+                        <span>{course.duration_weeks} weeks</span>
                         <span>•</span>
                         <span>${parseInt(course.price).toLocaleString()}</span>
                       </div>
@@ -167,7 +167,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     {/* Category badge */}
                     <div className="flex-shrink-0">
                       <span className="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--text-secondary)] text-xs rounded">
-                        {course.category.name}
+                        {course.categories?.[0]?.name || 'General'}
                       </span>
                     </div>
                   </CommandItem>

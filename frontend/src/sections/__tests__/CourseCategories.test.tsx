@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { CourseCategories } from '../CourseCategories';
 import { useCategories } from '@/hooks/useCategories';
 
@@ -65,7 +65,7 @@ describe('CourseCategories Component TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 
@@ -93,7 +93,7 @@ describe('CourseCategories Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 
@@ -113,7 +113,7 @@ describe('CourseCategories Component TDD', () => {
       isLoading: false,
       isError: true,
       error: new Error('Failed to fetch categories'),
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 
@@ -140,7 +140,7 @@ describe('CourseCategories Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 
@@ -149,12 +149,25 @@ describe('CourseCategories Component TDD', () => {
   });
 
   it('Should call useCategories on mount', () => {
+    const mockResponse = {
+      success: true,
+      data: {
+        count: 2,
+        next: null,
+        previous: null,
+        results: mockCategories,
+      },
+      message: 'Success',
+      errors: {},
+      meta: { timestamp: '2024-01-01', request_id: '123' },
+    };
+
     vi.mocked(useCategories).mockReturnValue({
-      data: undefined,
-      isLoading: true,
+      data: mockResponse,
+      isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 
@@ -180,7 +193,7 @@ describe('CourseCategories Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCategories>);
+    } as any);
 
     render(<CourseCategories />, { wrapper });
 

@@ -2923,3 +2923,7 @@ INFO 2026-03-22 21:44:59,676 middleware 1868194 126703411691840 GET /api/v1/cour
 INFO 2026-03-23 05:04:58,171 middleware 60743 135856574691008 GET /api/v1/courses/ - 200 - 1041.87ms - anonymous - 127.0.0.1 - 9fa7e038-bb59-41a3-b294-dc585751ee26 - curl/8.5.0
 INFO 2026-03-23 05:09:39,608 middleware 60743 135856574691008 HEAD /api/v1/courses/ - 200 - 43.41ms - anonymous - 127.0.0.1 - c51dfd94-44b6-4768-834b-1e8f61d8c181 - curl/8.5.0
 INFO 2026-03-23 05:44:31,639 middleware 60743 135856574691008 HEAD /api/v1/courses/ - 200 - 84.55ms - anonymous - 127.0.0.1 - bcefb789-7674-45a1-b67b-c42c55168390 - curl/8.5.0
+INFO 2026-03-23 18:13:17,157 middleware 457824 129812014298816 HEAD /api/v1/courses/ - 200 - 560.49ms - anonymous - 127.0.0.1 - 84868988-7cbe-468f-a58c-47a6ddee4adc - curl/8.5.0
+INFO 2026-03-23 18:13:18,246 middleware 457824 129812014298816 GET /api/v1/courses/ - 200 - 22.11ms - anonymous - 127.0.0.1 - b62a10b4-876c-4159-a152-f63bbd90a943 - curl/8.5.0
+INFO 2026-03-23 18:31:12,860 middleware 457824 129812014298816 GET /api/v1/courses/ - 200 - 148.54ms - anonymous - 127.0.0.1 - 42754ea2-4574-4b48-999d-65f1271f0362 - curl/8.5.0
+INFO 2026-03-23 18:31:44,282 middleware 457824 129812014298816 GET /api/v1/courses/ - 200 - 22.85ms - anonymous - 127.0.0.1 - 43c29b7d-409e-46b7-b748-93f9475a34f7 - curl/8.5.0

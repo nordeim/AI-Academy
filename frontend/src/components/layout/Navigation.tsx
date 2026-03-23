@@ -49,14 +49,6 @@ export function Navigation() {
     };
   }, [isMobileMenuOpen]);
 
-  const scrollToSection = (href: string) => {
-    setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <>
       <motion.header

@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { FeaturedCourse } from '../FeaturedCourse';
 import { useCourseDetail } from '@/hooks/useCourses';
 
@@ -82,7 +82,7 @@ describe('FeaturedCourse Component TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     render(<FeaturedCourse />, { wrapper });
 
@@ -104,7 +104,7 @@ describe('FeaturedCourse Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     render(<FeaturedCourse />, { wrapper });
 
@@ -126,7 +126,7 @@ describe('FeaturedCourse Component TDD', () => {
       isLoading: false,
       isError: true,
       error: new Error('Failed to fetch course'),
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     render(<FeaturedCourse />, { wrapper });
 
@@ -140,7 +140,7 @@ describe('FeaturedCourse Component TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     render(<FeaturedCourse />, { wrapper });
 
@@ -161,7 +161,7 @@ describe('FeaturedCourse Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     render(<FeaturedCourse />, { wrapper });
 

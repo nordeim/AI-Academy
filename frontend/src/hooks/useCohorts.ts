@@ -8,13 +8,10 @@
  * - Pagination support
  * - Filter support
  */
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from '@tanstack/react-query';
-import { Cohort, CohortFilters } from '@/types/cohort';
-import { ApiResponse, PaginatedData } from '@/types/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { Cohort, CohortFilters } from '@/types/cohort';
+import type { ApiResponse, PaginatedData } from '@/types/api';
 import {
   getCohorts,
   getCohortDetail,

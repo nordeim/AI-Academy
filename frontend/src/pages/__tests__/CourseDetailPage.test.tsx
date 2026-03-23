@@ -7,8 +7,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import type { ReactNode } from 'react';
 import { CourseDetailPage } from '../CourseDetailPage';
 import { useCourseDetail, useCourseCohorts } from '@/hooks/useCourses';
 
@@ -107,14 +107,14 @@ describe('CourseDetailPage TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: undefined,
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -133,7 +133,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -146,7 +146,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -173,7 +173,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -186,7 +186,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -207,7 +207,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -220,7 +220,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -242,7 +242,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -255,7 +255,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -271,14 +271,14 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: true,
       error: new Error('Failed to fetch course'),
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: undefined,
       isLoading: false,
       isError: true,
       error: new Error('Failed to fetch cohorts'),
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -291,14 +291,14 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: true,
       error: { response: { status: 404 } } as any,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: undefined,
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -317,7 +317,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -330,7 +330,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -351,7 +351,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -364,7 +364,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -380,14 +380,14 @@ describe('CourseDetailPage TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: undefined,
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 
@@ -406,7 +406,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseDetail>);
+    } as any);
 
     vi.mocked(useCourseCohorts).mockReturnValue({
       data: {
@@ -419,7 +419,7 @@ describe('CourseDetailPage TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useCourseCohorts>);
+    } as any);
 
     render(<CourseDetailPage />, { wrapper });
 

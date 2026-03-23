@@ -8,20 +8,12 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  useStripe,
-  useElements,
-  CardElement,
-  CardNumberElement,
-} from '@stripe/react-stripe-js';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useState } from 'react';
 import { createPaymentIntent, getPaymentStatus } from '@/services/api/payments';
-import {
+import type {
   PaymentIntentCreateRequest,
-  PaymentIntentCreateResponse,
-  PaymentStatus,
   PaymentFormState,
-  PaymentError,
 } from '@/types/payment';
 import { ApiError } from '@/services/api/client';
 

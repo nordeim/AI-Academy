@@ -4,7 +4,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCohorts, useCohortDetail, useUpcomingCohorts } from '../useCohorts';
 
 vi.mock('@/services/api/cohorts', () => ({
@@ -50,7 +50,7 @@ describe('useCohorts Hook TDD', () => {
       meta: { timestamp: '2024-01-01', request_id: '123' },
     };
 
-    vi.mocked(getCohorts).mockResolvedValueOnce(mockResponse);
+    vi.mocked(getCohorts).mockResolvedValueOnce(mockResponse as any);
 
     const { result } = renderHook(
       () => useCohorts({ status: 'enrolling' }),
@@ -71,7 +71,7 @@ describe('useCohorts Hook TDD', () => {
       meta: { timestamp: '2024-01-01', request_id: '123' },
     };
 
-    vi.mocked(getCohortDetail).mockResolvedValueOnce(mockResponse);
+    vi.mocked(getCohortDetail).mockResolvedValueOnce(mockResponse as any);
 
     const { result } = renderHook(() => useCohortDetail('c1'), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -94,7 +94,7 @@ describe('useCohorts Hook TDD', () => {
       meta: { timestamp: '2024-01-01', request_id: '123' },
     };
 
-    vi.mocked(getUpcomingCohorts).mockResolvedValueOnce(mockResponse);
+    vi.mocked(getUpcomingCohorts).mockResolvedValueOnce(mockResponse as any);
 
     const { result } = renderHook(() => useUpcomingCohorts(), { wrapper });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

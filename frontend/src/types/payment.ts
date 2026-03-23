@@ -7,7 +7,7 @@
  * @module types/payment
  */
 
-import { ApiResponse } from './api';
+import type { ApiResponse } from './api';
 
 /**
  * Stripe Payment Intent status

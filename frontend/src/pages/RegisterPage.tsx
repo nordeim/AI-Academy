@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, UserPlus, Loader2, AlertCircle, Check } from 'lucide-react';
+import { Eye, EyeOff, UserPlus, Loader2, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,6 +103,8 @@ export function RegisterPage() {
         email: data.email,
         username: data.username,
         password: data.password,
+        first_name: data.username,
+        last_name: '',
       });
       navigate('/', { replace: true });
     } catch {

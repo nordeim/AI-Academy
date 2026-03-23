@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { Search, SlidersHorizontal, Star, Clock, Users, AlertCircle } from "lucide-react";
 import { useCourses } from "@/hooks/useCourses";
 import { useCategories } from "@/hooks/useCategories";
-import { Course, CourseFilters } from "@/types/course";
+import type { Course, CourseFilters } from "@/types/course";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,10 +44,10 @@ export function CoursesPage() {
   const handleCategoryClick = (slug: string) => {
     if (selectedCategory === slug) {
       setSelectedCategory(null);
-      setFilters({ ...filters, category: undefined });
+      setFilters({ ...filters, categories__slug: undefined });
     } else {
       setSelectedCategory(slug);
-      setFilters({ ...filters, category: slug });
+      setFilters({ ...filters, categories__slug: slug });
     }
   };
 
@@ -280,7 +280,7 @@ export function CoursesPage() {
                   {/* Thumbnail */}
                   <div className="relative aspect-video overflow-hidden">
                     <img
-                      src={course.thumbnail}
+                      src={course.thumbnail || undefined}
                       alt={course.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -311,11 +311,11 @@ export function CoursesPage() {
                     <div className="flex items-center gap-4 text-xs text-[var(--text-tertiary)] mb-4">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        {course.duration}
+                        {course.duration_weeks} weeks
                       </span>
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3" />
-                        {course.enrolled_count.toLocaleString()}
+                        {course.enrolled_count?.toLocaleString() || 0}
                       </span>
                       <span className="flex items-center gap-1">
                         <Star className="w-3 h-3 fill-[var(--color-amber-400)] text-[var(--color-amber-400)]" />
@@ -328,9 +328,9 @@ export function CoursesPage() {
                       <span className="text-xl font-bold text-[var(--color-primary-600)]">
                         {formatPrice(course.price)}
                       </span>
-                      {course.compare_at_price && parseFloat(course.compare_at_price) > parseFloat(course.price) && (
+                      {course.original_price && parseFloat(course.original_price) > parseFloat(course.price) && (
                         <span className="text-sm text-[var(--text-tertiary)] line-through">
-                          {formatPrice(course.compare_at_price)}
+                          {formatPrice(course.original_price)}
                         </span>
                       )}
                     </div>

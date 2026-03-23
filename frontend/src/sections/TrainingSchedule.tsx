@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { staggerContainer, fadeUpItem } from "@/lib/animations";
 import { useUpcomingCohorts } from "@/hooks/useCohorts";
-import { Cohort } from "@/types/cohort";
+import type { Cohort } from "@/types/cohort";
 
 const statusConfig: Record<string, {
   bg: string;

@@ -37,8 +37,8 @@ interface PaymentFormProps {
   courseTitle: string;
   /** Cohort name for summary */
   cohortName: string;
-  /** Callback on successful payment */
-  onSuccess: () => void;
+  /** Callback on successful payment with payment intent ID */
+  onSuccess: (paymentIntentId: string) => void;
   /** Callback on payment error */
   onError: (error: string) => void;
   /** Disable form submission */
@@ -128,7 +128,7 @@ export function PaymentForm({
         onError(errorMessage);
       } else if (paymentIntent?.status === 'succeeded') {
         // Payment successful
-        onSuccess();
+        onSuccess(paymentIntent.id);
       } else {
         // Payment requires additional action
         setError('Payment requires additional verification. Please try again.');

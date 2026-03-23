@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Zap, Users, Award } from "lucide-react";
 import { staggerContainer, fadeUpItem } from "@/lib/animations";
-import { stats } from "@/data/mockData";
+import { heroStats } from "@/data/mockData";
 
 export function Hero() {
   const scrollToSection = (id: string) => {
@@ -101,7 +101,7 @@ export function Hero() {
                 <div className="flex items-center gap-2 mb-1">
                   <Zap className="w-4 h-4 text-[var(--color-amber-500)]" />
                   <span className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
-                    {stats.completionRate}%
+                    {heroStats.completionRate}%
                   </span>
                 </div>
                 <p className="text-sm text-[var(--text-secondary)]">Completion Rate</p>
@@ -110,7 +110,7 @@ export function Hero() {
                 <div className="flex items-center gap-2 mb-1">
                   <Users className="w-4 h-4 text-[var(--color-cyan-500)]" />
                   <span className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
-                    {stats.placementRate}%
+                    {heroStats.placementRate}%
                   </span>
                 </div>
                 <p className="text-sm text-[var(--text-secondary)]">Placement Rate</p>
@@ -119,7 +119,7 @@ export function Hero() {
                 <div className="flex items-center gap-2 mb-1">
                   <Award className="w-4 h-4 text-[var(--color-emerald-500)]" />
                   <span className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
-                    {stats.averageSalaryIncrease}%
+                    {heroStats.averageSalaryIncrease}%
                   </span>
                 </div>
                 <p className="text-sm text-[var(--text-secondary)]">Avg. Salary Increase</p>

@@ -3,13 +3,10 @@
  * 
  * Data fetching hooks for category-related endpoints
  */
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from '@tanstack/react-query';
-import { Category } from '@/types/api';
-import { ApiResponse, PaginatedData } from '@/types/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { Category } from '@/types/api';
+import type { ApiResponse, PaginatedData } from '@/types/api';
 import { getCategories, getCategoryDetail } from '@/services/api/categories';
 
 // Query keys

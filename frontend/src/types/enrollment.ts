@@ -5,7 +5,7 @@
  * Based on API_Usage_Guide.md specifications
  */
 
-import { Cohort } from './cohort';
+import type { Cohort } from './cohort';
 
 // Enrollment status
 export type EnrollmentStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'refunded';

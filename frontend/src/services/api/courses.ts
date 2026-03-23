@@ -4,9 +4,10 @@
  * API methods for course-related endpoints
  * TDD: All methods tested with mocked responses
  */
-import { apiClient, extractApiError, ApiResponse, PaginatedData } from './client';
-import { Course, CourseDetail, CourseFilters, CourseListResponse, CourseCohortsResponse } from '@/types/course';
-import { Cohort } from '@/types/cohort';
+import { apiClient, extractApiError } from './client';
+import type { ApiResponse, PaginatedData } from './client';
+import type { Course, CourseDetail, CourseFilters } from '@/types/course';
+import type { Cohort } from '@/types/cohort';
 
 const COURSES_ENDPOINT = '/courses/';
 

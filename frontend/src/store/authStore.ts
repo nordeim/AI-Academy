@@ -10,10 +10,9 @@
  */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
+import type {
   User,
   AuthTokens,
-  LoginCredentials,
   RegisterCredentials,
   UpdateProfilePayload,
 } from '@/types/auth';

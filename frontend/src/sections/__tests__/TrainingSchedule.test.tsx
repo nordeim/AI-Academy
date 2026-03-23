@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { TrainingSchedule } from '../TrainingSchedule';
 import { useUpcomingCohorts } from '@/hooks/useCohorts';
 
@@ -81,7 +81,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -108,7 +108,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -124,7 +124,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: true,
       error: new Error('Failed to fetch cohorts'),
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -151,7 +151,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -165,7 +165,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: true,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -191,7 +191,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -223,7 +223,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 
@@ -263,7 +263,7 @@ describe('TrainingSchedule Component TDD', () => {
       isLoading: false,
       isError: false,
       error: null,
-    } as ReturnType<typeof useUpcomingCohorts>);
+    } as any);
 
     render(<TrainingSchedule />, { wrapper });
 

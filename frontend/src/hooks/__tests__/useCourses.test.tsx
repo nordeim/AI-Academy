@@ -14,7 +14,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCourses, useCourseDetail, useCourseCohorts } from '../useCourses';
 
 // Mock API service
@@ -65,7 +65,7 @@ describe('useCourses Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCourses).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCourses).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(() => useCourses(), { wrapper });
 
@@ -94,7 +94,7 @@ describe('useCourses Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCourses).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCourses).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(
         () => useCourses({ level: 'intermediate', search: 'AI' }),
@@ -138,7 +138,7 @@ describe('useCourses Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCourses).mockResolvedValue(mockResponse);
+      vi.mocked(getCourses).mockResolvedValue(mockResponse as any);
 
       // First render
       const { result, rerender } = renderHook(() => useCourses(), { wrapper });
@@ -166,7 +166,7 @@ describe('useCourses Hook TDD', () => {
         ({ level }) => useCourses({ level }),
         {
           wrapper,
-          initialProps: { level: 'beginner' },
+          initialProps: { level: 'beginner' as 'beginner' | 'advanced' },
         }
       );
 
@@ -194,7 +194,7 @@ describe('useCourses Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCourseDetail).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCourseDetail).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(() => useCourseDetail('detailed-course'), {
         wrapper,
@@ -227,7 +227,7 @@ describe('useCourses Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCourseCohorts).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCourseCohorts).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(() => useCourseCohorts('course-slug'), {
         wrapper,

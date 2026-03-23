@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCategories, useCategoryDetail } from '../useCategories';
 
 vi.mock('@/services/api/categories', () => ({
@@ -55,7 +55,7 @@ describe('useCategories Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCategories).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCategories).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(() => useCategories(), { wrapper });
 
@@ -106,7 +106,7 @@ describe('useCategories Hook TDD', () => {
         meta: { timestamp: '2024-01-01', request_id: '123' },
       };
 
-      vi.mocked(getCategoryDetail).mockResolvedValueOnce(mockResponse);
+      vi.mocked(getCategoryDetail).mockResolvedValueOnce(mockResponse as any);
 
       const { result } = renderHook(() => useCategoryDetail('ai'), { wrapper });
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -114,7 +114,7 @@ describe('useCategories Hook TDD', () => {
       expect(result.current.data?.data.name).toBe('AI');
     });
 
-    it('should not fetch when slug is empty', () => {
+    it('should not fetch when slug is empty', async () => {
       const { getCategoryDetail } = await import('@/services/api/categories');
       renderHook(() => useCategoryDetail(''), { wrapper });
       expect(getCategoryDetail).not.toHaveBeenCalled();

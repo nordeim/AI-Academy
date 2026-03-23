@@ -81,8 +81,8 @@ export function FeaturedCourse() {
 
   // Parse price values (API returns strings)
   const price = parseFloat(featuredCourse.price || "0");
-  const comparePrice = featuredCourse.compare_at_price
-    ? parseFloat(featuredCourse.compare_at_price)
+  const comparePrice = featuredCourse.original_price
+    ? parseFloat(featuredCourse.original_price)
     : null;
 
   return (
@@ -113,7 +113,7 @@ export function FeaturedCourse() {
             >
               <div className="relative aspect-video overflow-hidden border border-[var(--color-border)]">
                 <img
-                  src={featuredCourse.thumbnail}
+                  src={featuredCourse.thumbnail || undefined}
                   alt={featuredCourse.title}
                   className="w-full h-full object-cover"
                 />
@@ -140,17 +140,17 @@ export function FeaturedCourse() {
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="bg-white border border-[var(--color-border)] p-4 text-center">
               <Clock className="w-5 h-5 text-[var(--color-primary-600)] mx-auto mb-2" />
-              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.duration}</p>
+              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.duration_weeks} weeks</p>
               <p className="text-xs text-[var(--text-tertiary)]">Duration</p>
             </div>
             <div className="bg-white border border-[var(--color-border)] p-4 text-center">
               <Zap className="w-5 h-5 text-[var(--color-cyan-500)] mx-auto mb-2" />
-              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.modules.length}</p>
+              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.modules_count || 0}</p>
               <p className="text-xs text-[var(--text-tertiary)]">Modules</p>
             </div>
             <div className="bg-white border border-[var(--color-border)] p-4 text-center">
               <Users className="w-5 h-5 text-[var(--color-emerald-500)] mx-auto mb-2" />
-              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.enrolled_count.toLocaleString()}</p>
+              <p className="text-lg font-semibold text-[var(--text-primary)]">{featuredCourse.enrolled_count?.toLocaleString() || 0}</p>
               <p className="text-xs text-[var(--text-tertiary)]">Students</p>
             </div>
           </div>
@@ -173,7 +173,7 @@ export function FeaturedCourse() {
                 <Star
                   key={i}
                   className={`w-4 h-4 ${
-                    i < Math.floor(featuredCourse.rating)
+                    i < Math.floor(parseFloat(featuredCourse.rating))
                     ? "fill-[var(--color-amber-400)] text-[var(--color-amber-400)]"
                     : "text-[var(--color-border)]"
                   }`}

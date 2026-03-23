@@ -37,7 +37,7 @@ import { useCohorts } from '@/hooks/useCohorts';
 import { useCreatePaymentIntent } from '@/hooks/usePayment';
 import { CohortSelector } from '@/components/CohortSelector';
 import { PaymentForm } from '@/components/PaymentForm';
-import { Cohort } from '@/types/cohort';
+import type { Cohort } from '@/types/cohort';
 import { createEnrollment } from '@/services/api/enrollments';
 import { staggerContainer, fadeUpItem } from '@/lib/animations';
 
@@ -79,11 +79,10 @@ export function EnrollmentPage() {
   });
 
   const { data: courseData, isLoading: isLoadingCourse, error: courseError } = useCourseDetail(slug || '');
-  const { data: cohortsData, isLoading: isLoadingCohorts, error: cohortsError, refetch: refetchCohorts } = useCohorts(slug || '');
+  const { isLoading: isLoadingCohorts, error: cohortsError } = useCohorts({ course: slug || '' });
   const createPaymentIntentMutation = useCreatePaymentIntent();
 
   const course = courseData?.data;
-  const cohorts = cohortsData?.results || [];
 
   // Scroll to top on step change
   useEffect(() => {
@@ -101,7 +100,7 @@ export function EnrollmentPage() {
   };
 
   // Handle cohort selection
-  const handleCohortSelect = (cohortId: string, cohortData: Cohort) => {
+  const handleCohortSelect = (_cohortId: string, cohortData: Cohort) => {
     setState(prev => ({ ...prev, selectedCohort: cohortData, error: null }));
   };
 
@@ -388,7 +387,7 @@ export function EnrollmentPage() {
                         <div>
                           <p className="text-sm text-muted-foreground">Course</p>
                           <p className="font-semibold text-lg">{course.title}</p>
-                          <p className="text-sm text-muted-foreground">{course.duration}</p>
+                          <p className="text-sm text-muted-foreground">{course.duration_weeks} weeks</p>
                         </div>
                         {course.thumbnail && (
                           <img

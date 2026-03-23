@@ -8,14 +8,11 @@
  * - Pagination support
  * - Filter invalidation
  */
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from '@tanstack/react-query';
-import { Course, CourseDetail, CourseFilters } from '@/types/course';
-import { Cohort } from '@/types/cohort';
-import { ApiResponse, PaginatedData } from '@/types/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { Course, CourseDetail, CourseFilters } from '@/types/course';
+import type { Cohort } from '@/types/cohort';
+import type { ApiResponse, PaginatedData } from '@/types/api';
 import {
   getCourses,
   getCourseDetail,
