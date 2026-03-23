@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Check, Clock, Users, Star, Zap, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,6 +10,7 @@ import { useCourseDetail } from "@/hooks/useCourses";
 const FEATURED_COURSE_SLUG = "ai-engineering-bootcamp";
 
 export function FeaturedCourse() {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useCourseDetail(FEATURED_COURSE_SLUG);
 
   const inclusions = [
@@ -234,6 +236,7 @@ export function FeaturedCourse() {
             <Button
               size="lg"
               className="bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white"
+              onClick={() => navigate(`/courses/${featuredCourse.slug}/enroll`)}
             >
               Enroll Now
               <ArrowRight className="w-4 h-4 ml-2" />

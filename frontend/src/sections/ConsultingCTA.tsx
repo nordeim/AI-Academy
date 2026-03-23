@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Building2, Users, GraduationCap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { staggerContainer, slideInLeft, slideInRight } from "@/lib/animations";
 
 export function ConsultingCTA() {
+  const navigate = useNavigate();
+  
   const benefits = [
     "Custom curriculum tailored to your tech stack",
     "Flexible scheduling for global teams",
@@ -51,6 +54,7 @@ export function ConsultingCTA() {
                 <Button
                   size="lg"
                   className="bg-white text-[var(--color-primary-900)] hover:bg-[var(--color-primary-100)]"
+                  onClick={() => alert("Contact us at sales@aiacademy.com for enterprise inquiries")}
                 >
                   Talk to Sales
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -59,6 +63,7 @@ export function ConsultingCTA() {
                   variant="outline"
                   size="lg"
                   className="border-[var(--color-primary-400)] text-white hover:bg-[var(--color-primary-800)]"
+                  onClick={() => alert("Brochure download coming soon!")}
                 >
                   Download Brochure
                 </Button>

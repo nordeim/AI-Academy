@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { Calendar, Globe, MapPin, ChevronDown, CheckCircle, Zap, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ const statusConfig: Record<string, {
 };
 
 export function TrainingSchedule() {
+  const navigate = useNavigate();
   const [expandedCohort, setExpandedCohort] = useState<string | null>(null);
   const { data, isLoading, isError } = useUpcomingCohorts();
 
@@ -232,7 +234,14 @@ export function TrainingSchedule() {
                               ? "bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white"
                               : "border-[var(--color-border-strong)] text-[var(--text-primary)]"
                           }`}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (cohort.availability_status === "available" || cohort.availability_status === "filling-fast") {
+                              navigate(`/courses/${cohort.course_slug}/enroll`);
+                            } else {
+                              alert("Waitlist enrollment coming soon!");
+                            }
+                          }}
                         >
                           {cohort.availability_status === "available"
                             ? "Enroll Now"

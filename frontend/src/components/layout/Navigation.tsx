@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Search, Command } from "lucide-react";
@@ -14,6 +14,7 @@ const navItems = [
 ];
 
 export function Navigation() {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -125,12 +126,14 @@ export function Navigation() {
                 variant="ghost"
                 size="sm"
                 className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                onClick={() => navigate("/login")}
               >
                 Sign In
               </Button>
               <Button
                 size="sm"
                 className="bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white"
+                onClick={() => navigate("/register")}
               >
                 Get Started
               </Button>
