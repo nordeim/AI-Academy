@@ -70,6 +70,10 @@ Awesome job on your meticulous review, analysis and planning. Please keep up the
 
 ---
 
+please meticulously document all your E2E experiences, pitfalls and resolutions, and learnings into a E2E testing guide for this project. create the guide as a markdown file with appropriate filename. please make sure to comprehensive capture your E2E testing journey and obstacles/hicups and how you overcame them. the aim is that another AI coding agent should be able to avoid all the pitfalls you encountered and be able to conduct new E2E tests.
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md , @FRONTEND_API_INTEGRATION_PLAN.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:

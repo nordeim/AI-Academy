@@ -5,7 +5,7 @@
  * Based on API_Usage_Guide.md specifications
  */
 
-import { Category } from './category';
+import { Category } from './api';
 
 // Course difficulty level
 export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';

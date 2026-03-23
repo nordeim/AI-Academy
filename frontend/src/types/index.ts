@@ -9,7 +9,6 @@
 export * from './api';
 
 // Entity types
-export * from './category';
 export * from './course';
 export * from './cohort';
 export * from './enrollment';

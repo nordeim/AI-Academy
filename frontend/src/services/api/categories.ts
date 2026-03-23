@@ -4,7 +4,7 @@
  * API methods for category-related endpoints
  */
 import { apiClient, extractApiError, ApiResponse, PaginatedData } from './client';
-import { Category, CategoryListResponse } from '@/types/category';
+import { Category, CategoryListResponse } from '@/types/api';
 
 const CATEGORIES_ENDPOINT = '/categories/';
 

@@ -8,7 +8,7 @@ import {
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query';
-import { Category } from '@/types/category';
+import { Category } from '@/types/api';
 import { ApiResponse, PaginatedData } from '@/types/api';
 import { getCategories, getCategoryDetail } from '@/services/api/categories';
 

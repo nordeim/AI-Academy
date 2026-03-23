@@ -5,6 +5,17 @@
  * These types ensure frontend-backend contract alignment
  */
 
+// Entity types that are core to API responses
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  color: string;
+  icon: string;
+  course_count: number;
+}
+
 // API Response envelope (standardized across all endpoints)
 export interface ApiResponse<T> {
   success: boolean;
