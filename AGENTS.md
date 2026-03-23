@@ -15,7 +15,7 @@ This document serves as the absolute single-source-of-truth (SSoT) for any AI co
 
 ## 2. CRITICAL CONTEXT & DISCREPANCIES
 
-As of March 21, 2026, the codebase has achieved **Backend API Fully Operational** status with all 239 tests passing (including 12 new payment tests) and interactive API documentation. Agents must be aware of the following:
+As of March 22, 2026, the codebase has achieved **Backend API Fully Operational** status with all 257 tests passing (including 18 soft delete tests) and interactive API documentation. Agents must be aware of the following:
 
 ### Current State
 
