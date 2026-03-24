@@ -82,6 +82,10 @@ Awesome job on your meticulous review, analysis and planning. Please keep up the
 
 ---
 
+Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously plan to review and analyze/validate the QA comments on functionality testing @QA_Issues_to_fix.md against the actual codebase to identify and confirm the root causes of the highlighted functionality gaps. then meticulously plan to create a comprehensive remediation plan to fix the identified and validated issues and gaps. review and validate the remediation plan before proceeding to execute it meticulously. Use the same rigorous and meticulous approach. Remember to use Test-Driven Development (TDD) approach in planning for the code changes.
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md , @FRONTEND_API_INTEGRATION_PLAN.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:

@@ -6,7 +6,7 @@
  */
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCourseDetail } from "@/hooks/useCourses";
 import type { CourseDetail } from "@/types/course";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,7 @@ import { ChevronLeft, Star, Clock, Users, AlertCircle, CheckCircle } from "lucid
 import { staggerContainer, fadeUpItem } from "@/lib/animations";
 
 export function CourseDetailPage() {
+  const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const [activeTab, setActiveTab] = useState<"overview" | "curriculum" | "instructor">("overview");
 
@@ -166,7 +167,11 @@ export function CourseDetailPage() {
                   )}
                 </div>
 
-                <Button size="lg" className="w-full bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white mb-4">
+                <Button 
+                  size="lg" 
+                  className="w-full bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white mb-4"
+                  onClick={() => navigate(`/courses/${course.slug}/enroll`)}
+                >
                   Enroll Now
                 </Button>
 

@@ -82,7 +82,7 @@ export function CourseCategories() {
     );
   }
 
-  const categories = data?.data.results || [];
+  const categories = Array.isArray(data?.data) ? data.data : [];
 
   // Empty state
   if (categories.length === 0) {

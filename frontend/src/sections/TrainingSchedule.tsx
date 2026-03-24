@@ -101,7 +101,7 @@ export function TrainingSchedule() {
     );
   }
 
-  const cohorts: Cohort[] = data?.data.results || [];
+  const cohorts: Cohort[] = Array.isArray(data?.data) ? data.data : [];
 
   // Empty state
   if (cohorts.length === 0) {

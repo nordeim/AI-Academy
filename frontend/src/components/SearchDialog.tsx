@@ -39,7 +39,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
       : undefined
   );
 
-  const courses: Course[] = data?.data.results || [];
+  const courses: Course[] = Array.isArray(data?.data) ? data.data : [];
 
   // Handle keyboard shortcut (CMD+K / Ctrl+K)
   useEffect(() => {

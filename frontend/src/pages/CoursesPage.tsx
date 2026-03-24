@@ -38,7 +38,7 @@ export function CoursesPage() {
   });
 
   const categories = categoriesData?.data.results || [];
-  const courses: Course[] = coursesData?.data.results || [];
+  const courses: Course[] = Array.isArray(coursesData?.data) ? coursesData.data : [];
 
   // Handle category filter
   const handleCategoryClick = (slug: string) => {
