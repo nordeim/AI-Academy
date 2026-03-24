@@ -72,7 +72,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   }, [open]);
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={onOpenChange} shouldFilter={false}>
       <DialogTitle className="sr-only">Search Courses</DialogTitle>
       <DialogDescription className="sr-only">
         Search for courses by name, category, or description
@@ -82,13 +82,6 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         value={query}
         onValueChange={setQuery}
         className="border-none focus:ring-0"
-        onInput={(e: React.FormEvent<HTMLInputElement>) => {
-          // Fallback: capture input changes directly
-          const value = (e.target as HTMLInputElement).value;
-          if (value !== query) {
-            setQuery(value);
-          }
-        }}
       />
       <CommandList className="max-h-[400px] overflow-y-auto">
         <AnimatePresence mode="wait">

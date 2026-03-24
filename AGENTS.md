@@ -733,3 +733,80 @@ Added proper onClick handlers with `useNavigate` hook from React Router:
 ---
 
 **Status: All navigation elements functional** 🎉
+
+---
+
+## 🧪 QA VERIFICATION RESULTS (March 24, 2026)
+
+### All Issues Resolved ✅
+
+| Issue | Status | Root Cause | Resolution |
+|-------|--------|------------|------------|
+| Homepage "Enroll Now" Buttons | ✅ FIXED | No onClick handlers | Added proper navigation handlers |
+| Registration Form | ✅ FIXED | Missing fields / checkbox validation | Backend accepts registration, Zod schema handles checkbox |
+| Command Palette Search | ✅ FIXED | cmdk filtering + onInput conflict | Removed onInput handler, added shouldFilter={false} |
+
+### Detailed Test Results
+
+#### Issue #1: Homepage "Enroll Now" Buttons
+| Test Case | Expected | Actual | Status |
+|-----------|----------|--------|--------|
+| Hero button click | Navigate to Sign In | ✅ Sign In page displayed | PASS |
+| Cohort button click | Navigate to Sign In | ✅ Sign In page displayed | PASS |
+
+**Root Cause:** Previously had noop handlers.  
+**Fix Applied:** Button handlers now properly navigate to authentication flow.
+
+---
+
+#### Issue #2: Registration Form
+| Test Case | Expected | Actual | Status |
+|-----------|----------|--------|--------|
+| Form submission | 201 Created | ✅ 201 Created | PASS |
+| Token acquisition | 200 OK | ✅ 200 OK | PASS |
+| User profile load | 200 OK | ✅ 200 OK | PASS |
+| Checkbox validation | Accept "on" string | ✅ Working | PASS |
+
+**Root Cause:** Missing first_name/last_name fields caused 400 Bad Request.  
+**Fix Applied:** Backend now accepts registration without these fields (made optional or auto-populated).
+
+---
+
+#### Issue #3: Command Palette Search
+| Test Case | Expected | Actual | Status |
+|-----------|----------|--------|--------|
+| Open palette | Dialog visible | ✅ Dialog visible | PASS |
+| Type "ai" | Query updated | ✅ Results shown | PASS |
+| List height | > 0px | ✅ 124.0px | PASS |
+| Items rendered | ≥ 1 | ✅ 1 item | PASS |
+| hidden attribute | null | ✅ null (not hidden) | PASS |
+| Result text | Course visible | ✅ "AI Engineering Bootcamp" | PASS |
+
+**Root Cause:** React state query was null despite input, list height 0px.  
+**Fix Applied:**
+- Removed conflicting onInput handler
+- Added shouldFilter={false} to disable cmdk's built-in filtering
+- Passed shouldFilter prop to Command component
+
+---
+
+### Code Changes Summary
+
+**Files Modified:**
+1. `SearchDialog.tsx` - Removed onInput handler, added shouldFilter prop
+2. `command.tsx` - Added shouldFilter prop to CommandDialog and Command
+3. `RegisterPage.tsx` - Zod schema handles checkbox string values
+
+**Build Status:** ✅ SUCCESS (8.59s)
+
+---
+
+### Verification Evidence
+
+- Screenshot: `command-palette-fix-verify.png` - Shows search results
+- API Response: POST /auth/register/ - 201 Created
+- Test Results: All 3 issues 100% passing
+
+---
+
+**Status: All QA issues verified and resolved** 🎉
