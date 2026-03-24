@@ -82,15 +82,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
         value={query}
         onValueChange={setQuery}
         className="border-none focus:ring-0"
-        onInput={(e) => {
+        onInput={(e: React.FormEvent<HTMLInputElement>) => {
           // Fallback: capture input changes directly
-          const value = (e.target as HTMLInputElement).value;
-          if (value !== query) {
-            setQuery(value);
-          }
-        }}
-        onChange={(e) => {
-          // Additional fallback: capture change events
           const value = (e.target as HTMLInputElement).value;
           if (value !== query) {
             setQuery(value);
