@@ -72,7 +72,7 @@ export function Navigation() {
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <div className="w-8 h-8 bg-[var(--color-primary-600)] flex items-center justify-center">
-                <span className="text-white font-bold text-lg font-display">A</span>
+                <span className="text-white font-bold text-sm font-display">AI</span>
               </div>
               <span className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)]">
                 Academy
@@ -99,6 +99,8 @@ export function Navigation() {
                 }
               }}
               className="text-sm font-medium transition-colors relative py-1 text-[var(--text-secondary)] hover:text-[var(--color-primary-600)]"
+              aria-haspopup="true"
+              aria-expanded="false"
             >
               {item.label}
             </button>
@@ -111,6 +113,8 @@ export function Navigation() {
             onClick={() => setIsSearchOpen(true)}
             className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             aria-label="Search courses"
+            aria-haspopup="dialog"
+            aria-expanded={isSearchOpen}
           >
             <Search className="w-4 h-4" />
             <span className="hidden xl:inline">Search</span>

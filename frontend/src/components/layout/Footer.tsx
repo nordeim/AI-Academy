@@ -57,7 +57,7 @@ export function Footer() {
             <motion.div variants={fadeUpItem} className="lg:col-span-2">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-[var(--color-primary-600)] flex items-center justify-center">
-                  <span className="text-white font-bold text-lg font-display">A</span>
+                  <span className="text-white font-bold text-sm font-display">AI</span>
                 </div>
                 <span className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)]">
                   Academy

@@ -1,11 +1,9 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight, Building2, Users, GraduationCap, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { staggerContainer, slideInLeft, slideInRight } from "@/lib/animations";
 
 export function ConsultingCTA() {
-  const navigate = useNavigate();
   
   const benefits = [
     "Custom curriculum tailored to your tech stack",
