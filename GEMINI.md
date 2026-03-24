@@ -18,7 +18,7 @@ As of **March 24, 2026**, the codebase is in a **Production-Ready Verified Phase
 
 | Component | Documented (README/PRD) | Actual Implementation | Mandate |
 |-----------|-------------------------|-----------------------|---------|
-| **Framework** | Next.js 16.1.4 | Vite 7.2.4 + React 19 SPA | **Maintain Vite** until explicit migration is requested. |
+| **Framework** | Next.js 16.1.4 | Vite 7.3.0 + React 19 SPA | **Maintain Vite** until explicit migration is requested. |
 | **Tailwind** | v4.1.18 (CSS-First) | v3.4.19 (JS Config) | **Follow v4 philosophy** (CSS variables) within v3 limits. |
 | **Data State** | Real-time API | **Integrated** | Core pages and Enrollment flow use real APIs. Landing sections migration in progress. |
 | **Soft Delete** | ✅ Completed | ✅ **Verified** | `SoftDeleteModel` active on core models with 18 TDD tests. |
@@ -50,13 +50,22 @@ Learned that standard `agent-browser screenshot` calls are prone to capturing th
   2. `snapshot -i` (Verify the structural presence of content).
   3. `screenshot --annotate` (Capture visual proof).
 
+#### 5. API Response Standardization (Hybrid State)
+Core pages (`CoursesPage`, `SearchDialog`) must handle the standardized JSON envelope.
+- **Mandate:** Always check `data.success` and access payload via `data.data`.
+- **Learning:** Backend pagination returns the result list directly in `data` with metadata in `meta.pagination`. Use `Array.isArray(data?.data)` for robust list handling.
+
+#### 6. Accessibility & ARIA Compliance
+- **Mandate:** Interactive elements (buttons, dialogs) must include `aria-haspopup` and `aria-expanded`.
+- **Mandate:** Screen-reader-only content (`sr-only`) must be placed inside the active container (e.g., `DialogContent`) to prevent leakage into the accessibility tree when inactive.
+
 ---
 
 ## 3. TECHNICAL STACK MANDATES
 
 ### Frontend (SPA)
 - **Library:** React 19.2.0
-- **Build Tool:** Vite 7.2.4
+- **Build Tool:** Vite 7.3.0
 - **State:** Zustand 5.0.3 (Client) / TanStack Query 5.x (Server)
 - **Animations:** Framer Motion 12.35.0 (Strictly follow `lib/animations.ts`)
 - **Icons:** Lucide React 0.562.0
@@ -97,12 +106,13 @@ Learned that standard `agent-browser screenshot` calls are prone to capturing th
 
 ### Backend Logic
 - **Soft Delete:** All core models must implement `SoftDeleteManager` and provide `delete()` (soft) and `restore()` methods. Use `Model.objects.all_objects()` to include deleted records in queries.
+- **Standardized Responses:** Use `ResponseFormatterMixin` for all ViewSets to ensure consistent JSON envelopes.
 
 ---
 
 ## 6. DEFINITION OF DONE (DoD)
 A task is complete only when:
-1. **Tests Pass:** `python manage.py test` (Backend: 257 tests) and `npm run test` (Frontend: 92+ tests) return 100 success.
+1. **Tests Pass:** `python manage.py test` (Backend: 257 tests) and `npm run test` (Frontend: 92+ tests) return 100% success.
 2. **E2E Validation:** Basic smoke tests (`tests/e2e/smoke.spec.ts`) pass with visual verification (non-blank screenshots).
 3. **Build Integrity:** Production build (`npm run build`) completes with zero TypeScript errors.
 4. **Standardization:** Response format adheres to the standardized JSON envelope.
