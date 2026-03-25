@@ -181,3 +181,53 @@ authStore Test Revert
 ---
 Status: All changes validated and corrected 🎉
 
+✅ All Services Running and Verified
+I've restarted both services and verified they're working correctly.
+---
+Service Status
+Service
+Frontend (Vite)
+Backend (Django)
+---
+⚠️ Port Correction
+Your Error: curl: (7) Failed to connect to localhost port 5137
+Issue: Port 5137 is incorrect. The correct port is 5173.
+Correct Command:
+curl http://localhost:5173/  # ✅ Correct port
+Not:
+curl http://localhost:5137/  # ❌ Wrong port
+---
+API Endpoints Verified
+# Categories
+curl http://localhost:8000/api/v1/categories/
+# Response: {"success":true,"data":[{"id":1,"name":"AI Engineering",...}]}
+# Courses
+curl http://localhost:8000/api/v1/courses/
+# Response: {"success":true,"data":[{"id":"ba288769-...","title":"Data Science Fundamentals",...}]}
+# Frontend
+curl http://localhost:5173/
+# Response: <!doctype html> <html lang="en"> ...
+---
+### **Error Resolution**
+**Error:** "Failed to load categories/course/cohorts"
+**Root Cause:** Services were not running
+**Solution:** Restarted both services
+**Current Status:**
+- ✅ Frontend: Running on port 5173
+- ✅ Backend: Running on port 8000
+- ✅ API: All endpoints responding
+---
+Quick Reference
+Service	URL
+Frontend	http://localhost:5173/ (http://localhost:5173/)
+Backend API	http://localhost:8000/api/v1/ (http://localhost:8000/api/v1/)
+Categories	http://localhost:8000/api/v1/categories/ (http://localhost:8000/api/v1/categories/)
+Courses	http://localhost:8000/api/v1/courses/ (http://localhost:8000/api/v1/courses/)
+---
+Proxy Domain
+For the proxy domain ai-academy.jesspete.shop:
+- ✅ Allowed hosts configured in vite.config.ts
+- ✅ Both services running
+- ✅ API endpoints responding
+Status: All services operational 🎉
+
