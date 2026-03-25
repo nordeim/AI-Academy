@@ -104,6 +104,10 @@ please meticulously review @status_4.md , @QA_Issues_to_fix_3.md , @QA_Verificat
 
 ---
 
+please meticulously review these documents AGENTS.md GEMINI.md README.md Project_Architecture_Document.md ACCOMPLISHMENTS.md start_apps.sh status_4.md Comprehensive_Project_Analysis_1.md Comprehensive_Project_Analysis_4.md first to have a deep and wholistic understanding of the project and its codebase, then meticulously validate your deep understanding and assumptions against the codebase systematically to ensure correct and accurate alignment.
+
+---
+
 Awesome job on your meticulous analysis, planning and execution. Please keep up the good work in your rigorous and meticulous approach to planning and execution. Now, please meticulously review and update @README.md , @AGENTS.md , @API_Usage_Guide.md , @FRONTEND_API_INTEGRATION_PLAN.md and @ACCOMPLISHMENTS.md with your major milestone achievements, include things like code changes (updates and additions), enhancements and fixes, lessons learned, troubleshooting guide, any blockers encountered (solved or still persist), any recommended next steps, etc.
 
 # Update the project documents with:
