@@ -11,4 +11,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    allowedHosts: ['ai-academy.jesspete.shop', 'localhost', '127.0.0.1'],
+  },
 });

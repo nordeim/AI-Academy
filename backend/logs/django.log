@@ -9048,3 +9048,11 @@ INFO 2026-03-25 13:58:36,617 middleware 457824 129811628422848 GET /api/v1/cours
 INFO 2026-03-25 13:58:36,617 log 457824 129811628422848 "GET /api/v1/courses/ai-engineering-bootcamp/ HTTP/1.1" 200 845
 INFO 2026-03-25 13:58:36,657 middleware 457824 129811611637440 GET /api/v1/cohorts/ - 200 - 0.138s - RequestID: 869c6390-00b1-49b2-8dc0-d3c28a39b3d8
 INFO 2026-03-25 13:58:36,662 log 457824 129811611637440 "GET /api/v1/cohorts/?status=enrolling&ordering=start_date HTTP/1.1" 200 650
+INFO 2026-03-25 14:31:15,775 middleware 457824 129811987023552 GET /api/v1/courses/ai-engineering-bootcamp/ - 200 - 0.096s - RequestID: e1ec895d-e27d-4c99-9473-fb3f7d589e0e
+INFO 2026-03-25 14:31:15,778 log 457824 129811987023552 "GET /api/v1/courses/ai-engineering-bootcamp/ HTTP/1.1" 200 845
+INFO 2026-03-25 14:31:15,853 middleware 457824 129811611637440 GET /api/v1/categories/ - 200 - 0.173s - RequestID: 9b073ce9-94f0-4d86-8229-720d1b06e084
+INFO 2026-03-25 14:31:15,854 log 457824 129811611637440 "GET /api/v1/categories/ HTTP/1.1" 200 653
+INFO 2026-03-25 14:31:15,870 middleware 457824 129811628422848 GET /api/v1/cohorts/ - 200 - 0.185s - RequestID: e238c667-63dc-4a5a-9a4f-fa668bda0b71
+INFO 2026-03-25 14:31:15,872 middleware 457824 129812014298816 GET /api/v1/courses/ - 200 - 0.204s - RequestID: 1de3d851-ac6c-433d-b687-7d4314d3e78f
+INFO 2026-03-25 14:31:15,873 log 457824 129812014298816 "GET /api/v1/courses/ HTTP/1.1" 200 1595
+INFO 2026-03-25 14:31:15,873 log 457824 129811628422848 "GET /api/v1/cohorts/?status=enrolling&ordering=start_date HTTP/1.1" 200 650
